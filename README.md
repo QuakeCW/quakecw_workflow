@@ -29,46 +29,10 @@ Changelog
 
 이 디렉토리에 Data 디렉토리가 있고, 그 아래 위에서 만든 단층모델과 속도모델이 이같은 구조로 배치되어 있어야 함.
 
-| ---------------------------------------------------------------------------------------------------------------- |
-| Data\ |
-|-Sources\ |
-| \|-Pohang\ |
-| \| \|-Stoch\ |
-| \| \| \|-Pohang.stoch\ |
-| \| \|-setSrfParams.py\|
-| \| \|-Srf\ |
-| \| \| \|-Pohang.gsf\
-| \| \| \|-Pohang.srf\
-| \| \| \|-Pohang.info\
-| \| \| \|-Pohang.SEED\
-| \|-Gyeongju\
-| \| \|-Stoch\
-| \| \| \|-Gyeongju.stoch\
-| \| \|-setSrfParams.py\
-| \| \|-Srf\
-| \| \| \|-Gyeongju.srf\
-| \| \| \|-Gyeongju.gsf\
-| \| \| \|-Gyeongju.info\
-| \| \| \|-Gyeongju.SEED\
-|-VMs\
-| \|-Pohang\
-| \| \|-vm_params.yaml\
-| \| \|-nzvm.cfg\
-| \| \|-vp3dfile.p\
-| \| \|-vs3dfile.s\
-| \| \|-rho3dfile.d\
-| \| \|-in_basin_mask.b\
-| \| \|-model_bounds_rt01-h0.100\
-| \| \|-model_coords_rt01-h0.100\
-| \| \|-model_params_rt01-h0.100\
-| \| \|-gridfile_rt01-h0.100\
-| \| \|-gridout_rt01-h0.100\
-| \| \|-VeloModCorners.txt\
-| \|-Gyeongju (VMs/Pohang의 심볼릭 링크)    
-|
-| ---------------------------------------------------------------------------------------------------------------- |
 
-Sources에서 단층 이름을 한 srf파일과 매칭되는 stoch파일이 존재하여야 하며 (예: Pohang.srf, Pohang.stoch)
+<img width="804" alt="Screen Shot 2022-04-11 at 5 37 32 PM" src="https://user-images.githubusercontent.com/466989/162698018-908884b6-0444-43d7-a1b4-7a2e55ed4c70.png">
+
+Source에서 단층 이름을 한 srf파일과 매칭되는 stoch파일이 존재하여야 하며 (예: Pohang.srf, Pohang.stoch)
 
 VMs의 경우 .p,.s,.d 속도모델 파일과 좌표관련 파일들이 단층과 같은 이름을 한 폴더안에 보관되어 있어야 함. 같은 속도모델을 이용할 경우, 심볼릭 링크를 사용해도 무방.
 
