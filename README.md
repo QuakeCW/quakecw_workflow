@@ -30,13 +30,13 @@ Changelog
 이 디렉토리에 Data 디렉토리가 있고, 그 아래 위에서 만든 단층모델과 속도모델이 이같은 구조로 배치되어 있어야 함.
 
 | ---------------------------------------------------------------------------------------------------------------- |
-| Data\
-|-Sources\
-| \|-Pohang\
-| \| \|-Stoch\
-| \| \| \|-Pohang.stoch\
-| \| \|-setSrfParams.py\
-| \| \|-Srf\
+| Data\ |
+|-Sources\ |
+| \|-Pohang\ |
+| \| \|-Stoch\ |
+| \| \| \|-Pohang.stoch\ |
+| \| \|-setSrfParams.py\|
+| \| \|-Srf\ |
 | \| \| \|-Pohang.gsf\
 | \| \| \|-Pohang.srf\
 | \| \| \|-Pohang.info\
