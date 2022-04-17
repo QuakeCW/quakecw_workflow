@@ -1,0 +1,10 @@
+EMOD3D: ALL
+HF: ALL
+BB: ALL
+IM_calc: ALL
+clean_up: NONE
+merge_ts: ALL
+plot_ts: ALL
+IM_plot: ALL 
+
+
