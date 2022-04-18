@@ -316,26 +316,20 @@ Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S 
 10067168.pbs         x2319a02 normal   hf.Pohang   14394   1  68    --  00:30 R 00:01
 ```
 
-
-Cybershake 실행할 때 제공한 task_config.yaml에서 요청한 바에 따라 워크플로우는 인스톨된 단층모델들, Pohang 각 1개씩의 realisation의 저주파(LF, 주로 EMOD3D로 불리움), 고주파(HF), BB (broadband = LF+HF) 등의 job을 누리온에 자동으로 submit하고 각 job의 진행상황을 모니터함과 동시에,의존도가 충족되면 다음 단계의 job을 다시 submit하고 모니터링한다.
+`run_gmsim.sh`은 사실 `run_cybershake.py`을 실행하기 쉽도록 가공한 스크립트이다. Cybershake 실행할 때 제공한 task_config.yaml에서 요청한 바에 따라 워크플로우는 인스톨된 단층모델들, Pohang 각 1개씩의 realisation의 저주파(LF, 주로 EMOD3D로 불리움), 고주파(HF), BB (broadband = LF+HF) 등의 job을 누리온에 자동으로 submit하고 각 job의 진행상황을 모니터함과 동시에,의존도가 충족되면 다음 단계의 job을 다시 submit하고 모니터링한다.
 
 job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자동으로 예상하여 그 값을 사용하는데, 만약 작업시간이 예상을 초과하여 계산이 중단되면, 예상시간을 늘여서 다시 서브밋하도록 제작되어 있음. (2차 시도는 시간 2배, 3차 시도는 시간 3배..)
 
 위와 같은 이유로 시뮬레이션이 아직 안정화되지 못한 경우, 다양한 이유로 job이 실패할 수 있으나 그럴 때마다 예상시간을 늘이며 다시 서브밋된다면 누리온 계정의 allocation을 낭비하게 될 수도 있음. 따라서 이 워크플로우는 시뮬레이션이 이미 안정화 단계에 있을 때 사용하는 것을 권장함.
 
-한편, run_cybershake.py는 디폴트값으로 최고 2번의 시도를 하도록 되어 있으며, 2차 시도 끝에도 계산이 제대로 끝나지 못했다면 다음 방법을 이용해 재시도해볼 수 있다.
+한편, `run_gmsim.sh`는 최고 2번의 시도를 하도록 되어 있으며, 2차 시도 끝에도 계산이 제대로 끝나지 못했다면 다음 방법을 사용할 수 있다.
 
 
 ### 재시도
 
-만약 정해진 횟수 내에 어떤 이유로 계산이 성공적으로 완료되지 않았다면, 그 원인을 수정한 다음,--n_max_retries 스위치와 함께다시 run_cybershake.py를 실행하면 된다.  
+만약 정해진 횟수 내에 어떤 이유로 계산이 성공적으로 완료되지 않았다면, 그 원인을 수정한 다음, `gmsim.yaml`의 `n_max_retries`값을 수정하고 다시 `run_gmsim.sh`을 실행할 수 있다. 
   
-예시) BB를 2회 시도하였으나, .vs30 파일이 지정된 위치에 있지 않은 이유로 run_cybershake.py가 BB를 계산하지 못한 상황에서 종료가 되었다고 가정. 원인을 해결하고, 아래와 같이 --n_max_retries 3 을 주어 재실행시키면 이전의 2회 시도에 이어 한번 더 시도하게 된다.  
-  
-
-```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417> python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml --n_max_retries 3
-```
+예시) BB를 2회 시도하였으나, .vs30 파일이 지정된 위치에 있지 않은 이유로 run_cybershake.py가 BB를 계산하지 못한 상황에서 종료가 되었다고 가정. 원인을 해결하고, `gmsim.yaml`의 `n_max_retries`값을 3 이상의 값으로 수정하고 다시 `run_gmsim.sh`을 실행할
 
 
 ### job 진행 상태를 파악하기
@@ -366,28 +360,39 @@ ________________________________________________________________________________
 
 LF/Rlog디렉토리에 \*.rlog파일이 업데이트 되는 과정을 관찰하면 됨
 
-| (python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/Pohang/LF/Rlog> tail -f Pohang-00539.rlog\*\*\*\* Dumping wavefield to restart file:/scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/Pohang/LF/Restart/Pohang_rst-00539.e3d\*\*\*\* Dumping all output files to:/scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/Pohang/LF/OutBin...DONE2000 30.27 4417.19 1.00 67.07 0.96 1086. 0.992100 16.17 4417.19 1.00 52.03 1.00 1138. 1.002200 16.38 4417.19 1.00 52.49 1.00 1191. 1.002300 15.75 4417.19 1.00 51.98 1.00 1243. 1.002400 15.66 4417.19 1.00 51.89 1.00 1295. 1.00    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang20220328/Runs/Pohang/Pohang/LF/Rlog/tail -f Pohang-00000.rlog
 
-현재까지 timestep 2400을 수행했음을 알려줌.
+```
+    17300     28.43  2578.12   1.00      88.78   0.98         13692.   0.99
+    17400     24.96  2578.12   1.00      82.44   1.00         13774.   0.99
+    17500     17.67  2578.12   1.00      75.25   1.00         13849.   0.99
+...
+    
+```
+현재까지 timestep 17500까지 계산했음을 보여준다.  LF/e3d.par의 nt값을 확인하면 timestep이 18200에 도달할 때까지 계산이 지속되어야 함을 알수 있음.
 
-LF/e3d.par의 nt값을 확인하면 timestep이 12200에 도달할 때까지 계산이 지속되어야 함을 알수 있음.
+계산이 끝났다면 rlog파일의 끝에서 아래와 같은 문구를 볼 수 있다.
+```
+*** usage totals:     Mbytes Transfered    System CPU      User CPU   %Real
+                              469052.00          268.        14130.    0.99
+PROGRAM emod3d-mpi IS FINISHED
+```
 
 
 #### HF
 
 HF/Acc에 HF.bin, HF.log 파일 사이즈가 증가하는 것이 관찰되면 정상적으로 작동하고 있다고 짐작할 수 있음
 
-  
-
-
-| (python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/Pohang/HF/Acc> ls -ltrtotal 1455080\-rw-rw-r-- 1 x2319a02 re0016 8 Oct 21 09:52 SEED\-rw-rw-r-- 1 x2319a02 re0016 5169992 Oct 21 09:54 HF.log\-rw-rw-r-- 1 x2319a02 re0016 1610809808 Oct 21 09:54 HF.bin |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang20220328_2/Runs/Pohang/Pohang/HF/Acc> ls -ltr
+total 6226180
+-rw-rw-r-- 1 x2319a02 rd0624          8 Mar 28 09:17 SEED
+-rw-rw-r-- 1 x2319a02 rd0624 6358882976 Mar 28 09:27 HF.bin
+-rw-rw-r-- 1 x2319a02 rd0624   16652983 Mar 29 12:54 HF.log
+```
 
 계산이 모두 끝나면 LF와 HF 모두 결과값이 원하는 포맷과 일치하는지 간단한 검증 과정을 거친다. 통과하면 Complete로 마크되고 그 다음 단계에 계산할 job이 있다면 (이 경우 BB) submit하게 된다.
-
-
-
 
 
 
