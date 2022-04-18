@@ -3,155 +3,206 @@ CWNU Earthquake Research Group's Adaptation of QuakeCoRE NZ workflow
 
 Korean Ground Motion Simulation @ Nurion
 
-Changelog
-
-- x2319a02 계정으로 이전
-- Plot_ts, IM_plots이 워크플로우에 구현
-
+배성은(University of Canterbury, QuakeCoRE 소프트웨어 팀장 / 창원대학교 BP Fellow)
 
 # 시뮬레이션
 
 
-## 시뮬레이션 준비
-
-우선 단층 모델과 속도 모델은 준비되어 있다고 가정하고 시뮬레이션 실행에 초점을 두겠습니다. 단층모델과 속도모델 만드는 과정은 조속히 문서화 하도록 하겠습니다.
-
-시뮬레이션 실행 root 디렉토리가 아래와 같다고 가정하고 진행함.
-
-/scratch/x2319a02/gmsim/RunFolder/Busan20211214 ---------- (1)
-
-단층 모델과 속도 모델은 별도 레퍼런스로 보관중인 /scratch/x2319a02/gmsim/Busan_Data/Data를 사용할 것임.
-
-위 (1) 디렉토리에 심볼릭 링크를 만듬
-
-| cd /scratch/x2319a02/gmsim/RunFolder/Busan20211214ln -s /scratch/x2319a02/gmsim/Busan_Data/Data . |
-| ------------------------------------------------------------------------------------------------- |
-
-이 디렉토리에 Data 디렉토리가 있고, 그 아래 위에서 만든 단층모델과 속도모델이 이같은 구조로 배치되어 있어야 함.
-
-
-<img width="804" alt="Screen Shot 2022-04-11 at 5 37 32 PM" src="https://user-images.githubusercontent.com/466989/162698018-908884b6-0444-43d7-a1b4-7a2e55ed4c70.png">
-
-Source에서 단층 이름을 한 srf파일과 매칭되는 stoch파일이 존재하여야 하며 (예: Pohang.srf, Pohang.stoch)
-
-VMs의 경우 .p,.s,.d 속도모델 파일과 좌표관련 파일들이 단층과 같은 이름을 한 폴더안에 보관되어 있어야 함. 같은 속도모델을 이용할 경우, 심볼릭 링크를 사용해도 무방.
-
-  
-
-
-가상 환경을 활성화시킴
-
-activate_env /home01/x2319a02/gmsim/Environments/v211213/
-
-  
-
-
-| 참고activate_env 콤맨드는 /home01/x2319a02/gmsim/share/bashrc.uceq 에 정의되어 있음..bashrc에 source /home01/x2319a02/gmsim/share/bashrc.uceq 를 추가하는 것을 추천함.      아래와 같은 에러가 자주 목격되는데, 무해한 것으로 보임      x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> activate_env /home01/x2319a02/gmsim/Environments/v211213/cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   'craype-x86-skylake' dependent modulefiles were removed       |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-
-  
-
-
-단층 리스트 파일을 작성, 혹은 기존에 존재하는 것을 재사용.
-
-단층 리스트 파일은 단층 이름과 각 단층의 베리에이션 (realisation) 갯수를 아래와 같은 포맷으로 기록한 것임.
-
-Busan_faults_list.txt ------------- (2)
-
-fault_list.txt
-
-| Gyeongju 1r |
-| ----------- |
-
-  
-
-
-포항과 경주 단층이 각 1개씩의 realisation을 가지고 있음을 의미함.
-
-고주파 시뮬레이션에 사용할 1D 속도 모델이 아래 위치에 있는지 재확인
-
-/home01/x2319a02/gmsim/VelocityModel/Mod-1D/us_east.1d ------ (3)
-
-현재 사용되는 모델은 이와 같음
-
-| 230.0307 1.7300 1.0000 2.0306 10.00 10.000.0140 2.6832 1.5510 2.1408 35.51 35.510.0553 3.1192 1.8030 2.2766 38.03 38.031.8330 5.1900 3.0000 2.6111 500.00 500.000.8950 5.5770 3.2240 2.6650 500.00 500.002.1720 5.8280 3.3690 2.7000 1500.00 1500.002.1500 6.1760 3.5700 2.7568 2900.00 2900.007.5000 6.1800 3.5700 2.7248 2900.00 2900.0011.0000 6.3600 3.6800 2.7811 2900.00 2900.008.0000 7.1200 4.1200 3.0660 2900.00 2900.001.0000 7.1500 4.1300 3.0520 2900.00 2900.001.2000 7.2600 4.2000 3.0943 2900.00 2900.000.8500 7.6400 4.4200 3.2331 2900.00 2900.000.2000 7.9700 4.6100 3.3533 2900.00 2900.0010.0000 8.1200 4.6900 3.4059 2900.00 2900.0010.0000 8.3500 4.7000 3.4489 2900.00 2900.0010.0000 8.4000 4.7600 3.4775 2900.00 2900.0010.0000 8.4100 4.7800 3.4859 2900.00 2900.0010.0000 8.4200 4.7900 3.4909 2900.00 2900.0010.0000 8.4200 4.8100 3.4976 2900.00 2900.0010.0000 8.4200 4.8300 3.5043 2900.00 2900.0010.0000 8.4200 4.8500 3.5109 2900.00 2900.00999.0000 8.4300 4.8700 3.5193 2900.00 2900.00    |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-사용할 시뮬레이션 레시피와 그 디테일은 아래와 같음
-
-/home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Busan_22.01.26.1 --- (4)
-
-  
-
-
-root_defaults.yaml
-
-| hf:version: 5.4.5.3dt: 0.005rvfac: 0.8sdrop: 50path_dur: 1kappa: 0.045bb:fmin: 0.2fmidbot: 0.5no-lf-amp: Trueemod3d:emod3d_version: 3.0.4ims:extended_period: Falsecomponent:\- geompSA_periods: \[0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.12, 0.15, 0.17, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.5, 10.0]flo: 1.0dt: 0.005v_1d_mod: us_east.1d (&lt;---(3))    |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-emod3d_defaults.yaml도 이 디렉토리에 있으나, 대부분의 경우 디폴트 값을 이용함.
-
-관측소 리스트는 시뮬레이션 도메인을 2km 단위 그리드로 나누고 추가로 아래에 리스팅한 실제 관측소와 주요 시설의 좌표를 추가하여 만들어진 파일을 이용할 것임
-
-/scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220314.ll ------ (5)
-
-동일 디렉토리에 Busan_2km_stats_20220314.vs30, Busan_2km_stats_20220314.vs30ref 파일도 함께 존재하여야 함.
-
-(이 파일을 만든 방법은 아래에서 설명할 것임.)
-
-| ...   127.8790 35.4131 SACA127.8946 34.9832 GMNA127.9188 35.6140 KCH2127.9261 34.8167 NAHA127.9441 36.4413 HWSA128.0402 35.1642 JINA128.0485 35.8754 JGNA128.1016 36.0813 GICA128.1018 35.4137 HACA128.1575 36.4079 SAJB128.1700 35.5652 HCNA128.1928 34.9444 HAIA128.1934 35.7279 YALB128.2880 35.3227 EURB128.2903 36.2347 GUMA128.3071 35.1136 GACA128.3657 35.8532 YGAA128.3813 36.0399 CIGB128.4284 36.3906 DNBA128.4361 34.8452 TOY2128.4779 35.5342 CHRB128.4834 35.0278 YGJA128.4908 35.3629 CLSA128.5725 35.1705 CGWB128.5927 36.1813 GUWB128.6047 34.8885 KUJA128.6704 35.6627 CGDA128.6887 36.3561 EUSB128.7111 36.0502 SNNA128.7174 35.2822 JNYA128.7444 35.4916 MIYA128.7536 35.1122 JNHA128.8280 35.2422 JUCA128.8970 35.7685 DAG2128.9488 36.4121 ADO2128.9511 35.9771 YOCB128.9538 35.5884 MSNA128.9969 35.3113 MLGA129.0109 35.7576 GSNA129.0854 36.3878 CSOA129.1995 36.0689 GIGA129.2151 36.2421 JKJA129.2530 35.9498 GGDA129.3708 36.1930 PHA2129.3865 35.7955 YGBA129.3907 36.3637 GGGA129.5666 36.0761 HMGA129.297235 35.320350 GORI129.158978 35.159055 HWND129.074660 35.180164 CITY129.031131 35.096742 FISH128.945753 35.173075 AERO128.922040 35.136396 ELKO129.082572 35.222247 OCHN    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-  
-
-
-/scratch/x2319a02/gmsim/Busan_Data/task_config.yaml 에 있는 파일을
-
-시뮬레이션 root인 /scratch/x2319a02/gmsim/RunFolder/Busan20211214 에 복사하고 아래와 같이 수정함
-
-| EMOD3D: ALLHF: ALLBB: ALLIM_calc: ALLclean_up: NONEmerge_ts: ALLplot_ts: ALLIM_plot: ALL |
-| ---------------------------------------------------------------------------------------- |
-
-이는 EMOD3D, HF, BB 그리고 IM_calc를 자동으로 실행하고, 계산과정에서 생성되는 임시파일들을 삭제하지 말라는 의미임. 구체적인 각 스텝간의 의존성은 아래 도표와 같다. (굵은 선은 주로 사용되는 것들).
-
-![](https://lh5.googleusercontent.com/A_JGDLSXhGGd7NAdVvosNqpgqGVWX4SyP5EwWd-kyYEquNOg3OcUGchhc55Bd0cUAEGu2NFGZA9rqgxigsJFX_Oe8XeNypa3LiKGms4xsdN5lyYE3tCsUxGFWes3VVwiR9Tf3xv9)
-
-각 스텝들의 의존성에 대한 정보는[qcore/constants.py at master · ucgmsim/qcore (github.com)](https://github.com/ucgmsim/qcore/blob/master/qcore/constants.py) 에서 classProcessType(ExtendedStrEnum)를 참조하도록 하고,위 task_config.yaml에 수정이 필요하다면 아래 링크를 참조할 것.
-
-[Auto submit wrapper - QuakeCoRE: The Centre for Earthquake Resilience - Confluence (canterbury.ac.nz)](https://wiki.canterbury.ac.nz/display/QuakeCore/Auto+submit+wrapper) )
-
-
 ## 시뮬레이션 인스톨
 
-위의 사항들이 충족이 되었다면, 시뮬레이션 인스톨을 시작할 수 있음
+단층 모델과 속도 모델이 준비되어 있다고 가정하고 시뮬레이션 실행법에 대해 기술하겠음. 단층 모델이나 속도 모델이 준비 되지 않았다면, 이 문서의 아랫부분에서 설명할 내용을 따라서 이들을 우선 생성하도록 할것.
 
-cd /scratch/x2319a02/gmsim/RunFolder/Busan20211214
+KISTI 누리온 5호기에서 x2319a02계정으로 실행할 것임.
 
-python $gmsim/workflow/workflow/automation/install_scripts/install_cybershake.py \`pwd\` ./fault_list.txt Busan_22.01.26.1 --stat_file_path /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220314.ll --keep_dup_station
+이 github 저장소를 클론하면 install_gmsim.yaml을 볼수 있는데, 이 파일을 템플렛처럼 사용하도록 한다.
 
-위에서 준비한 내용들이 이 명령어에서 어떻게 사용되었나 살펴보자면
+```
+workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
+sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
+fault_name: Pohang
+source_data: /scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_v2022_3
+copy_source_data: False
+vm_data: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan_20220324
+copy_vm_data: False
+gmsim_template: /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
+stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll
+```
 
-python $gmsim/workflow/workflow/automation/install_scripts/install_cybershake.py  
-\`pwd\`(&lt;--(1))   
-/scratch/x2319a02/gmsim/Busan_Data/busan_faults_list.txt(&lt;---(2))
+각각의 변수들을 설명하자면
+1. workflow: slurm_gm_workflow가 인스톨되어 있는 위치
+2. sim_root_dir: 시뮬레이션을 실행시키고자 하는 디렉토리 위치
+3. fault_name: 시뮬레이션을 실행시킬 이벤트(단층)의 이름
+4. source_data: 단층 모델 데이터가 위치한 곳. 
+5. copy_source_data: 단층 모델 데이터를 sim_root_dir 속으로 복사해 올 것인지 (True), 심볼릭 링크의 형태로 연결만 할 것인지 (False)
+6. vm_data: 속도 모델 데이터가 위치한 곳
+7. copy_vm_data: 속도 모델 데이터를 sim_root_dir 속으로 복사해 올 것인지 (True), 심볼릭 링크의 형태로 연결만 할 것인지 (False)
+8. gmsim_template: 시뮬레이션의 상세 사항 (HF 버전, sdrop, path_dur, kappa, IM pSA주기, 1차원 속도모델 등) 을 지정해둔 템플릿이 저장된 디렉토리
+9. stat_file: 관측소 리스트
 
-Busan_21.10.18.1(&lt;---(4))
+스크립트를 실행시켜 시뮬레이션을 설치
 
-\--stat_file_path /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220314.ll(&lt;-- (5))
+```
+(python3_nurion) ..> python ./install_gmsim.py ./install_gmsim.yaml
+```
 
-\--keep_dup_station
+yaml파일이 스크립트의 유일한 인풋으로, 필요에 따라 여러개의 yaml파일을 생성해서 사용할 수 있다.
 
-  
-
-
-\--keep_dup_station은 혹시 같은 위치의 관측점이 다른 이름으로 존재할 경우라도 상관하지 말라는 의미임.  
-  
+실행 장면
 
 
-| 참고:처음 실행할 때 아래와 같은 에러가 발생하며 중단될 수 있음.Error: VM Pohang failed VM extents not contained within NZVM DEM: 130.36976143733443, 37.36407162688109VM extents not contained within NZVM DEM: 127.54403856266556, 37.36407162688109VM extents not contained within NZVM DEM: 127.60603497578211, 33.77116521934643VM extents not contained within NZVM DEM: 130.3077650242179, 33.77116521934643 VM extents not contained within NZVM DEM: 127.607221, 33.771972VM extents not contained within NZVM DEM: 127.545307, 37.363293VM extents not contained within NZVM DEM: 130.368482, 37.363293VM extents not contained within NZVM DEM: 130.306569, 33.771972$gmsim/workflow/workflow/automation/install_scripts/install_cybershake_fault.py의 라인 173에서 시뮬레이션 위치가 뉴질랜드 영토인지 체크하는 부분 때문에 에러가 발생한 것으로 코드를 수정하여 무시하도록 하면 됨.    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+```
+Pohang 1r
 
-  
+qsub -V /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/install.pbs
+b'10065872.pbs\n'
+```
+실행되는 과정에서 Pohang 단층의 realisation이 1개 (srf 파일의 갯수를 통해)임을 찾아내었으며, 인스톨하기 위한 명령어를 조합하여 install.pbs라는 PBS스크립트를 만들어 제출하였음을, 그리고, 제출한 job의 ID가 10065872라는 것을 알수 있다.
+
+추가로 이 시뮬레이션 셋업에 관한 여러 정보들을 화면에 보여준다.
+```
+================================
+             Source
+================================
+/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/Sources/Pohang/setSrfParams.py
+LAT: 36.109
+LON: 129.366
+DEPTH: 7
+MAG: 5.4
+STK: 230
+DIP: 69
+RAK: 152
+DT: 0.01
+================================
+             VM
+================================
+/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/VMs/Pohang/vm_params.yaml
+{'GRIDFILE': './gridfile_rt01-h0.100',
+ 'GRIDOUT': './gridout_rt01-h0.100',
+ 'MODEL_BOUNDS': './model_bounds_rt01-h0.100',
+ 'MODEL_COORDS': './model_coords_rt01-h0.100',
+ 'MODEL_LAT': 35.753,
+ 'MODEL_LON': 128.4038,
+ 'MODEL_PARAMS': './model_params_rt01-h0.100',
+ 'MODEL_ROT': 0.0,
+ 'centroidDepth': 4.05399,
+ 'code': 'rt',
+ 'extent_x': 325,
+ 'extent_y': 360,
+ 'extent_zmax': 68,
+ 'extent_zmin': 0.0,
+ 'extracted_slice_parameters_directory': 'SliceParametersNZ/SliceParametersExtracted.txt',
+ 'flo': 1.0,
+ 'hh': 0.1,
+ 'mag': 5.5,
+ 'min_vs': 0.2,
+ 'model_version': 'KVM_21p6',
+ 'nx': 3250,
+ 'ny': 3600,
+ 'nz': 680,
+ 'output_directory': 'output',
+ 'sim_duration': 90,
+ 'sufx': '_rt01-h0.100',
+ 'topo_type': 'BULLDOZED'}
+================================
+  GMSIM template:/home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
+================================
+{'bb': {'fmidbot': 0.5, 'fmin': 0.2, 'no-lf-amp': True},
+ 'dt': 0.005,
+ 'emod3d': {'emod3d_version': '3.0.4'},
+ 'flo': 1.0,
+ 'hf': {'dt': 0.005,
+        'kappa': 0.016,
+        'path_dur': 2,
+        'rvfac': 0.5,
+        'sdrop': 50,
+        'version': '5.4.5.3'},
+ 'ims': {'component': ['geom'],
+         'extended_period': False,
+         'pSA_periods': [0.01,
+                         0.02,
+                         0.03,
+                         0.04,
+                         0.05,
+                         0.075,
+                         0.1,
+                         0.12,
+                         0.15,
+                         0.17,
+                         0.2,
+                         0.25,
+                         0.3,
+                         0.4,
+                         0.5,
+                         0.6,
+                         0.7,
+                         0.75,
+                         0.8,
+                         0.9,
+                         1.0,
+                         1.25,
+                         1.5,
+                         2.0,
+                         2.5,
+                         3.0,
+                         4.0,
+                         5.0,
+                         6.0,
+                         7.5,
+                         10.0]},
+ 'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
+ 
+```
+
+끝으로 설치가 끝난 다음, 시뮬레이션을 실행하기 위해 필요한 단계들을 아래와 같이 보여준다.
+
+```
+==== When installation is complete, follow the steps below
+export TMOUT=
+screen
+==== Then copy and paste below
+activate_env /home01/x2319a02/gmsim/Environments/v211213
+cd /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
+python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml
+```
+
+설치 진행 상황은 아래 명령어로 확인할 수 있다.   
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417> qstat -u $USER
+
+pbs:
+                                                                 Req'd  Req'd   Elap
+Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
+-------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+10065872.pbs         x2319a02 normal   serial_job    --    1  68    --  04:00 Q   --
+```
+
+`activate_env` 명령어는 /home01/x2319a02/gmsim/share/bashrc.uceq 에 정의되어 있음 
+./bashrc에 `source /home01/x2319a02/gmsim/share/bashrc.uceq` 를 추가하는 것을 추천함.
+아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
+```
+x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> activate_env /home01/x2319a02/gmsim/Environments/v211213/
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   
+
+'craype-x86-skylake' dependent modulefiles were removed
+```
+
+
+참고: 처음 실행할 때 아래와 같은 에러가 발생하며 중단될 수 있음.
+```
+Error: VM Pohang failed 
+VM extents not contained within NZVM DEM: 130.36976143733443, 37.36407162688109
+VM extents not contained within NZVM DEM: 127.54403856266556, 37.36407162688109
+VM extents not contained within NZVM DEM: 127.60603497578211, 33.77116521934643
+VM extents not contained within NZVM DEM: 130.3077650242179, 33.77116521934643 
+VM extents not contained within NZVM DEM: 127.607221, 33.771972
+VM extents not contained within NZVM DEM: 127.545307, 37.363293
+VM extents not contained within NZVM DEM: 130.368482, 37.363293
+VM extents not contained within NZVM DEM: 130.306569, 33.771972
+```
+$gmsim/workflow/workflow/automation/install_scripts/install_cybershake_fault.py의 라인 173에서 시뮬레이션 위치가 뉴질랜드 영토인지 체크하는 부분 때문에 에러가 발생한 것으로 코드를 수정하여 무시하도록 하면 됨.    |
+ 
 
 
 결과:
