@@ -52,6 +52,20 @@ screen
 ```
 activate_env /home01/x2319a02/gmsim/Environments/v211213
 ```
+`activate_env` 명령어는 /home01/x2319a02/gmsim/share/bashrc.uceq 에 정의되어 있음 
+./bashrc에 `source /home01/x2319a02/gmsim/share/bashrc.uceq` 를 추가하는 것을 추천함.
+
+아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
+
+```
+x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> activate_env /home01/x2319a02/gmsim/Environments/v211213/
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   
+
+'craype-x86-skylake' dependent modulefiles were removed
+```
+
 
 스크립트를 실행시켜 시뮬레이션을 설치
 
@@ -181,19 +195,6 @@ Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S 
 
 S 항목의 R는 현재 이 Job이 Queue에 추가되어 실행중인 (Running) 상태임을 의미하며, 정상적인 상황이라면 Q->R->E  (Queued -> Running -> Ending) 순으로 진행된다.
 
-`activate_env` 명령어는 /home01/x2319a02/gmsim/share/bashrc.uceq 에 정의되어 있음 
-./bashrc에 `source /home01/x2319a02/gmsim/share/bashrc.uceq` 를 추가하는 것을 추천함.
-
-아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
-
-```
-x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> activate_env /home01/x2319a02/gmsim/Environments/v211213/
-cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
-cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
-cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   
-
-'craype-x86-skylake' dependent modulefiles were removed
-```
 
 Job이 진행되는 과정의 아웃풋은 같은 디렉토리 내의 serial_job.oXXXXXXXX 혹은 serial_job.eXXXXXXXX을 살펴보면 된다.
 
