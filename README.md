@@ -14,7 +14,7 @@ Korean Ground Motion Simulation @ Nurion
 
 KISTI 누리온 5호기에서 x2319a02계정으로 실행할 것임.
 
-이 github 저장소를 클론하면 install_gmsim.yaml을 볼수 있는데, 이 파일을 템플렛처럼 사용하도록 한다.
+이 github 저장소를 클론하면 gmsim.yaml을 볼수 있는데, 이 파일을 템플렛처럼 사용하도록 한다.
 
 ```
 workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
@@ -39,10 +39,24 @@ stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.
 8. gmsim_template: 시뮬레이션의 상세 사항 (HF 버전, sdrop, path_dur, kappa, IM pSA주기, 1차원 속도모델 등) 을 지정해둔 템플릿이 저장된 디렉토리
 9. stat_file: 관측소 리스트
 
+
+우선 누리온의 로그인 노드가 접속 중 활동이 없으면 네트워크 연결을 끊어버리는 경우가 많아 타임아웃 무제한으로 만들고 screen 세션안에서 실행하는 것을 권장한다.
+다음 명령어를 실행하셔 screen 안으로 들어간다.
+
+```
+export TMOUT= #(= 다음에 아무 것도 추가하지 않고 엔터.)
+screen
+```
+
+가상 환경을 활성화 해준다. (screen 세션이 시작될 때 기존에 있었던 가상 환경이 리셋됨)
+```
+activate_env /home01/x2319a02/gmsim/Environments/v211213
+```
+
 스크립트를 실행시켜 시뮬레이션을 설치
 
 ```
-(python3_nurion) ..> python ./install_gmsim.py ./install_gmsim.yaml
+(python3_nurion) ..> python ./install_gmsim.py ./gmsim.yaml
 ```
 
 yaml파일이 스크립트의 유일한 인풋으로, 필요에 따라 여러개의 yaml파일을 생성해서 사용할 수 있다.
@@ -245,27 +259,20 @@ VM extents not contained within NZVM DEM: 130.306569, 33.771972
 
 Cybershake 워크플로우를 인스톨하면 자동화 스케쥴러를 사용할 수 있다. 이 스케쥴러는 로그인 노드에서 상주하며 실행 중인 job을 모니터하고, 의존 관계에 있는 job들이 성공적으로 완료되면 그 다음 단계의 job을 자동으로 submit하는 기능이 있다.
 
-누리온의 로그인 노드가 접속 중 활동이 없으면 네트워크 연결을 끊어버리는 경우가 많아 타임아웃 무제한으로 만들고 스크린 세션안에서 실행하는 것을 권장한다.
-
-위에서 시뮬레이션을 설치하는 과정에서 화면에 프린트된 명령어들을 복사 & 붙여넣기 한다. 우선 screen 안으로 들어가서
-```
-==== When installation is complete, follow the steps below
-export TMOUT= #(= 다음에 아무 것도 추가하지 않고 엔터.)
-screen
-```
-
-screen을 실행하고 나면 가상 환경이 사라지게 되므로 다시 한번 활성화 해준다.
-```
-==== Then copy and paste below
-activate_env /home01/x2319a02/gmsim/Environments/v211213
-cd /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
-python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml
-```
-
-마지막 task_config.yaml은 옵션이며, 지정해 주지 않으면 EMOD3D,HF,BB 그리고 IM_calc를 실행한 후에 임시파일을 모두 삭제하는 디폴트값이 사용된다.
+quakecw_workflow 디렉토리 안으로 들어가거나, path를 적절히 보태어서 아래 명령을 실행한다.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417> python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml
+(python3_nurion) ..> ./run_gmsim.sh ./gmsim.yaml
+```
+
+스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> ./run_gmsim.sh gmsim.yaml
+sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
+workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
+n_max_retries: 2
+python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417 x2319a02 /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/task_config.yaml --n_max_retries 2
+
 2022-04-18 17:13:46,439 - MainThread - Logger file added
 2022-04-18 17:13:46,449 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.merge_ts: 2>, <ProcessType.plot_ts: 3>, <ProcessType.IM_plot: 7>]
 2022-04-18 17:13:46,453 - MainThread - Created queue_monitor thread
@@ -315,7 +322,7 @@ job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자�
 
 위와 같은 이유로 시뮬레이션이 아직 안정화되지 못한 경우, 다양한 이유로 job이 실패할 수 있으나 그럴 때마다 예상시간을 늘이며 다시 서브밋된다면 누리온 계정의 allocation을 낭비하게 될 수도 있음. 따라서 이 워크플로우는 시뮬레이션이 이미 안정화 단계에 있을 때 사용하는 것을 권장함.
 
-한편, run_cybershake.py는 디폴트값으로 최고 2번의 시도를 하도록 되어 있으며, 이 값은 --n_max_retries 스위치로 조절 가능함
+한편, run_cybershake.py는 디폴트값으로 최고 2번의 시도를 하도록 되어 있으며, 2차 시도 끝에도 계산이 제대로 끝나지 못했다면 다음 방법을 이용해 재시도해볼 수 있다.
 
 
 ### 재시도
@@ -325,35 +332,31 @@ job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자�
 예시) BB를 2회 시도하였으나, .vs30 파일이 지정된 위치에 있지 않은 이유로 run_cybershake.py가 BB를 계산하지 못한 상황에서 종료가 되었다고 가정. 원인을 해결하고, 아래와 같이 --n_max_retries 3 을 주어 재실행시키면 이전의 2회 시도에 이어 한번 더 시도하게 된다.  
   
 
-
-(python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> python $gmsim/workflow/scripts/cybershake/run_cybershake.py /scratch/x2319a02/gmsim/RunFolder/Busan20211214 $USER**--n_max_retries 3**
-
-  
-
-
-| 2021-10-22 05:30:08,076 - MainThread - Logger file added2021-10-22 05:30:08,098 - MainThread - Master script will run \[&lt;ProcessType.EMOD3D: 1>, &lt;ProcessType.HF: 4>, &lt;ProcessType.BB: 5>, &lt;ProcessType.IM_calculation: 6>, &lt;ProcessType.clean_up: 11>]2021-10-22 05:30:08,103 - MainThread - Created queue_monitor thread2021-10-22 05:30:08,103 - MainThread - Created main auto_submit thread2021-10-22 05:30:08,104 - MainThread - Started main auto_submit thread2021-10-22 05:30:08,105 - queue monitor - Running queue-monitor, exit with Ctrl-C.2021-10-22 05:30:08,105 - MainThread - Started queue_monitor thread2021-10-22 05:30:08,134 - main auto submit - Loaded root params file: /scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/root_params.yaml2021-10-22 05:30:08,292 - main auto submit - Number of runnable tasks: 22021-10-22 05:30:08,293 - main auto submit - Tasks to run this iteration: Pohang-BB, Gyeongju-BB2021-10-22 05:30:08,646 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:08,652 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:13,930 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:13,938 - queue monitor - Updating 2 mgmt db tasks.2021-10-22 05:30:13,938 - queue monitor - Acquiring db connection.2021-10-22 05:30:19,231 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:19,233 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-queued, Gyeongju-BB-9178918-queued2021-10-22 05:30:19,235 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:24,538 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:24,540 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-queued, Gyeongju-BB-9178918-queued2021-10-22 05:30:24,541 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:29,824 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:29,826 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-queued, Gyeongju-BB-9178918-queued2021-10-22 05:30:29,828 - queue monitor - Updating status of Pohang, BB from queued to running2021-10-22 05:30:29,828 - queue monitor - Updating status of Gyeongju, BB from queued to running2021-10-22 05:30:29,828 - queue monitor - Updating 2 mgmt db tasks.2021-10-22 05:30:29,828 - queue monitor - Received entry SchedulerTask(run_name='Pohang', proc_type=5, status=3, job_id=None, error=None), status is more than created but the job_id is not set.2021-10-22 05:30:29,831 - queue monitor - Received entry SchedulerTask(run_name='Gyeongju', proc_type=5, status=3, job_id=None, error=None), status is more than created but the job_id is not set.2021-10-22 05:30:35,784 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:35,786 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-running, Gyeongju-BB-9178918-running2021-10-22 05:30:35,787 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:41,064 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:41,065 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-running, Gyeongju-BB-9178918-running2021-10-22 05:30:41,067 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:46,446 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them   …2021-10-22 09:11:03,531 - queue monitor - In progress tasks in mgmt db:Pohang-IM_calc-9180051-running, Gyeongju-IM_calc-9180113-running2021-10-22 09:11:03,533 - queue monitor - No entries in the mgmt db queue.2021-10-22 09:11:08,794 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 09:11:08,797 - queue monitor - In progress tasks in mgmt db:Pohang-IM_calc-9180051-running, Gyeongju-IM_calc-9180113-running2021-10-22 09:11:08,798 - queue monitor - No entries in the mgmt db queue.2021-10-22 09:11:14,058 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 09:11:14,059 - queue monitor - In progress tasks in mgmt db:Pohang-IM_calc-9180051-running, Gyeongju-IM_calc-9180113-running2021-10-22 09:11:14,061 - queue monitor - No entries in the mgmt db queue.2021-10-22 09:11:19,323 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 09:11:19,325 - queue monitor - In progress tasks in mgmt db:Pohang-IM_calc-9180051-running, Gyeongju-IM_calc-9180113-running2021-10-22 09:11:19,326 - queue monitor - No entries in the mgmt db queue.…2021-10-22 10:02:43,891 - queue monitor - No entries in the mgmt db queue.2021-10-22 10:02:46,918 - main auto submit - Nothing was running or ready to run last cycle, exiting now**2021-10-22 10:02:46,919 - MainThread - The main auto_submit thread has terminated, and all auto_submit patterns have completed a final run through****2021-10-22 10:02:46,920 - MainThread - Attempting to shut down the queue monitor thread****2021-10-22 10:02:48,896 - MainThread - The queue monitor has been shut down successfully**       |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-  
-
-
-아웃풋 내용을 살펴보면, BB가 완료되고 나서 자동으로 IM_calculation이 서브밋되었고, 마지막 부분을 보면 모든 job들이 성공리에 완료되었음을 파악할 수 있다.  
-
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417> python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml --n_max_retries 3
+```
 
 
 ### job 진행 상태를 파악하기
 
 
 #### 전체 상황
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> python check_status.py ./gmsim.yaml
 
-cd /scratch/x2319a02/gmsim/RunFolder/Busan20211214
+/home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/query_mgmt_db.py
+                 run_name |         process |     status |   job-id |        last_modified
+_________________________________________________________________________________________________
+                   Pohang |        merge_ts |    created |     None |  2022-04-17 09:27:24
+                   Pohang |         plot_ts |    created |     None |  2022-04-17 09:27:24
+                   Pohang |              BB |    created |     None |  2022-04-17 09:27:24
+                   Pohang |  IM_calculation |    created |     None |  2022-04-17 09:27:24
+                   Pohang |         IM_plot |    created |     None |  2022-04-17 09:27:24
+                   Pohang |          EMOD3D |     queued | 10067167 |  2022-04-18 08:13:52
+                   Pohang |              HF |  completed | 10067168 |  2022-04-18 08:25:26
+```
 
-python $gmsim/workflow/workflow/automation/execution_scripts/query_mgmt_db.py . --config ./task_config.yaml
 
-|   run_name \| process \| status \| job-id \| last_modified\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_Gyeongju \| EMOD3D \| completed \| 9170922 \| 2021-10-21 04:30:48Gyeongju \| HF \| completed \| 9170923 \| 2021-10-21 02:45:58Gyeongju \| BB \| completed \| 9180006 \| 2021-10-22 00:01:22Gyeongju \| IM_calculation \| completed \| 9180113 \| 2021-10-22 00:52:46Gyeongju \| BB \| failed \| 9171919 \| 2021-10-21 04:32:09Gyeongju \| BB \| failed \| 9171927 \| 2021-10-21 04:33:30Pohang \| EMOD3D \| completed \| 9170920 \| 2021-10-21 04:29:55Pohang \| HF \| completed \| 9170921 \| 2021-10-21 02:45:52Pohang \| BB \| completed \| 9180002 \| 2021-10-22 00:01:22Pohang \| IM_calculation \| completed \| 9180051 \| 2021-10-22 00:52:30Pohang \| BB \| failed \| 9171912 \| 2021-10-21 04:31:27Pohang \| BB \| failed \| 9171922 \| 2021-10-21 04:32:52 |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-\--config 옵션을 쓰지 않으면 애초에 지정하지 않아 필요 없는 단계까지 리스트에 포함되어 나와 출력 리스트가 너무 길어지는 경우가 있다. 리스트에서 BB를 2회 실패하고 3회째에 성공적으로 계산을 마치고 연이어 IM_calculation 단계도 성공했음을 확인할 수 있다.
 
 각각의 job의 현재 상태를 파악하고 싶다면 screen을 잠시 빠져나오거나 (detach, Ctrl+a d), 다른 터미널에서 아래와 같은 방법을 사용할 수 있다.
 
