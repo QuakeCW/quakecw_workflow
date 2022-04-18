@@ -309,7 +309,7 @@ Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S 
 ```
 
 
-위에서 살펴본 바와 같이 Cybershake 실행할 때 제공한 task_config.yaml에서 요청한 바에 따라 워크플로우는 인스톨된 단층모델들, Pohang, Gyeongju의 각 1개씩의 realisation의 저주파(LF, 주로 EMOD3D로 불리움), 고주파(HF), BB (broadband = LF+HF) 등의 job을 누리온에 자동으로 submit하고 각 job의 진행상황을 모니터함과 동시에,의존도가 충족되면 다음 단계의 job을 다시 submit하고 모니터링한다.
+Cybershake 실행할 때 제공한 task_config.yaml에서 요청한 바에 따라 워크플로우는 인스톨된 단층모델들, Pohang 각 1개씩의 realisation의 저주파(LF, 주로 EMOD3D로 불리움), 고주파(HF), BB (broadband = LF+HF) 등의 job을 누리온에 자동으로 submit하고 각 job의 진행상황을 모니터함과 동시에,의존도가 충족되면 다음 단계의 job을 다시 submit하고 모니터링한다.
 
 job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자동으로 예상하여 그 값을 사용하는데, 만약 작업시간이 예상을 초과하여 계산이 중단되면, 예상시간을 늘여서 다시 서브밋하도록 제작되어 있음. (2차 시도는 시간 2배, 3차 시도는 시간 3배..)
 
