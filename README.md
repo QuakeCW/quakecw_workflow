@@ -26,6 +26,7 @@ vm_data: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan_20220324
 copy_vm_data: False
 gmsim_template: /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
 stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll
+n_max_retries: 2
 ```
 
 각각의 변수들을 설명하자면
@@ -38,6 +39,7 @@ stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.
 7. copy_vm_data: 속도 모델 데이터를 sim_root_dir 속으로 복사해 올 것인지 (True), 심볼릭 링크의 형태로 연결만 할 것인지 (False)
 8. gmsim_template: 시뮬레이션의 상세 사항 (HF 버전, sdrop, path_dur, kappa, IM pSA주기, 1차원 속도모델 등) 을 지정해둔 템플릿이 저장된 디렉토리
 9. stat_file: 관측소 리스트
+10. n_max_retries: 계산 실패시 재시도 회수 최대값
 
 
 우선 누리온의 로그인 노드가 접속 중 활동이 없으면 네트워크 연결을 끊어버리는 경우가 많아 타임아웃 무제한으로 만들고 screen 세션안에서 실행하는 것을 권장한다.
@@ -299,10 +301,15 @@ submit_time not in proc_Data.keys(),value 2022-04-18_17:13:49
 2022-04-18 17:14:04,816 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
 2022-04-18 17:14:04,818 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-queued, Pohang-HF-10067168-queued
 ....
+2022-04-18 19:30:04,246 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-04-18 19:30:04,248 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-queued, Pohang-HF-10067168-running
+....
+2022-04-18 22:38:01,781 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-04-18 22:38:01,783 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-running
 ```
 
 
-마지막 라인은 Pohang의 EMOD3D와 HF job들이 현재 Queue에 추가되어 실행을 기다리고 있음을 알려줌
+마지막 부분들은 Pohang의 EMOD3D와 HF job이 Queue에 추가되어 실행을 기다리다 (queued) 실행중 (running) 상태로 넘어간 모습을 보여줌
 
 Ctrl+a d로 스크린을 detach한뒤 (혹은 새로 ssh 연결한 다음) qstat으로 현재 상태를 알아볼 수 있다.
 ```
