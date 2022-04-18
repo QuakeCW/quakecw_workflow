@@ -153,17 +153,6 @@ DT: 0.01
  
 ```
 
-끝으로 설치가 끝난 다음, 시뮬레이션을 실행하기 위해 필요한 단계들을 아래와 같이 보여준다.
-
-```
-==== When installation is complete, follow the steps below
-export TMOUT=
-screen
-==== Then copy and paste below
-activate_env /home01/x2319a02/gmsim/Environments/v211213
-cd /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
-python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml
-```
 
 설치 진행 상황은 아래 명령어로 확인할 수 있다.   
 ```
@@ -173,12 +162,16 @@ pbs:
                                                                  Req'd  Req'd   Elap
 Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 -------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
-10065872.pbs         x2319a02 normal   serial_job    --    1  68    --  04:00 Q   --
+10066916.pbs         x2319a02 normal   serial_job  58196   1  68    --  01:00 R 00:05
 ```
+
+S 항목의 R는 현재 이 Job이 Queue에 추가되어 실행중인 (Running) 상태임을 의미하며, 정상적인 상황이라면 Q->R->E  (Queued -> Running -> Ending) 순으로 진행된다.
 
 `activate_env` 명령어는 /home01/x2319a02/gmsim/share/bashrc.uceq 에 정의되어 있음 
 ./bashrc에 `source /home01/x2319a02/gmsim/share/bashrc.uceq` 를 추가하는 것을 추천함.
+
 아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
+
 ```
 x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> activate_env /home01/x2319a02/gmsim/Environments/v211213/
 cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
@@ -186,6 +179,21 @@ cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[
 cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   
 
 'craype-x86-skylake' dependent modulefiles were removed
+```
+
+Job이 진행되는 과정의 아웃풋은 같은 디렉토리 내의 serial_job.oXXXXXXXX 혹은 serial_job.eXXXXXXXX을 살펴보면 된다.
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder> cat serial_job.o10065872
+2022-04-18 15:36:18,719 - Installing /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/Sources/Pohang/Srf/Pohang.srf
+****************************************************************************************************
+2022-04-18 15:36:18,779 - installing bb
+****************************************************************************************************
+2022-04-18 15:36:18,780 -                                      EMOD3D HF/BB Preparation Ver.slurm
+****************************************************************************************************
+2022-04-18 15:36:18,780 - installing bb finished
+2022-04-18 15:36:18,866 - /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll
+2022-04-18 15:36:18,867 - From: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll. To: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.ll
 ```
 
 
@@ -201,22 +209,36 @@ VM extents not contained within NZVM DEM: 127.545307, 37.363293
 VM extents not contained within NZVM DEM: 130.368482, 37.363293
 VM extents not contained within NZVM DEM: 130.306569, 33.771972
 ```
-$gmsim/workflow/workflow/automation/install_scripts/install_cybershake_fault.py의 라인 173에서 시뮬레이션 위치가 뉴질랜드 영토인지 체크하는 부분 때문에 에러가 발생한 것으로 코드를 수정하여 무시하도록 하면 됨.    |
- 
+`$gmsim/workflow/workflow/automation/install_scripts/install_cybershake_fault.py` 의 라인 173에서 시뮬레이션 위치가 뉴질랜드 영토인지 체크하는 부분 때문에 에러가 발생한 것으로 코드를 수정하여 무시하도록 하면 됨.
 
-
-결과:
-
-| 2021-10-21 06:47:31,638 - Installing /scratch/x2319a02/gmsim/RunFolder/Busan20211214/Data/Sources/Pohang/Srf/Pohang.srf\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*2021-10-21 06:47:31,660 - installing bb\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*2021-10-21 06:47:31,660 - EMOD3D HF/BB Preparation Ver.slurm\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*2021-10-21 06:47:31,660 - installing bb finished2021-10-21 06:47:31,749 - /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220314.ll2021-10-21 06:47:31,749 - From: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220314.ll. To: /scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/fd_rt01-h0.100.llError: VM Gyeongju failed VM extents not contained within NZVM DEM: 130.36976143733443, 37.36407162688109VM extents not contained within NZVM DEM: 127.54403856266556, 37.36407162688109VM extents not contained within NZVM DEM: 127.60603497578211, 33.77116521934643VM extents not contained within NZVM DEM: 130.3077650242179, 33.77116521934643 VM extents not contained within NZVM DEM: 127.607221, 33.771972VM extents not contained within NZVM DEM: 127.545307, 37.363293VM extents not contained within NZVM DEM: 130.368482, 37.363293VM extents not contained within NZVM DEM: 130.306569, 33.7719722021-10-21 06:48:21,032 - Installing /scratch/x2319a02/gmsim/RunFolder/Busan20211214/Data/Sources/Gyeongju/Srf/Gyeongju.srf\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*2021-10-21 06:48:21,047 - installing bb\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*2021-10-21 06:48:21,047 - EMOD3D HF/BB Preparation Ver.slurm\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*2021-10-21 06:48:21,047 - installing bb finished2021-10-21 06:48:21,105 - /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220314.ll2021-10-21 06:48:21,105 - From: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220314.ll. To: /scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Gyeongju/fd_rt01-h0.100.statcords, /scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Gyeongju/fd_rt01-h0.100.ll    |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 시뮬레이션 실행 디렉토리에 인스톨이 끝나면 아래와 같은 디렉토리 구조를 가지게 됨
 
-  
-
-
-| /scratch/x2319a02/gmsim/RunFolder/Busan20211214\|-slurm_mgmt.db\|-install_cybershake_log_20211021_064613.txt\|-mgmt_db_queue\|-Data\|-Runs\| \|-Pohang\| \| \|-Pohang\| \| \| \|-LF\| \| \| \|-HF\| \| \| \|-IM_calc\| \| \| \|-sim_params.yaml\| \| \| \|-BB\| \| \|-fd_rt01-h0.100.statcords\| \| \|-fd_rt01-h0.100.ll\| \| \|-fault_params.yaml\| \|-root_params.yaml\| \|-Gyeongju\| \| \|-fd_rt01-h0.100.statcords\| \| \|-Gyeongju\| \| \| \|-LF\| \| \| \|-HF\| \| \| \|-IM_calc\| \| \| \|-sim_params.yaml\| \| \| \|-BB\| \| \|-fd_rt01-h0.100.ll\| \| \|-fault_params.yaml    |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+```
+.
+ |-slurm_mgmt.db
+ |-task_config.yaml
+ |-mgmt_db_queue
+ |-Data
+ | |-Sources
+ | | |-Pohang
+ | |-VMs
+ | | |-Pohang
+ |-fault_list.txt
+ |-Runs
+ | |-Pohang
+ | | |-Pohang
+ | | | |-LF
+ | | | |-HF
+ | | | |-IM_calc
+ | | | |-sim_params.yaml
+ | | | |-BB
+ | | |-fd_rt01-h0.100.statcords
+ | | |-fd_rt01-h0.100.ll
+ | | |-fault_params.yaml
+ | |-root_params.yaml
+ 
+```
 
 
 ## 시뮬레이션 실행
@@ -225,45 +247,66 @@ Cybershake 워크플로우를 인스톨하면 자동화 스케쥴러를 사용�
 
 누리온의 로그인 노드가 접속 중 활동이 없으면 네트워크 연결을 끊어버리는 경우가 많아 타임아웃 무제한으로 만들고 스크린 세션안에서 실행하는 것을 권장한다.
 
-export TMOUT= (= 다음에 아무 것도 추가하지 않고 엔터.)
+위에서 시뮬레이션을 설치하는 과정에서 화면에 프린트된 명령어들을 복사 & 붙여넣기 한다. 우선 screen 안으로 들어가서
+```
+==== When installation is complete, follow the steps below
+export TMOUT= #(= 다음에 아무 것도 추가하지 않고 엔터.)
+screen
+```
 
 screen을 실행하고 나면 가상 환경이 사라지게 되므로 다시 한번 활성화 해준다.
-
-activate_env /home01/x2319a02/gmsim/Environments/v211213/
-
-cd /scratch/x2319a02/gmsim/RunFolder/Busan20211214
-
-  
-python $gmsim/workflow/workflow/automation/execution_scripts/run_cybershake.py \`pwd\` $USER \`pwd\`/task_config.yaml
+```
+==== Then copy and paste below
+activate_env /home01/x2319a02/gmsim/Environments/v211213
+cd /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
+python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml
+```
 
 마지막 task_config.yaml은 옵션이며, 지정해 주지 않으면 EMOD3D,HF,BB 그리고 IM_calc를 실행한 후에 임시파일을 모두 삭제하는 디폴트값이 사용된다.
 
-| 2021-10-21 06:54:48,113 - MainThread - Logger file added2021-10-21 06:54:48,138 - MainThread - Master script will run \[&lt;ProcessType.EMOD3D: 1>, &lt;ProcessType.HF: 4>, &lt;ProcessType.BB: 5>, &lt;ProcessType.IM_calculation: 6>, &lt;ProcessType.clean_up: 11>]2021-10-21 06:54:48,143 - MainThread - Created queue_monitor thread2021-10-21 06:54:48,143 - MainThread - Created main auto_submit thread2021-10-21 06:54:48,144 - MainThread - Started main auto_submit thread2021-10-21 06:54:48,145 - queue monitor - Running queue-monitor, exit with Ctrl-C.2021-10-21 06:54:48,145 - MainThread - Started queue_monitor thread2021-10-21 06:54:48,158 - main auto submit - Loaded root params file: /scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/root_params.yaml2021-10-21 06:54:48,379 - main auto submit - Number of runnable tasks: 42021-10-21 06:54:48,380 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D, Pohang-HF, Gyeongju-EMOD3D, Gyeongju-HF2021-10-21 06:54:48,866 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-21 06:54:48,870 - queue monitor - No entries in the mgmt db queue.submit_time not in proc_Data.keys(),value 2021-10-21_06:54:48submit_time not in proc_Data.keys(),value 2021-10-21_06:54:49submit_time not in proc_Data.keys(),value 2021-10-21_06:54:50submit_time not in proc_Data.keys(),value 2021-10-21_06:54:512021-10-21 06:54:54,168 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-21 06:54:54,176 - queue monitor - Updating 4 mgmt db tasks.2021-10-21 06:54:54,176 - queue monitor - Acquiring db connection.… (중간 생략)2021-10-21 06:55:22,120 - queue monitor - No entries in the mgmt db queue.2021-10-21 06:55:27,403 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-21 06:55:27,405 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-9169423-running, Pohang-HF-9169424-running, Gyeongju-EMOD3D-9169425-running, Gyeongju-HF-9169426-running2021-10-21 06:55:27,408 - queue monitor - No entries in the mgmt db queue.2021-10-21 06:55:32,686 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-21 06:55:32,689 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-9169423-running, Pohang-HF-9169424-running, Gyeongju-EMOD3D-9169425-running, Gyeongju-HF-9169426-running2021-10-21 06:55:32,705 - queue monitor - Updating 2 mgmt db tasks.2021-10-21 06:55:37,991 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-21 06:55:37,992 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-9169423-running, Pohang-HF-9169424-running, Gyeongju-EMOD3D-9169425-running, Gyeongju-HF-9169426-running2021-10-21 06:55:38,001 - queue monitor - Updating 2 mgmt db tasks.2021-10-21 06:55:43,275 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-21 06:55:43,278 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-9169423-running, Pohang-HF-9169424-running, Gyeongju-EMOD3D-9169425-running, Gyeongju-HF-9169426-running2021-10-21 06:55:43,284 - queue monitor - No entries in the mgmt db queue.2021-10-21 06:55:48,568 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-21 06:55:48,570 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-9169423-running, Pohang-HF-9169424-running, Gyeongju-EMOD3D-9169425-running, Gyeongju-HF-9169426-running2021-10-21 06:55:48,572 - queue monitor - No entries in the mgmt db queue.2021-10-21 06:55:53,852 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-21 06:55:53,854 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-9169423-running, Pohang-HF-9169424-running, Gyeongju-EMOD3D-9169425-running, Gyeongju-HF-9169426-running2021-10-21 06:55:53,856 - queue monitor - No entries in the mgmt db queue.2021-10-21 06:55:59,208 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-21 06:55:59,210 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-9169423-running, Pohang-HF-9169424-running, Gyeongju-EMOD3D-9169425-running, Gyeongju-HF-9169426-running    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417> python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml
+2022-04-18 17:13:46,439 - MainThread - Logger file added
+2022-04-18 17:13:46,449 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.merge_ts: 2>, <ProcessType.plot_ts: 3>, <ProcessType.IM_plot: 7>]
+2022-04-18 17:13:46,453 - MainThread - Created queue_monitor thread
+2022-04-18 17:13:46,454 - MainThread - Created main auto_submit thread
+2022-04-18 17:13:46,455 - MainThread - Started main auto_submit thread
+2022-04-18 17:13:46,455 - queue monitor - Running queue-monitor, exit with Ctrl-C.
+2022-04-18 17:13:46,456 - MainThread - Started queue_monitor thread
+2022-04-18 17:13:46,471 - main auto submit - Loaded root params file: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/root_params.yaml
+2022-04-18 17:13:46,619 - main auto submit - Number of runnable tasks: 2
+2022-04-18 17:13:46,620 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D, Pohang-HF
+2022-04-18 17:13:47,139 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-04-18 17:13:47,143 - queue monitor - No entries in the mgmt db queue.
+submit_time not in proc_Data.keys(),value 2022-04-18_17:13:46
 
-마지막 라인은 Pohang과 Gyeongju의 EMOD3D와 HF job들이 현재 진행중임을 알려줌
+submit_time not in proc_Data.keys(),value 2022-04-18_17:13:49
 
-Ctrl+a d로 스크린을 detach한뒤 qstat으로 현재 상태를 알아볼 수 있다.
+2022-04-18 17:13:52,571 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-04-18 17:13:52,577 - queue monitor - Updating 2 mgmt db tasks.
+2022-04-18 17:13:52,577 - queue monitor - Acquiring db connection.
+2022-04-18 17:13:58,198 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-04-18 17:13:58,199 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-queued, Pohang-HF-10067168-queued
+2022-04-18 17:13:58,202 - queue monitor - No entries in the mgmt db queue.
+2022-04-18 17:14:04,816 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-04-18 17:14:04,818 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-queued, Pohang-HF-10067168-queued
+....
+```
 
-(python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> qstat -u $USER
+
+마지막 라인은 Pohang의 EMOD3D와 HF job들이 현재 Queue에 추가되어 실행을 기다리고 있음을 알려줌
+
+Ctrl+a d로 스크린을 detach한뒤 (혹은 새로 ssh 연결한 다음) qstat으로 현재 상태를 알아볼 수 있다.
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417> qstat -u $USER
 
 pbs:
-
-Req'd Req'd Elap
-
-Job ID Username Queue Jobname SessID NDS TSK Memory Time S Time
-
-\-------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
-
-9169423.pbs x2319a02 normal emod3d.Po\* 12259 20 13\* -- 18:30 R 00:01
-
-9169424.pbs x2319a02 normal hf.Pohang 29495 1 68 -- 00:30 R 00:01
-
-9169425.pbs x2319a02 normal emod3d.Gy\* 25158 20 13\* -- 18:30 R 00:01
-
-9169426.pbs x2319a02 normal hf.Gyeong\* 40822 1 68 -- 00:30 R 00:01
-
-  
+                                                                 Req'd  Req'd   Elap
+Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
+-------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+10067167.pbs         x2319a02 normal   emod3d.Po*    --   26 17*    --  09:06 Q   --
+10067168.pbs         x2319a02 normal   hf.Pohang   14394   1  68    --  00:30 R 00:01
+```
 
 
 위에서 살펴본 바와 같이 Cybershake 실행할 때 제공한 task_config.yaml에서 요청한 바에 따라 워크플로우는 인스톨된 단층모델들, Pohang, Gyeongju의 각 1개씩의 realisation의 저주파(LF, 주로 EMOD3D로 불리움), 고주파(HF), BB (broadband = LF+HF) 등의 job을 누리온에 자동으로 submit하고 각 job의 진행상황을 모니터함과 동시에,의존도가 충족되면 다음 단계의 job을 다시 submit하고 모니터링한다.
