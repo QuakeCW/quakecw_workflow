@@ -16,29 +16,15 @@ from qcore.constants import (
     TIMESTAMP_FORMAT,
     ROOT_DEFAULTS_FILE_NAME
 )
+
+from shared import load_args
+
 LOG_FILE_NAME = "install_quakecw_log_{}.txt"
 FAULT_LIST="fault_list.txt"
 TASK_CONFIG="task_config.yaml"
 INSTALL_PBS="install.pbs"
 PBS_TEMPLATE="serial.template"
 
-
-def load_args(logger):
-    parser= argparse.ArgumentParser()
-    parser.add_argument(
-        "yaml_file",type=str, help="install yaml file"
-    )
-
-
-    args = parser.parse_args()
-    assert(Path(args.yaml_file).exists)
-    with open(Path(args.yaml_file),'r') as file:
-        args.params=yaml.safe_load(file)
-
-    qclogging.add_general_file_handler(logger, LOG_FILE_NAME.format(datetime.now().strftime(TIMESTAMP_FORMAT)))
-
-
-    return args
 
 def copy_data(src,dest,logger,is_copy=False):
     if dest.exists():
@@ -58,7 +44,9 @@ def copy_data(src,dest,logger,is_copy=False):
 
 def main():
     logger = qclogging.get_logger()
-    args = load_args(logger)
+    args = load_args()
+    qclogging.add_general_file_handler(logger, LOG_FILE_NAME.format(datetime.now().strftime(TIMESTAMP_FORMAT)))
+
     params = args.params
     #print(params)
 
@@ -134,7 +122,7 @@ def main():
         vm_params=yaml.safe_load(file)
     pprint.pprint(vm_params) 
 
-    print("================================")
+    uprint("================================")
     print(f"  GMSIM template:{params['gmsim_template']}")
     print("================================")
     root_default_file=Path(params['gmsim_template'])/ROOT_DEFAULTS_FILE_NAME
@@ -149,7 +137,7 @@ def main():
     print("export TMOUT=")
     print("screen")
     print("==== Then copy and paste below")
-    print("act_env")
+    print("activate_env /home01/x2319a02/gmsim/Environments/v211213")
     print(f"cd {sim_root_dir}")
     print(f"python {params['workflow']}/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml")     
 
