@@ -446,8 +446,9 @@ DT: 0.01
 VELOCITY_MODEL: "/home01/x2319a02/gmsim/VelocityModel/Mod-1D/kr_gb_kim2011_modified.1d"
 SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_v2022_3"
 ```
+
 아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
-```
+
 ```
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source> python make_source.py source.yaml
 ```
