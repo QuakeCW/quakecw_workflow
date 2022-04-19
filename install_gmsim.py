@@ -17,7 +17,6 @@ from qcore.constants import (
     ROOT_DEFAULTS_FILE_NAME
 )
 
-from shared import load_args
 
 LOG_FILE_NAME = "install_quakecw_log_{}.txt"
 FAULT_LIST="fault_list.txt"
@@ -25,6 +24,21 @@ TASK_CONFIG="task_config.yaml"
 INSTALL_PBS="install.pbs"
 PBS_TEMPLATE="serial.template"
 
+def load_args():
+    parser= argparse.ArgumentParser()
+    parser.add_argument(
+        "yaml_file",type=str, help="gmsim yaml file"
+    )
+    parser.add_argument(
+        "--console",help="Run directly in console, not submitted as a job", action="store_true")
+
+    args = parser.parse_args()
+    assert(Path(args.yaml_file).exists())
+    with open(Path(args.yaml_file),'r') as file:
+        args.params=yaml.safe_load(file)
+
+
+    return args
 
 def copy_data(src,dest,logger,is_copy=False):
     if dest.exists():
@@ -83,19 +97,25 @@ def main():
 
     cmd=f"python {params['workflow']}/workflow/automation/install_scripts/install_cybershake.py {sim_root_dir} {sim_root_dir/FAULT_LIST} {Path(params['gmsim_template']).name} --stat_file_path {params['stat_file']} --keep_dup_station"
 
-    env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve()))
-    pbs_template = env.get_template(PBS_TEMPLATE)
-    pbs=pbs_template.render(cmd=cmd)
-   
-    logger.debug(f"{INSTALL_PBS} created") 
-    with open(sim_root_dir/INSTALL_PBS,"w") as f:
-        f.write(pbs)
-        f.write("\n")
-    
-    job_id=exe(f"qsub -V {sim_root_dir/INSTALL_PBS}",debug=True)
-    job_id=job_id[0].strip()
-    logger.debug(f"{job_id} submitted")
+    if not arg.console:
+        env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve()))
+        pbs_template = env.get_template(PBS_TEMPLATE)
+        pbs=pbs_template.render(cmd=cmd)
+       
+        logger.debug(f"{INSTALL_PBS} created") 
+        with open(sim_root_dir/INSTALL_PBS,"w") as f:
+            f.write(pbs)
+            f.write("\n")
+        
+        res=exe(f"qsub -V {sim_root_dir/INSTALL_PBS}",debug=False)
+        job_id=res[0].strip()
+        print(job_id)
+        logger.debug(f"{job_id} submitted")
 
+    else:
+        res=exe(cmd,debug=False)
+        print(res[0])
+        
 
 
     print("================================")
