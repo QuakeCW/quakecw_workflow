@@ -14,7 +14,7 @@ Korean Ground Motion Simulation @ Nurion
 
 KISTI 누리온 5호기에서 x2319a02계정으로 실행할 것임.
 
-이 github 저장소를 클론하면 install_gmsim.yaml을 볼수 있는데, 이 파일을 템플렛처럼 사용하도록 한다.
+이 github 저장소를 클론하면 gmsim.yaml을 볼수 있는데, 이 파일을 템플렛처럼 사용하도록 한다.
 
 ```
 workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
@@ -26,6 +26,7 @@ vm_data: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan_20220324
 copy_vm_data: False
 gmsim_template: /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
 stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll
+n_max_retries: 2
 ```
 
 각각의 변수들을 설명하자면
@@ -38,11 +39,40 @@ stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.
 7. copy_vm_data: 속도 모델 데이터를 sim_root_dir 속으로 복사해 올 것인지 (True), 심볼릭 링크의 형태로 연결만 할 것인지 (False)
 8. gmsim_template: 시뮬레이션의 상세 사항 (HF 버전, sdrop, path_dur, kappa, IM pSA주기, 1차원 속도모델 등) 을 지정해둔 템플릿이 저장된 디렉토리
 9. stat_file: 관측소 리스트
+10. n_max_retries: 계산 실패시 재시도 회수 최대값
+
+
+우선 누리온의 로그인 노드가 접속 중 활동이 없으면 네트워크 연결을 끊어버리는 경우가 많아 타임아웃 무제한으로 만들고 screen 세션안에서 실행하는 것을 권장한다.
+다음 명령어를 실행하셔 screen 안으로 들어간다.
+
+```
+export TMOUT= #(= 다음에 아무 것도 추가하지 않고 엔터.)
+screen
+```
+
+가상 환경을 활성화 해준다. (screen 세션이 시작될 때 기존에 있었던 가상 환경이 리셋됨)
+```
+activate_env /home01/x2319a02/gmsim/Environments/v211213
+```
+`activate_env` 명령어는 /home01/x2319a02/gmsim/share/bashrc.uceq 에 정의되어 있음 
+./bashrc에 `source /home01/x2319a02/gmsim/share/bashrc.uceq` 를 추가하는 것을 추천함.
+
+아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
+
+```
+x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> activate_env /home01/x2319a02/gmsim/Environments/v211213/
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   
+
+'craype-x86-skylake' dependent modulefiles were removed
+```
+
 
 스크립트를 실행시켜 시뮬레이션을 설치
 
 ```
-(python3_nurion) ..> python ./install_gmsim.py ./install_gmsim.yaml
+(python3_nurion) ..> python ./install_gmsim.py ./gmsim.yaml
 ```
 
 yaml파일이 스크립트의 유일한 인풋으로, 필요에 따라 여러개의 yaml파일을 생성해서 사용할 수 있다.
@@ -167,19 +197,6 @@ Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S 
 
 S 항목의 R는 현재 이 Job이 Queue에 추가되어 실행중인 (Running) 상태임을 의미하며, 정상적인 상황이라면 Q->R->E  (Queued -> Running -> Ending) 순으로 진행된다.
 
-`activate_env` 명령어는 /home01/x2319a02/gmsim/share/bashrc.uceq 에 정의되어 있음 
-./bashrc에 `source /home01/x2319a02/gmsim/share/bashrc.uceq` 를 추가하는 것을 추천함.
-
-아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
-
-```
-x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> activate_env /home01/x2319a02/gmsim/Environments/v211213/
-cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
-cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
-cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   
-
-'craype-x86-skylake' dependent modulefiles were removed
-```
 
 Job이 진행되는 과정의 아웃풋은 같은 디렉토리 내의 serial_job.oXXXXXXXX 혹은 serial_job.eXXXXXXXX을 살펴보면 된다.
 
@@ -245,27 +262,20 @@ VM extents not contained within NZVM DEM: 130.306569, 33.771972
 
 Cybershake 워크플로우를 인스톨하면 자동화 스케쥴러를 사용할 수 있다. 이 스케쥴러는 로그인 노드에서 상주하며 실행 중인 job을 모니터하고, 의존 관계에 있는 job들이 성공적으로 완료되면 그 다음 단계의 job을 자동으로 submit하는 기능이 있다.
 
-누리온의 로그인 노드가 접속 중 활동이 없으면 네트워크 연결을 끊어버리는 경우가 많아 타임아웃 무제한으로 만들고 스크린 세션안에서 실행하는 것을 권장한다.
-
-위에서 시뮬레이션을 설치하는 과정에서 화면에 프린트된 명령어들을 복사 & 붙여넣기 한다. 우선 screen 안으로 들어가서
-```
-==== When installation is complete, follow the steps below
-export TMOUT= #(= 다음에 아무 것도 추가하지 않고 엔터.)
-screen
-```
-
-screen을 실행하고 나면 가상 환경이 사라지게 되므로 다시 한번 활성화 해준다.
-```
-==== Then copy and paste below
-activate_env /home01/x2319a02/gmsim/Environments/v211213
-cd /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
-python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml
-```
-
-마지막 task_config.yaml은 옵션이며, 지정해 주지 않으면 EMOD3D,HF,BB 그리고 IM_calc를 실행한 후에 임시파일을 모두 삭제하는 디폴트값이 사용된다.
+quakecw_workflow 디렉토리 안으로 들어가거나, path를 적절히 보태어서 아래 명령을 실행한다.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417> python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml
+(python3_nurion) ..> ./run_gmsim.sh ./gmsim.yaml
+```
+
+스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> ./run_gmsim.sh gmsim.yaml
+sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
+workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
+n_max_retries: 2
+python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417 x2319a02 /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/task_config.yaml --n_max_retries 2
+
 2022-04-18 17:13:46,439 - MainThread - Logger file added
 2022-04-18 17:13:46,449 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.merge_ts: 2>, <ProcessType.plot_ts: 3>, <ProcessType.IM_plot: 7>]
 2022-04-18 17:13:46,453 - MainThread - Created queue_monitor thread
@@ -291,10 +301,15 @@ submit_time not in proc_Data.keys(),value 2022-04-18_17:13:49
 2022-04-18 17:14:04,816 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
 2022-04-18 17:14:04,818 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-queued, Pohang-HF-10067168-queued
 ....
+2022-04-18 19:30:04,246 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-04-18 19:30:04,248 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-queued, Pohang-HF-10067168-running
+....
+2022-04-18 22:38:01,781 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-04-18 22:38:01,783 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-running
 ```
 
 
-마지막 라인은 Pohang의 EMOD3D와 HF job들이 현재 Queue에 추가되어 실행을 기다리고 있음을 알려줌
+마지막 부분들은 Pohang의 EMOD3D와 HF job이 Queue에 추가되어 실행을 기다리다 (queued) 실행중 (running) 상태로 넘어간 모습을 보여줌
 
 Ctrl+a d로 스크린을 detach한뒤 (혹은 새로 ssh 연결한 다음) qstat으로 현재 상태를 알아볼 수 있다.
 ```
@@ -308,52 +323,55 @@ Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S 
 10067168.pbs         x2319a02 normal   hf.Pohang   14394   1  68    --  00:30 R 00:01
 ```
 
-
-Cybershake 실행할 때 제공한 task_config.yaml에서 요청한 바에 따라 워크플로우는 인스톨된 단층모델들, Pohang 각 1개씩의 realisation의 저주파(LF, 주로 EMOD3D로 불리움), 고주파(HF), BB (broadband = LF+HF) 등의 job을 누리온에 자동으로 submit하고 각 job의 진행상황을 모니터함과 동시에,의존도가 충족되면 다음 단계의 job을 다시 submit하고 모니터링한다.
+`run_gmsim.sh`은 사실 `run_cybershake.py`을 실행하기 쉽도록 가공한 스크립트이다. Cybershake 실행할 때 제공한 task_config.yaml에서 요청한 바에 따라 워크플로우는 인스톨된 단층모델들, Pohang 각 1개씩의 realisation의 저주파(LF, 주로 EMOD3D로 불리움), 고주파(HF), BB (broadband = LF+HF) 등의 job을 누리온에 자동으로 submit하고 각 job의 진행상황을 모니터함과 동시에,의존도가 충족되면 다음 단계의 job을 다시 submit하고 모니터링한다.
 
 job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자동으로 예상하여 그 값을 사용하는데, 만약 작업시간이 예상을 초과하여 계산이 중단되면, 예상시간을 늘여서 다시 서브밋하도록 제작되어 있음. (2차 시도는 시간 2배, 3차 시도는 시간 3배..)
 
 위와 같은 이유로 시뮬레이션이 아직 안정화되지 못한 경우, 다양한 이유로 job이 실패할 수 있으나 그럴 때마다 예상시간을 늘이며 다시 서브밋된다면 누리온 계정의 allocation을 낭비하게 될 수도 있음. 따라서 이 워크플로우는 시뮬레이션이 이미 안정화 단계에 있을 때 사용하는 것을 권장함.
 
-한편, run_cybershake.py는 디폴트값으로 최고 2번의 시도를 하도록 되어 있으며, 이 값은 --n_max_retries 스위치로 조절 가능함
+한편, `run_gmsim.sh`는 최고 2번의 시도를 하도록 되어 있으며, 2차 시도 끝에도 계산이 제대로 끝나지 못했다면 다음 방법을 사용할 수 있다.
 
 
 ### 재시도
 
-만약 정해진 횟수 내에 어떤 이유로 계산이 성공적으로 완료되지 않았다면, 그 원인을 수정한 다음,--n_max_retries 스위치와 함께다시 run_cybershake.py를 실행하면 된다.  
+만약 정해진 횟수 내에 어떤 이유로 계산이 성공적으로 완료되지 않았다면, 그 원인을 수정한 다음, `gmsim.yaml`의 `n_max_retries`값을 수정하고 다시 `run_gmsim.sh`을 실행할 수 있다. 
   
-예시) BB를 2회 시도하였으나, .vs30 파일이 지정된 위치에 있지 않은 이유로 run_cybershake.py가 BB를 계산하지 못한 상황에서 종료가 되었다고 가정. 원인을 해결하고, 아래와 같이 --n_max_retries 3 을 주어 재실행시키면 이전의 2회 시도에 이어 한번 더 시도하게 된다.  
-  
-
-
-(python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> python $gmsim/workflow/scripts/cybershake/run_cybershake.py /scratch/x2319a02/gmsim/RunFolder/Busan20211214 $USER**--n_max_retries 3**
-
-  
-
-
-| 2021-10-22 05:30:08,076 - MainThread - Logger file added2021-10-22 05:30:08,098 - MainThread - Master script will run \[&lt;ProcessType.EMOD3D: 1>, &lt;ProcessType.HF: 4>, &lt;ProcessType.BB: 5>, &lt;ProcessType.IM_calculation: 6>, &lt;ProcessType.clean_up: 11>]2021-10-22 05:30:08,103 - MainThread - Created queue_monitor thread2021-10-22 05:30:08,103 - MainThread - Created main auto_submit thread2021-10-22 05:30:08,104 - MainThread - Started main auto_submit thread2021-10-22 05:30:08,105 - queue monitor - Running queue-monitor, exit with Ctrl-C.2021-10-22 05:30:08,105 - MainThread - Started queue_monitor thread2021-10-22 05:30:08,134 - main auto submit - Loaded root params file: /scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/root_params.yaml2021-10-22 05:30:08,292 - main auto submit - Number of runnable tasks: 22021-10-22 05:30:08,293 - main auto submit - Tasks to run this iteration: Pohang-BB, Gyeongju-BB2021-10-22 05:30:08,646 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:08,652 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:13,930 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:13,938 - queue monitor - Updating 2 mgmt db tasks.2021-10-22 05:30:13,938 - queue monitor - Acquiring db connection.2021-10-22 05:30:19,231 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:19,233 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-queued, Gyeongju-BB-9178918-queued2021-10-22 05:30:19,235 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:24,538 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:24,540 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-queued, Gyeongju-BB-9178918-queued2021-10-22 05:30:24,541 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:29,824 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:29,826 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-queued, Gyeongju-BB-9178918-queued2021-10-22 05:30:29,828 - queue monitor - Updating status of Pohang, BB from queued to running2021-10-22 05:30:29,828 - queue monitor - Updating status of Gyeongju, BB from queued to running2021-10-22 05:30:29,828 - queue monitor - Updating 2 mgmt db tasks.2021-10-22 05:30:29,828 - queue monitor - Received entry SchedulerTask(run_name='Pohang', proc_type=5, status=3, job_id=None, error=None), status is more than created but the job_id is not set.2021-10-22 05:30:29,831 - queue monitor - Received entry SchedulerTask(run_name='Gyeongju', proc_type=5, status=3, job_id=None, error=None), status is more than created but the job_id is not set.2021-10-22 05:30:35,784 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:35,786 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-running, Gyeongju-BB-9178918-running2021-10-22 05:30:35,787 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:41,064 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 05:30:41,065 - queue monitor - In progress tasks in mgmt db:Pohang-BB-9178917-running, Gyeongju-BB-9178918-running2021-10-22 05:30:41,067 - queue monitor - No entries in the mgmt db queue.2021-10-22 05:30:46,446 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them   …2021-10-22 09:11:03,531 - queue monitor - In progress tasks in mgmt db:Pohang-IM_calc-9180051-running, Gyeongju-IM_calc-9180113-running2021-10-22 09:11:03,533 - queue monitor - No entries in the mgmt db queue.2021-10-22 09:11:08,794 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 09:11:08,797 - queue monitor - In progress tasks in mgmt db:Pohang-IM_calc-9180051-running, Gyeongju-IM_calc-9180113-running2021-10-22 09:11:08,798 - queue monitor - No entries in the mgmt db queue.2021-10-22 09:11:14,058 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 09:11:14,059 - queue monitor - In progress tasks in mgmt db:Pohang-IM_calc-9180051-running, Gyeongju-IM_calc-9180113-running2021-10-22 09:11:14,061 - queue monitor - No entries in the mgmt db queue.2021-10-22 09:11:19,323 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them2021-10-22 09:11:19,325 - queue monitor - In progress tasks in mgmt db:Pohang-IM_calc-9180051-running, Gyeongju-IM_calc-9180113-running2021-10-22 09:11:19,326 - queue monitor - No entries in the mgmt db queue.…2021-10-22 10:02:43,891 - queue monitor - No entries in the mgmt db queue.2021-10-22 10:02:46,918 - main auto submit - Nothing was running or ready to run last cycle, exiting now**2021-10-22 10:02:46,919 - MainThread - The main auto_submit thread has terminated, and all auto_submit patterns have completed a final run through****2021-10-22 10:02:46,920 - MainThread - Attempting to shut down the queue monitor thread****2021-10-22 10:02:48,896 - MainThread - The queue monitor has been shut down successfully**       |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-  
-
-
-아웃풋 내용을 살펴보면, BB가 완료되고 나서 자동으로 IM_calculation이 서브밋되었고, 마지막 부분을 보면 모든 job들이 성공리에 완료되었음을 파악할 수 있다.  
-
+예시) BB를 2회 시도하였으나, .vs30 파일이 지정된 위치에 있지 않은 이유로 BB가 종료되지 않은 상태에서 계산이 중단되었다면, 원인을 해결하고(예: .vs30 파일을 지정된 위치로 복사), `gmsim.yaml`의 `n_max_retries`값을 3 이상의 값으로 수정한 다음, 다시 `run_gmsim.sh`을 실행하면 된다.
 
 
 ### job 진행 상태를 파악하기
 
 
 #### 전체 상황
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> python check_status.py ./gmsim.yaml
 
-cd /scratch/x2319a02/gmsim/RunFolder/Busan20211214
+/home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/query_mgmt_db.py
+                 run_name |         process |     status |   job-id |        last_modified
+_________________________________________________________________________________________________
+                   Pohang |        merge_ts |    created |     None |  2022-04-17 09:27:24
+                   Pohang |         plot_ts |    created |     None |  2022-04-17 09:27:24
+                   Pohang |              BB |    created |     None |  2022-04-17 09:27:24
+                   Pohang |  IM_calculation |    created |     None |  2022-04-17 09:27:24
+                   Pohang |         IM_plot |    created |     None |  2022-04-17 09:27:24
+                   Pohang |          EMOD3D |     queued | 10067167 |  2022-04-18 08:13:52
+                   Pohang |              HF |  completed | 10067168 |  2022-04-18 08:25:26
+```
+모두 완전하게 끝났다면 아래와 같은 출력물을 볼 수 있다
 
-python $gmsim/workflow/workflow/automation/execution_scripts/query_mgmt_db.py . --config ./task_config.yaml
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> python check_status.py ./gmsim.yaml
+                 run_name |         process |     status |   job-id |        last_modified
+_________________________________________________________________________________________________
+                   Pohang |          EMOD3D |  completed | 10067167 |  2022-04-18 17:38:53
+                   Pohang |              HF |  completed | 10067168 |  2022-04-18 08:25:26
+                   Pohang |        merge_ts |  completed | 10068634 |  2022-04-18 18:06:36
+                   Pohang |              BB |  completed | 10068635 |  2022-04-18 18:08:15
+                   Pohang |         plot_ts |  completed | 10068663 |  2022-04-18 18:22:04
+                   Pohang |  IM_calculation |  completed | 10068665 |  2022-04-18 20:20:34
+                   Pohang |         IM_plot |  completed | 10069305 |  2022-04-18 20:39:50
+```
 
-|   run_name \| process \| status \| job-id \| last_modified\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_Gyeongju \| EMOD3D \| completed \| 9170922 \| 2021-10-21 04:30:48Gyeongju \| HF \| completed \| 9170923 \| 2021-10-21 02:45:58Gyeongju \| BB \| completed \| 9180006 \| 2021-10-22 00:01:22Gyeongju \| IM_calculation \| completed \| 9180113 \| 2021-10-22 00:52:46Gyeongju \| BB \| failed \| 9171919 \| 2021-10-21 04:32:09Gyeongju \| BB \| failed \| 9171927 \| 2021-10-21 04:33:30Pohang \| EMOD3D \| completed \| 9170920 \| 2021-10-21 04:29:55Pohang \| HF \| completed \| 9170921 \| 2021-10-21 02:45:52Pohang \| BB \| completed \| 9180002 \| 2021-10-22 00:01:22Pohang \| IM_calculation \| completed \| 9180051 \| 2021-10-22 00:52:30Pohang \| BB \| failed \| 9171912 \| 2021-10-21 04:31:27Pohang \| BB \| failed \| 9171922 \| 2021-10-21 04:32:52 |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-\--config 옵션을 쓰지 않으면 애초에 지정하지 않아 필요 없는 단계까지 리스트에 포함되어 나와 출력 리스트가 너무 길어지는 경우가 있다. 리스트에서 BB를 2회 실패하고 3회째에 성공적으로 계산을 마치고 연이어 IM_calculation 단계도 성공했음을 확인할 수 있다.
 
 각각의 job의 현재 상태를 파악하고 싶다면 screen을 잠시 빠져나오거나 (detach, Ctrl+a d), 다른 터미널에서 아래와 같은 방법을 사용할 수 있다.
 
@@ -362,28 +380,39 @@ python $gmsim/workflow/workflow/automation/execution_scripts/query_mgmt_db.py . 
 
 LF/Rlog디렉토리에 \*.rlog파일이 업데이트 되는 과정을 관찰하면 됨
 
-| (python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/Pohang/LF/Rlog> tail -f Pohang-00539.rlog\*\*\*\* Dumping wavefield to restart file:/scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/Pohang/LF/Restart/Pohang_rst-00539.e3d\*\*\*\* Dumping all output files to:/scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/Pohang/LF/OutBin...DONE2000 30.27 4417.19 1.00 67.07 0.96 1086. 0.992100 16.17 4417.19 1.00 52.03 1.00 1138. 1.002200 16.38 4417.19 1.00 52.49 1.00 1191. 1.002300 15.75 4417.19 1.00 51.98 1.00 1243. 1.002400 15.66 4417.19 1.00 51.89 1.00 1295. 1.00    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang20220328/Runs/Pohang/Pohang/LF/Rlog/tail -f Pohang-00000.rlog
 
-현재까지 timestep 2400을 수행했음을 알려줌.
+...
+    17300     28.43  2578.12   1.00      88.78   0.98         13692.   0.99
+    17400     24.96  2578.12   1.00      82.44   1.00         13774.   0.99
+    17500     17.67  2578.12   1.00      75.25   1.00         13849.   0.99
+...
+    
+```
+현재까지 timestep 17500까지 계산했음을 보여준다.  LF/e3d.par의 nt값을 확인하면 timestep이 18200에 도달할 때까지 계산이 지속되어야 함을 알수 있음.
 
-LF/e3d.par의 nt값을 확인하면 timestep이 12200에 도달할 때까지 계산이 지속되어야 함을 알수 있음.
+계산이 끝났다면 rlog파일의 끝에서 아래와 같은 문구를 볼 수 있다.
+```
+*** usage totals:     Mbytes Transfered    System CPU      User CPU   %Real
+                              469052.00          268.        14130.    0.99
+PROGRAM emod3d-mpi IS FINISHED
+```
 
 
 #### HF
 
 HF/Acc에 HF.bin, HF.log 파일 사이즈가 증가하는 것이 관찰되면 정상적으로 작동하고 있다고 짐작할 수 있음
 
-  
-
-
-| (python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214/Runs/Pohang/Pohang/HF/Acc> ls -ltrtotal 1455080\-rw-rw-r-- 1 x2319a02 re0016 8 Oct 21 09:52 SEED\-rw-rw-r-- 1 x2319a02 re0016 5169992 Oct 21 09:54 HF.log\-rw-rw-r-- 1 x2319a02 re0016 1610809808 Oct 21 09:54 HF.bin |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang20220328_2/Runs/Pohang/Pohang/HF/Acc> ls -ltr
+total 6226180
+-rw-rw-r-- 1 x2319a02 rd0624          8 Mar 28 09:17 SEED
+-rw-rw-r-- 1 x2319a02 rd0624 6358882976 Mar 28 09:27 HF.bin
+-rw-rw-r-- 1 x2319a02 rd0624   16652983 Mar 29 12:54 HF.log
+```
 
 계산이 모두 끝나면 LF와 HF 모두 결과값이 원하는 포맷과 일치하는지 간단한 검증 과정을 거친다. 통과하면 Complete로 마크되고 그 다음 단계에 계산할 job이 있다면 (이 경우 BB) submit하게 된다.
-
-
-
 
 
 
@@ -393,15 +422,36 @@ HF/Acc에 HF.bin, HF.log 파일 사이즈가 증가하는 것이 관찰되면 �
 
 
 ## 단층 모델 만들기
+Source 디렉토리의 `source.yaml`을 수정
 
-TO DO: Stoch모델이 만들어질 때, 저장되는 위치가 Stoch/{fault name}/{fault name}.stoch 이 되어버리는 버그가 있다. Stoch/{fault name}.stoch이 맞음 (setSrfParams.py에서 STOCH=Stoch 이면 정상 작동)
+```
+TYPE: 2
+FAULT: Pohang
+# latitude (float)
+LAT: 36.109
+# # longitude (float)
+LON: 129.366
+# # depth (float)
+DEPTH: 7
+# # magnitude (float)
+MAG: 5.4
+# # strike (int)
+STK: 230
+# # dip (int)
+DIP: 69
+# # rake (int)
+RAK: 152
+# # rupture timestep
+DT: 0.01
+VELOCITY_MODEL: "/home01/x2319a02/gmsim/VelocityModel/Mod-1D/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_v2022_3"
+```
 
-setSrfParams.py 을 수정한 다음 createSRF.py를 실행
+아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
 
-| \## Sets Variables for SRF/Stoch Generation\# TYPE:\# 1: point source to point source srf\# 2: point source to finite fault srf\# 3: finite fault to finite fault srf\# 4: multi-segment finite fault srfTYPE = 2\# specify basename for gsf, srf and stoch file created\# PREFIX for gsf/srf/stoch files\# if prefix ends with '\_', automatic naming followsPREFIX = 'Srf/Gyeongju'\# directory for Stoch file(s)\# set to None to not produce the stoch fileSTOCH = 'Stoch/Gyeongju'\###\### COMMON PARAMETERS (apply to all types but multi)\###\# latitude (float)LAT = 35.79\# longitude (float)LON = 129.12\# depth (float)DEPTH = 20\# magnitude (float)MAG = 5.8\# strike (int)STK = 24\# dip (int)DIP = 70\# rake (int)RAK = 176\# rupture timestepDT = 0.01       |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source> python make_source.py source.yaml
+```
 
 
 
@@ -411,11 +461,11 @@ setSrfParams.py 을 수정한 다음 createSRF.py를 실행
 ### 준비
 
 NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치는  
-  
 
 
-/home01/hpc11a04/gmsim/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) (To do: github 에서 maintain)
-
+```
+/home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) (To do: github 에서 maintain)
+```
   
 
 
@@ -532,42 +582,17 @@ Generating velocity model3% complete.
 
 ## 관측소 리스트 만들기
 
-속도모델을 생성하는 과정에서 부산물로 만들어지는 model_coords파일은 그리드 위의 좌표점들의 리스트이므로 이 것을 기반으로 시뮬레이션 관측점 리스트를 작성하기로 결정하였다. 하지만 위에서 생성한 model_coords파일은 hh=0.1으로, 100미터마다, 총 관측점이 1천만개에 달하여 시뮬레이션의 해상도를 필요이상으로 요구하게 되었다. 적절한 타협점으로 hh=2.0에서 25,000개의 관측점 좌표를 생성하게 되었다.  
-  
-python $gmsim/Pre-processing/VM/gen_coords.py .  
-  
+관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Stations> python make_stations.py ../VM --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --stat_file Busan_2km 
+created temp dir ./tmpyaeod58j
+input .ll file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.ll
+output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
+```
 
-이 프로그램은 지정한 디렉토리 (이 경우 “.”)에서 vm_params.yaml을 찾아 지정한 값들에 맞추어 좌표파일들을 생성한다.
+이 스크립트의 첫 인풋 `vm_params.yaml`이 저장되어 있는 디렉터리이다. 옵션으로 실재 관측소 위치 파일 (포맷은 아래 참조)을 `--real_stats`로 추가할 수 있으며, 결과값 파일들이 저장될 디렉토리를 `--outdir`로 지정할 수 있다. (미지정시 현재 위치). 결과 파일이름을 `--stat_file`으로 설정할 수 있다. `Busan_2km.ll`과 `Busan_2km.vs30`가 각각 생성된다. 미지정시 `stats.ll`, `stats.vs30`이 됨.
 
-hh=2.0 에 맞추어 수정한 vm_params.yaml파일은 아래와 같다.
-
-| mag: 5.5centroidDepth: 4.05399MODEL_LAT: 35.5755MODEL_LON: 128.9569MODEL_ROT: 0.0**hh: 2.0**min_vs: 0.2model_version: KVM_21p6topo_type: BULLDOZEDoutput_directory: outputextracted_slice_parameters_directory: SliceParametersNZ/SliceParametersExtracted.txtcode: rtextent_x: 250extent_y: 400extent_zmax: 40extent_zmin: 0.0sim_duration: 60**flo: 0.05****nx: 125****ny: 200****nz: 20**sufx: \_rt01-h2.000 |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-실행 후, 생성된 model_coords_rt01-h2.000을 아래와 같이 스테이션 리스트 파일로 바꿀수 있다.
-
-/scratch/x2319a02/gmsim/Busan_Data/utils/VM/get_ll.sh ./model_coords_rt01-h2.000 Busan_2km_stats_20211018
-
-Busan_2km_stats_20211018.ll
-
-| 127.55618 37.35489 000000127.57877 37.35515 000001127.60136 37.35541 000002127.62395 37.35567 000003127.64655 37.35592 000004127.66913 37.35617 000005127.69171 37.35641 000006127.71431 37.35665 000007127.73691 37.35688 000008127.75949 37.35711 000009127.78207 37.35734 00000A127.80467 37.35756 00000B…130.03720 33.78315 00619B130.05881 33.78296 00619C130.08040 33.78276 00619D130.10201 33.78257 00619E130.12361 33.78236 00619F130.14522 33.78216 0061A0130.16682 33.78195 0061A1130.18842 33.78173 0061A2130.21002 33.78152 0061A3130.23163 33.78130 0061A4130.25323 33.78107 0061A5130.27484 33.78085 0061A6130.29645 33.78062 0061A7    |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-  
-
-
-여기에 실존하는 관측점이나 관심 시설의 좌표를 추가하여 관측점 리스트를 완성하면 된다.
-
-제일 아래에 빈 줄이 있으면 인스톨시에 에러가 뜨니 주의할 것
-
-Vs30
-
-extract_Vs30.py
-
-관측 데이터 IM calc
-
-python $gmsim/IM_calculation/IM_calculation/scripts/calculate_ims.py Obs_Acc a -o Obs_IM -np 40 -i Gyeongju -r Gyeongju -t s -c geom -s -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0
 
 
 # 시각화
@@ -619,12 +644,23 @@ Plot_ts
 qsub -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=\`pwd\`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
 
 
+# 관측 데이터
+
+## 관측 데이터 변환
+
+## 관측 데이터 IM calc
+
+python $gmsim/IM_calculation/IM_calculation/scripts/calculate_ims.py Obs_Acc a -o Obs_IM -np 40 -i Gyeongju -r Gyeongju -t s -c geom -s -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0
+
+## 관측 데이터와 시뮬레이션 결과값의 비교
+
+
 # 참고 문헌:
 
 [Ground motion simulation run manual (20p07) - QuakeCoRE: The Centre for Earthquake Resilience - Confluence (canterbury.ac.nz)](https://wiki.canterbury.ac.nz/pages/viewpage.action?pageId=90538503)
 
   
-  
+ 
 
 
 참고: 데이터 이전 이후 망가진 심볼릭 링크 고치는 법
