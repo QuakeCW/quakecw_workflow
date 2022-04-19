@@ -122,24 +122,16 @@ def main():
         vm_params=yaml.safe_load(file)
     pprint.pprint(vm_params) 
 
-    uprint("================================")
-    print(f"  GMSIM template:{params['gmsim_template']}")
+    print("================================")
+    print(f"       GMSIM template")
     print("================================")
     root_default_file=Path(params['gmsim_template'])/ROOT_DEFAULTS_FILE_NAME
+    print(root_default_file)
     assert(root_default_file)
 
     with open(root_default_file,'r') as file:
         root_defaults_params=yaml.safe_load(file)
     pprint.pprint(root_defaults_params)
-
-    print("==== When installation is complete, follow the steps below")
-
-    print("export TMOUT=")
-    print("screen")
-    print("==== Then copy and paste below")
-    print("activate_env /home01/x2319a02/gmsim/Environments/v211213")
-    print(f"cd {sim_root_dir}")
-    print(f"python {params['workflow']}/workflow/automation/execution_scripts/run_cybershake.py `pwd` $USER `pwd`/task_config.yaml")     
 
     
 if __name__ == "__main__":
