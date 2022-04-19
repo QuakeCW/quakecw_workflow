@@ -11,7 +11,6 @@ def main():
 
     sim_root_dir=Path(params["sim_root_dir"])
     script= Path(params['workflow']) / Path("workflow/automation/execution_scripts/query_mgmt_db.py")
-    print(script)
     cmd=f"python {script} {sim_root_dir} --config {sim_root_dir/'task_config.yaml'}"
     res=exe(cmd,debug=False)
     print(res[0])
