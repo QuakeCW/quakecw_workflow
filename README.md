@@ -422,15 +422,35 @@ total 6226180
 
 
 ## 단층 모델 만들기
+Source 디렉토리의 `source.yaml`을 수정
 
-TO DO: Stoch모델이 만들어질 때, 저장되는 위치가 Stoch/{fault name}/{fault name}.stoch 이 되어버리는 버그가 있다. Stoch/{fault name}.stoch이 맞음 (setSrfParams.py에서 STOCH=Stoch 이면 정상 작동)
-
-setSrfParams.py 을 수정한 다음 createSRF.py를 실행
-
-| \## Sets Variables for SRF/Stoch Generation\# TYPE:\# 1: point source to point source srf\# 2: point source to finite fault srf\# 3: finite fault to finite fault srf\# 4: multi-segment finite fault srfTYPE = 2\# specify basename for gsf, srf and stoch file created\# PREFIX for gsf/srf/stoch files\# if prefix ends with '\_', automatic naming followsPREFIX = 'Srf/Gyeongju'\# directory for Stoch file(s)\# set to None to not produce the stoch fileSTOCH = 'Stoch/Gyeongju'\###\### COMMON PARAMETERS (apply to all types but multi)\###\# latitude (float)LAT = 35.79\# longitude (float)LON = 129.12\# depth (float)DEPTH = 20\# magnitude (float)MAG = 5.8\# strike (int)STK = 24\# dip (int)DIP = 70\# rake (int)RAK = 176\# rupture timestepDT = 0.01       |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-
+```
+TYPE: 2
+FAULT: Pohang
+# latitude (float)
+LAT: 36.109
+# # longitude (float)
+LON: 129.366
+# # depth (float)
+DEPTH: 7
+# # magnitude (float)
+MAG: 5.4
+# # strike (int)
+STK: 230
+# # dip (int)
+DIP: 69
+# # rake (int)
+RAK: 152
+# # rupture timestep
+DT: 0.01
+VELOCITY_MODEL: "/home01/x2319a02/gmsim/VelocityModel/Mod-1D/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_v2022_3"
+```
+아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
+```
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source> python make_source.py source.yaml
+```
 
 
 
