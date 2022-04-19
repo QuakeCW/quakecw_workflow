@@ -2,7 +2,20 @@ from pathlib import Path
 import yaml
 from qcore.shared import exe
 from qcore import qclogging
-from shared import load_args
+
+def load_args():
+    parser= argparse.ArgumentParser()
+    parser.add_argument(
+        "yaml_file",type=str, help="gmsim yaml file"
+    )
+
+    args = parser.parse_args()
+    assert(Path(args.yaml_file).exists())
+    with open(Path(args.yaml_file),'r') as file:
+        args.params=yaml.safe_load(file)
+
+
+    return args
 
 def main():
     logger = qclogging.get_logger()
