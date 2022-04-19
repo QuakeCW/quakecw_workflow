@@ -357,7 +357,20 @@ ________________________________________________________________________________
                    Pohang |          EMOD3D |     queued | 10067167 |  2022-04-18 08:13:52
                    Pohang |              HF |  completed | 10067168 |  2022-04-18 08:25:26
 ```
+모두 완전하게 끝났다면 아래와 같은 출력물을 볼 수 있다
 
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> python check_status.py ./gmsim.yaml
+                 run_name |         process |     status |   job-id |        last_modified
+_________________________________________________________________________________________________
+                   Pohang |          EMOD3D |  completed | 10067167 |  2022-04-18 17:38:53
+                   Pohang |              HF |  completed | 10067168 |  2022-04-18 08:25:26
+                   Pohang |        merge_ts |  completed | 10068634 |  2022-04-18 18:06:36
+                   Pohang |              BB |  completed | 10068635 |  2022-04-18 18:08:15
+                   Pohang |         plot_ts |  completed | 10068663 |  2022-04-18 18:22:04
+                   Pohang |  IM_calculation |  completed | 10068665 |  2022-04-18 20:20:34
+                   Pohang |         IM_plot |  completed | 10069305 |  2022-04-18 20:39:50
+```
 
 
 각각의 job의 현재 상태를 파악하고 싶다면 screen을 잠시 빠져나오거나 (detach, Ctrl+a d), 다른 터미널에서 아래와 같은 방법을 사용할 수 있다.
@@ -427,11 +440,11 @@ setSrfParams.py 을 수정한 다음 createSRF.py를 실행
 ### 준비
 
 NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치는  
-  
 
 
-/home01/hpc11a04/gmsim/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) (To do: github 에서 maintain)
-
+```
+/home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) (To do: github 에서 maintain)
+```
   
 
 
@@ -548,42 +561,17 @@ Generating velocity model3% complete.
 
 ## 관측소 리스트 만들기
 
-속도모델을 생성하는 과정에서 부산물로 만들어지는 model_coords파일은 그리드 위의 좌표점들의 리스트이므로 이 것을 기반으로 시뮬레이션 관측점 리스트를 작성하기로 결정하였다. 하지만 위에서 생성한 model_coords파일은 hh=0.1으로, 100미터마다, 총 관측점이 1천만개에 달하여 시뮬레이션의 해상도를 필요이상으로 요구하게 되었다. 적절한 타협점으로 hh=2.0에서 25,000개의 관측점 좌표를 생성하게 되었다.  
-  
-python $gmsim/Pre-processing/VM/gen_coords.py .  
-  
+관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Stations> python make_stations.py ../VM --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --stat_file Busan_2km 
+created temp dir ./tmpyaeod58j
+input .ll file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.ll
+output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
+```
 
-이 프로그램은 지정한 디렉토리 (이 경우 “.”)에서 vm_params.yaml을 찾아 지정한 값들에 맞추어 좌표파일들을 생성한다.
+이 스크립트의 첫 인풋 `vm_params.yaml`이 저장되어 있는 디렉터리이다. 옵션으로 실재 관측소 위치 파일 (포맷은 아래 참조)을 `--real_stats`로 추가할 수 있으며, 결과값 파일들이 저장될 디렉토리를 `--outdir`로 지정할 수 있다. (미지정시 현재 위치). 결과 파일이름을 `--stat_file`으로 설정할 수 있다. `Busan_2km.ll`과 `Busan_2km.vs30`가 각각 생성된다. 미지정시 `stats.ll`, `stats.vs30`이 됨.
 
-hh=2.0 에 맞추어 수정한 vm_params.yaml파일은 아래와 같다.
-
-| mag: 5.5centroidDepth: 4.05399MODEL_LAT: 35.5755MODEL_LON: 128.9569MODEL_ROT: 0.0**hh: 2.0**min_vs: 0.2model_version: KVM_21p6topo_type: BULLDOZEDoutput_directory: outputextracted_slice_parameters_directory: SliceParametersNZ/SliceParametersExtracted.txtcode: rtextent_x: 250extent_y: 400extent_zmax: 40extent_zmin: 0.0sim_duration: 60**flo: 0.05****nx: 125****ny: 200****nz: 20**sufx: \_rt01-h2.000 |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-실행 후, 생성된 model_coords_rt01-h2.000을 아래와 같이 스테이션 리스트 파일로 바꿀수 있다.
-
-/scratch/x2319a02/gmsim/Busan_Data/utils/VM/get_ll.sh ./model_coords_rt01-h2.000 Busan_2km_stats_20211018
-
-Busan_2km_stats_20211018.ll
-
-| 127.55618 37.35489 000000127.57877 37.35515 000001127.60136 37.35541 000002127.62395 37.35567 000003127.64655 37.35592 000004127.66913 37.35617 000005127.69171 37.35641 000006127.71431 37.35665 000007127.73691 37.35688 000008127.75949 37.35711 000009127.78207 37.35734 00000A127.80467 37.35756 00000B…130.03720 33.78315 00619B130.05881 33.78296 00619C130.08040 33.78276 00619D130.10201 33.78257 00619E130.12361 33.78236 00619F130.14522 33.78216 0061A0130.16682 33.78195 0061A1130.18842 33.78173 0061A2130.21002 33.78152 0061A3130.23163 33.78130 0061A4130.25323 33.78107 0061A5130.27484 33.78085 0061A6130.29645 33.78062 0061A7    |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-  
-
-
-여기에 실존하는 관측점이나 관심 시설의 좌표를 추가하여 관측점 리스트를 완성하면 된다.
-
-제일 아래에 빈 줄이 있으면 인스톨시에 에러가 뜨니 주의할 것
-
-Vs30
-
-extract_Vs30.py
-
-관측 데이터 IM calc
-
-python $gmsim/IM_calculation/IM_calculation/scripts/calculate_ims.py Obs_Acc a -o Obs_IM -np 40 -i Gyeongju -r Gyeongju -t s -c geom -s -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0
 
 
 # 시각화
@@ -635,12 +623,23 @@ Plot_ts
 qsub -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=\`pwd\`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
 
 
+# 관측 데이터
+
+## 관측 데이터 변환
+
+## 관측 데이터 IM calc
+
+python $gmsim/IM_calculation/IM_calculation/scripts/calculate_ims.py Obs_Acc a -o Obs_IM -np 40 -i Gyeongju -r Gyeongju -t s -c geom -s -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0
+
+## 관측 데이터와 시뮬레이션 결과값의 비교
+
+
 # 참고 문헌:
 
 [Ground motion simulation run manual (20p07) - QuakeCoRE: The Centre for Earthquake Resilience - Confluence (canterbury.ac.nz)](https://wiki.canterbury.ac.nz/pages/viewpage.action?pageId=90538503)
 
   
-  
+ 
 
 
 참고: 데이터 이전 이후 망가진 심볼릭 링크 고치는 법
