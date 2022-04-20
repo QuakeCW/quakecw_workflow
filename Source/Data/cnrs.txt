@@ -1,0 +1,10 @@
+> header line here for specifics 
+> This is the standard input file format where the hypocenter is first then for each 
+>Hypocenter (reference??) 
+129.366000 36.109000
+> Below are the corners (first point repeated as fifth to close box 
+129.378146 36.125804
+129.343409 36.102254
+129.353855 36.092196
+129.388591 36.115746
+129.378146 36.125804
