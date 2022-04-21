@@ -243,7 +243,7 @@ output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
 
 ## 시뮬레이션 인스톨
 
-단층 모델과 속도 모델이 준비되어 있다고 가정하고 시뮬레이션 실행법에 대해 기술하겠음. 단층 모델이나 속도 모델이 준비 되지 않았다면, 이 문서의 아랫부분에서 설명할 내용을 따라서 이들을 우선 생성하도록 할것.
+단층 모델과 속도 모델이 준비되어 있다고 가정하고 시뮬레이션 실행법에 대해 기술하겠음. 단층 모델이나 속도 모델이 준비 되지 않았다면, 위에서 서술한 단계를 따라 이들을 우선 생성하도록 할것.
 
 KISTI 누리온 5호기에서 x2319a02계정으로 실행할 것임.
 
@@ -413,6 +413,8 @@ DT: 0.01
                          7.5,
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
+Simulation installed at /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
+Run with : python run_gmsim.sh /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/gmsim.yaml
  
 ```
 
