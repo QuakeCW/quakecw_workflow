@@ -18,7 +18,8 @@ Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어�
 
 ```
 cp /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source/source.yaml /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source/source_Pohang.yaml
-
+```
+이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
 ```
 TYPE: 2
 FAULT: Pohang
