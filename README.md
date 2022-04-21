@@ -194,7 +194,24 @@ Generating velocity model
 위에서 서브밋한 pbs스크립트는 16코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 아래와 같은 파일들이 최종적으로 디렉토리에 상주하게 됨
 
 ```
-(PLACE HOLDER)
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000> tree
+.
+ |-nzvm.cfg
+ |-vm_params2vm_log.txt
+ |-vs3dfile.s
+ |-VeloModCorners.txt
+ |-rho3dfile.d
+ |-vm_params2vm_Busan1000_log.txt
+ |-model_params_rt01-h1.0
+ |-gridfile_rt01-h1.0
+ |-vp3dfile.p
+ |-make_vm.e10083011
+ |-make_vm.o10083011
+ |-vm_params.yaml
+ |-model_coords_rt01-h1.0
+ |-gridout_rt01-h1.0
+ |-model_bounds_rt01-h1.0
+ |-make_vm.pbs
 
 ```
 
