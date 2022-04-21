@@ -97,10 +97,10 @@ def main():
 
     cmd=f"python {params['workflow']}/workflow/automation/install_scripts/install_cybershake.py {sim_root_dir} {sim_root_dir/FAULT_LIST} {Path(params['gmsim_template']).name} --stat_file_path {params['stat_file']} --keep_dup_station"
 
-    if not arg.console:
+    if not args.console:
         env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve()))
         pbs_template = env.get_template(PBS_TEMPLATE)
-        pbs=pbs_template.render(cmd=cmd)
+        pbs=pbs_template.render(name=f"install_{params['fault_name']}", cmd=cmd)
        
         logger.debug(f"{INSTALL_PBS} created") 
         with open(sim_root_dir/INSTALL_PBS,"w") as f:
@@ -153,6 +153,7 @@ def main():
         root_defaults_params=yaml.safe_load(file)
     pprint.pprint(root_defaults_params)
 
-    
+    print(f"Simulation installed at {sim_root_dir}")
+    print(f"Run with : python run_gmsim.sh {Path(args.yaml_file).resolve()}")
 if __name__ == "__main__":
     main()

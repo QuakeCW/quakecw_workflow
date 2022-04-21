@@ -1,4 +1,4 @@
-workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
+an_2km_stats_20220orkflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
 sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
 fault_name: Pohang
 source_data: /scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_v2022_3
@@ -6,8 +6,6 @@ copy_source_data: False
 vm_data: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan_20220324
 copy_vm_data: False
 gmsim_template: /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
-stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll
+stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220422.ll
 n_max_retries: 2
-nzvm: /home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM
-vm_gen_dir:  
 # fault_list file is auto-generated
