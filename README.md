@@ -8,6 +8,221 @@ Korean Ground Motion Simulation @ Nurion
 # 시뮬레이션
 
 
+
+# 인풋 모델 만들기
+
+
+
+## 단층 모델 만들기
+Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
+
+```
+cp /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source/source.yaml /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source/source_Pohang.yaml
+
+```
+TYPE: 2
+FAULT: Pohang
+# latitude (float)
+LAT: 36.109
+# # longitude (float)
+LON: 129.366
+# # depth (float)
+DEPTH: 7
+# # magnitude (float)
+MAG: 5.4
+# # strike (int)
+STK: 230
+# # dip (int)
+DIP: 69
+# # rake (int)
+RAK: 152
+# # rupture timestep
+DT: 0.01
+VELOCITY_MODEL: "/home01/x2319a02/gmsim/VelocityModel/Mod-1D/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_20220421"
+```
+
+아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source> python make_source.py source_Pohang.yaml.yaml
+```
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_20220421> tree
+.
+ |-Stoch
+ | |-Pohang.stoch
+ |-setSrfParams.py
+ |-Srf
+ | |-Pohang.gsf
+ | |-Pohang_square.png
+ | |-Pohang.srf
+ | |-Pohang.info
+ | |-Pohang_map.png
+ | |-Pohang.SEED
+ |-srf_config.py
+ |-createSRF.py
+ |-cnrs.txt
+ |-createSRF_log.txt
+```
+
+
+## 속도 모델 만들기
+
+
+### 준비
+
+NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치는  
+
+
+```
+/home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) (To do: github 에서 maintain)
+```
+
+
+/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang/vm_params.yaml 을 적절히 수정해서 사용 [1]
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/VM> cat vm_params.yaml
+mag: 5.5
+centroidDepth: 4.05399
+MODEL_LAT: 35.5755
+MODEL_LON: 128.9569
+MODEL_ROT: 0.0
+hh: 0.1
+min_vs: 0.2
+model_version: KVM_21p6
+topo_type: BULLDOZED
+output_directory: output
+extracted_slice_parameters_directory: SliceParametersNZ/SliceParametersExtracted.txt
+code: rt
+extent_x: 250
+extent_y: 400
+extent_zmax: 40
+extent_zmin: 0.0
+sim_duration: 60
+flo: 1.0
+nx: 2500
+ny: 4000
+nz: 400
+sufx: _rt01-h0.100
+GRIDFILE: ./gridfile_rt01-h0.100
+GRIDOUT: ./gridout_rt01-h0.100
+MODEL_COORDS: ./model_coords_rt01-h0.100
+MODEL_PARAMS: ./model_params_rt01-h0.100
+MODEL_BOUNDS: ./model_bounds_rt01-h0.100
+```
+[1] 
+* model_version: KVM_21p6은 부산 분지 모델이 들어간 버전임을 의미함. 
+* hh: 0.1은 그리드 간격이 100m를 의미함. 
+* extent_x = hh \* nx
+* extent_y = hh \* ny 
+* (extent_zmax-extent_zmin)=hh\*nz 
+* flo = 0.1 / hh 의 상관 관계가 있으며, 따라서 hh=0.1 --> flo: 1.0, hh=0.4 --> flo: 0.25 
+
+
+### 실행  
+  
+
+
+“Pohang2”라는 모델을 만들기로 함.
+
+만약 가상환경이 활성화가 되지 않은 상황이라면,
+
+activate_env /home01/x2319a02/gmsim/Environments/v211213/
+
+디렉토리로 이동하여 아래 순서들을 진행한 후, make_vm.pbs를 서브밋한다.
+
+cd /scratch/x2319a02/gmsim/Busan_Data/Data/VMs
+
+mkdir Pohang2
+
+cd Pohang2
+
+cp /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang/vm_params.yaml .
+
+(편집, 수정)  
+  
+
+
+cp /scratch/x2319a02/gmsim/Busan_Data/utils/VM/\* .
+
+make_vm.pbs 파일을 체크하고 올바른 버전의 NZVM 바이너리가 사용되는지 확인. Walltime 은 남한 대부분을 커버하는 100m 모델의 경우 10시간 정도 세팅이 적당함
+
+​​  
+  
+
+
+qsub -v REL_NAME=Pohang2,VM_PARAMS_YAML=\`pwd\`/vm_params.yaml,OUTPUT_DIR=\`pwd\` -V /scratch/x2319a02/gmsim/Busan_Data/utils/VM/make_vm.pbs
+
+qsub -v VM_PARAMS_YAML=\`pwd\`/vm_params.yaml,OUTPUT_DIR=\`pwd\`,REL_NAME=Busan -V /scratch/x2319a02/gmsim/Busan_Data/utils/VM/make_vm.pbs
+
+
+### 진행상황 체크
+
+(python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang2> qstat -u $USER
+
+pbs:
+
+Req'd Req'd Elap
+
+Job ID Username Queue Jobname SessID NDS TSK Memory Time S Time
+
+\-------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+
+9180242.pbs x2319a02 normal NZVM 15846 1 68 -- 04:00 R 00:04
+
+Job ID를 참고하여, 현재 $HOME 디렉토리에서 임시로 쓰여지고 있는 아웃풋 파일의 업데이트 상황을 모니터할 수 있다
+
+(python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang2> tail -f $HOME/pbs.9180242.pbs.x8z/9180242.pbs.OU
+
+Completed loading of global surfaces.
+
+Loading basin data.
+
+Loading KVM_21p6 perturbation files.
+
+Completed Loading of perturbation files.
+
+All basin surfaces loaded.
+
+All basin boundaries loaded.
+
+All basin sub model data loaded.
+
+Completed loading basin data.
+
+All global data loaded.
+
+Generating velocity model3% complete.
+
+
+### 생성파일 체크
+
+위에서 서브밋한 pbs스크립트는 64코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 아래와 같은 파일들이 최종적으로 디렉토리에 상주하게 됨
+
+  
+
+
+|  \|-VMs\| \|-Pohang2\| \| \|-vm_params.yaml\| \| \|-nzvm.cfg\| \| \|-vp3dfile.p\| \| \|-vs3dfile.s\| \| \|-rho3dfile.d\| \| \|-in_basin_mask.b\| \| \|-model_bounds_rt01-h0.100\| \| \|-model_coords_rt01-h0.100\| \| \|-model_params_rt01-h0.100\| \| \|-gridfile_rt01-h0.100\| \| \|-gridout_rt01-h0.100\| \| \|-VeloModCorners.txt |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+
+
+## 관측소 리스트 만들기
+
+관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Stations> python make_stations.py ../VM --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --stat_file Busan_2km 
+created temp dir ./tmpyaeod58j
+input .ll file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.ll
+output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
+```
+
+이 스크립트의 첫 인풋 `vm_params.yaml`이 저장되어 있는 디렉터리이다. 옵션으로 실재 관측소 위치 파일 (포맷은 아래 참조)을 `--real_stats`로 추가할 수 있으며, 결과값 파일들이 저장될 디렉토리를 `--outdir`로 지정할 수 있다. (미지정시 현재 위치). 결과 파일이름을 `--stat_file`으로 설정할 수 있다. `Busan_2km.ll`과 `Busan_2km.vs30`가 각각 생성된다. 미지정시 `stats.ll`, `stats.vs30`이 됨.
+
+
 ## 시뮬레이션 인스톨
 
 단층 모델과 속도 모델이 준비되어 있다고 가정하고 시뮬레이션 실행법에 대해 기술하겠음. 단층 모델이나 속도 모델이 준비 되지 않았다면, 이 문서의 아랫부분에서 설명할 내용을 따라서 이들을 우선 생성하도록 할것.
@@ -414,184 +629,6 @@ total 6226180
 
 계산이 모두 끝나면 LF와 HF 모두 결과값이 원하는 포맷과 일치하는지 간단한 검증 과정을 거친다. 통과하면 Complete로 마크되고 그 다음 단계에 계산할 job이 있다면 (이 경우 BB) submit하게 된다.
 
-
-
-# 인풋 모델 만들기
-
-단층, 속도 모델을 만드는 것도 Cybershake 워크플로우에서 커버할 수 있으나, 이 워크플로우는 적은 수의 모델을 실험적으로 생성, 테스트하는 데에는 최적화되어 있지 않으므로, 약간의 수작업을 통해 인풋 모델 만드는 방법을 우선 소개함.
-
-
-## 단층 모델 만들기
-Source 디렉토리의 `source.yaml`을 수정
-
-```
-TYPE: 2
-FAULT: Pohang
-# latitude (float)
-LAT: 36.109
-# # longitude (float)
-LON: 129.366
-# # depth (float)
-DEPTH: 7
-# # magnitude (float)
-MAG: 5.4
-# # strike (int)
-STK: 230
-# # dip (int)
-DIP: 69
-# # rake (int)
-RAK: 152
-# # rupture timestep
-DT: 0.01
-VELOCITY_MODEL: "/home01/x2319a02/gmsim/VelocityModel/Mod-1D/kr_gb_kim2011_modified.1d"
-SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_v2022_3"
-```
-
-아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
-
-```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source> python make_source.py source.yaml
-```
-
-
-
-## 속도 모델 만들기
-
-
-### 준비
-
-NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치는  
-
-
-```
-/home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) (To do: github 에서 maintain)
-```
-  
-
-
-/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang/vm_params.yaml 을 적절히 수정해서 사용
-
-| mag: 5.5centroidDepth: 4.05399MODEL_LAT: 35.5755MODEL_LON: 128.9569MODEL_ROT: 0.0hh: 0.1min_vs: 0.2model_version: KVM_21p6topo_type: BULLDOZEDoutput_directory: outputextracted_slice_parameters_directory: SliceParametersNZ/SliceParametersExtracted.txtcode: rtextent_x: 250extent_y: 400extent_zmax: 40extent_zmin: 0.0sim_duration: 60flo: 1.0nx: 2500ny: 4000nz: 400sufx: \_rt01-h0.100 |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-model_version: KVM_21p6은 부산 분지 모델이 들어간 버전임을 의미함
-
-hh: 0.1은 그리드 간격이 100m를 의미함
-
-extent_x = hh \* nx
-
-extent_y = hh \* ny
-
-extent_zmax-extent_zmin=hh\*nz
-
-의 관계가 있음
-
-flo = 0.1 / hh 의 상관 관계가 있음
-
-hh=0.1 --> flo: 1.0
-
-hh=0.4 --> flo: 0.25
-
-
-### 실행  
-  
-
-
-“Pohang2”라는 모델을 만들기로 함.
-
-만약 가상환경이 활성화가 되지 않은 상황이라면,
-
-activate_env /home01/x2319a02/gmsim/Environments/v211213/
-
-디렉토리로 이동하여 아래 순서들을 진행한 후, make_vm.pbs를 서브밋한다.
-
-cd /scratch/x2319a02/gmsim/Busan_Data/Data/VMs
-
-mkdir Pohang2
-
-cd Pohang2
-
-cp /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang/vm_params.yaml .
-
-(편집, 수정)  
-  
-
-
-cp /scratch/x2319a02/gmsim/Busan_Data/utils/VM/\* .
-
-make_vm.pbs 파일을 체크하고 올바른 버전의 NZVM 바이너리가 사용되는지 확인. Walltime 은 남한 대부분을 커버하는 100m 모델의 경우 10시간 정도 세팅이 적당함
-
-​​  
-  
-
-
-qsub -v REL_NAME=Pohang2,VM_PARAMS_YAML=\`pwd\`/vm_params.yaml,OUTPUT_DIR=\`pwd\` -V /scratch/x2319a02/gmsim/Busan_Data/utils/VM/make_vm.pbs
-
-qsub -v VM_PARAMS_YAML=\`pwd\`/vm_params.yaml,OUTPUT_DIR=\`pwd\`,REL_NAME=Busan -V /scratch/x2319a02/gmsim/Busan_Data/utils/VM/make_vm.pbs
-
-
-### 진행상황 체크
-
-(python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang2> qstat -u $USER
-
-pbs:
-
-Req'd Req'd Elap
-
-Job ID Username Queue Jobname SessID NDS TSK Memory Time S Time
-
-\-------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
-
-9180242.pbs x2319a02 normal NZVM 15846 1 68 -- 04:00 R 00:04
-
-Job ID를 참고하여, 현재 $HOME 디렉토리에서 임시로 쓰여지고 있는 아웃풋 파일의 업데이트 상황을 모니터할 수 있다
-
-(python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang2> tail -f $HOME/pbs.9180242.pbs.x8z/9180242.pbs.OU
-
-Completed loading of global surfaces.
-
-Loading basin data.
-
-Loading KVM_21p6 perturbation files.
-
-Completed Loading of perturbation files.
-
-All basin surfaces loaded.
-
-All basin boundaries loaded.
-
-All basin sub model data loaded.
-
-Completed loading basin data.
-
-All global data loaded.
-
-Generating velocity model3% complete.
-
-
-### 생성파일 체크
-
-위에서 서브밋한 pbs스크립트는 64코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 아래와 같은 파일들이 최종적으로 디렉토리에 상주하게 됨
-
-  
-
-
-|  \|-VMs\| \|-Pohang2\| \| \|-vm_params.yaml\| \| \|-nzvm.cfg\| \| \|-vp3dfile.p\| \| \|-vs3dfile.s\| \| \|-rho3dfile.d\| \| \|-in_basin_mask.b\| \| \|-model_bounds_rt01-h0.100\| \| \|-model_coords_rt01-h0.100\| \| \|-model_params_rt01-h0.100\| \| \|-gridfile_rt01-h0.100\| \| \|-gridout_rt01-h0.100\| \| \|-VeloModCorners.txt |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-
-## 관측소 리스트 만들기
-
-관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
-
-```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Stations> python make_stations.py ../VM --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --stat_file Busan_2km 
-created temp dir ./tmpyaeod58j
-input .ll file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.ll
-output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
-```
-
-이 스크립트의 첫 인풋 `vm_params.yaml`이 저장되어 있는 디렉터리이다. 옵션으로 실재 관측소 위치 파일 (포맷은 아래 참조)을 `--real_stats`로 추가할 수 있으며, 결과값 파일들이 저장될 디렉토리를 `--outdir`로 지정할 수 있다. (미지정시 현재 위치). 결과 파일이름을 `--stat_file`으로 설정할 수 있다. `Busan_2km.ll`과 `Busan_2km.vs30`가 각각 생성된다. 미지정시 `stats.ll`, `stats.vs30`이 됨.
 
 
 
