@@ -1,0 +1,32 @@
+#!/bin/sh
+#PBS -N make_vm
+#PBS -V
+#PBS -q normal
+#PBS -A inhouse
+#PBS -l select=1:ncpus={{ ncores }}:mpiprocs=1:ompthreads={{ ncores }}
+#PBS -l walltime={{ wallclock }}:00:00 
+#PBS -W sandbox=PRIVATE 
+ 
+cd $PBS_O_WORKDIR
+ 
+#just edit vm_paramsl.yaml and run this
+NZVM_path=$HOME/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM #busan basin added
+NZVM_dir=`dirname $NZVM_path`
+cur_dir=`pwd`
+
+export PATH=$NZVM_dir:$PATH
+
+python $gmsim/Pre-processing/VM/vm_params2vm.py -t 64 {{ rel_name }} {{ vm_params_yaml }} -o {{ output_dir }}
+
+chmod g+rwXs -R {{ output_dir }}
+chgrp `id -gn $username` -R {{ output_dir }}
+
+end_time=`date +$runtime_fmt`
+echo $end_time
+
+timestamp=`date +%Y%m%d_%H%M%S`
+#test before update
+#res=`python $gmsim/qcore/qcore/validate_vm.py NZVM {{ output_dir }}`
+#pass=$?
+
+
