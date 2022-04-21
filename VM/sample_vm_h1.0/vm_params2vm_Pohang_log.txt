@@ -1,0 +1,11 @@
+   DEBUG -- 2022-04-20 16:11:33,379 - vm_params2vm.save_nzvm_cfg - Saved nzvm config file to /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/VM/outdir/_tmp_Pohang_lpzdtawd/nzvm.cfg
+   DEBUG -- 2022-04-20 16:11:33,382 - vm_params2vm.gen_vm - Running NZVM binary
+   DEBUG -- 2022-04-20 16:11:33,461 - vm_params2vm.gen_vm - Moving output files to vm directory
+   DEBUG -- 2022-04-20 16:19:16,926 - vm_params2vm.save_nzvm_cfg - Saved nzvm config file to /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/VM/outdir/_tmp_Pohang_5vp_c3lr/nzvm.cfg
+   DEBUG -- 2022-04-20 16:19:16,928 - vm_params2vm.gen_vm - Running NZVM binary
+   DEBUG -- 2022-04-20 16:19:29,337 - vm_params2vm.gen_vm - Moving output files to vm directory
+   DEBUG -- 2022-04-20 16:47:25,676 - vm_params2vm.save_nzvm_cfg - Saved nzvm config file to /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/VM/outdir/_tmp_Pohang_zvqp7q2r/nzvm.cfg
+   DEBUG -- 2022-04-20 16:47:25,682 - vm_params2vm.gen_vm - Running NZVM binary
+   DEBUG -- 2022-04-20 16:48:19,835 - vm_params2vm.gen_vm - Moving output files to vm directory
+   DEBUG -- 2022-04-20 16:48:19,853 - vm_params2vm.gen_vm - Removing Log and Velocity_Model directories
+   DEBUG -- 2022-04-20 16:48:19,896 - vm_params2vm.gen_vm - Generating coords

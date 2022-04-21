@@ -10,13 +10,13 @@ from VM.gen_coords import gen_coords
 def load_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "vm_params_dir",type=str, help="directory containing vm_params.yaml",default="."
+        "vm_params_yaml",type=str, help="Path to vm_params.yaml including file name",default="."
     )
     parser.add_argument(
         "--outdir",type=str, help="directory to write the output ll file",default="."
     )
     parser.add_argument(
-        "--stat_file",type=str, help="name of the output .ll/.vs30 file",default="stats"
+        "--name",type=str, help="name of the output .ll/.vs30 file",default="stats"
     )
     parser.add_argument(
         "--real_stats",type=str,help="Real station file to append to virtual stations. (lon lan name) format each line", default=None)
@@ -72,9 +72,9 @@ if __name__ == '__main__':
         all_stats=pd.concat([stats,real_stats])
         all_stats.lat = all_stats.lat.round(5)
         all_stats.lon = all_stats.lon.round(5)
-        all_stats.to_csv(Path(args.outdir)/f"{args.stat_file}.ll",sep=' ',header=None,index=None)
+        all_stats.to_csv(Path(args.outdir)/f"{args.name}.ll",sep=' ',header=None,index=None)
 
-        res=exe(f"python extract_Vs30.py {Path(args.outdir)/args.stat_file}.ll",debug=False)
+        res=exe(f"python extract_Vs30.py {Path(args.outdir)/args.name}.ll",debug=False)
         print(res[0])
 
 
