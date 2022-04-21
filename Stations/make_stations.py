@@ -23,8 +23,8 @@ def load_args():
 
     args = parser.parse_args()
 
-    vm_params_yaml = Path(args.vm_params_dir)/ "vm_params.yaml"
-    assert(vm_params_yaml.exists())
+    args.vm_params_yaml = Path(args.vm_params_yaml)
+    assert(args.vm_params_yaml.exists())
 
     if args.real_stats is not None:
         args.real_stats=Path(args.real_stats)
@@ -32,7 +32,7 @@ def load_args():
 
     assert(Path(args.outdir).is_dir())
 
-    with open(vm_params_yaml,'r') as file:
+    with open(args.vm_params_yaml,'r') as file:
         args.params=yaml.safe_load(file)
 
     return args
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     params['MODEL_PARAMS'] = params['MODEL_PARAMS'].replace("0.100","2.000")
 
 
-    with tempfile.TemporaryDirectory(dir=args.vm_params_dir) as tmpdir:
+    with tempfile.TemporaryDirectory(dir=args.vm_params_yaml.parent) as tmpdir:
         print('created temp dir', tmpdir)
         new_vm_params_yaml=Path(tmpdir)/"vm_params.yaml"
         with open(new_vm_params_yaml,"w") as file:
