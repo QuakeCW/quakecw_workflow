@@ -124,80 +124,70 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 
 ### 실행  
-  
+
+간단한 예를 보여주기 위해 제공된 vm_params_1000.yaml을 이용하도록 하겠다. 이 속도 모델을 Busan1000이라 부르기로 함. 
 
 
-“Pohang2”라는 모델을 만들기로 함.
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/VM> python make_vm.py vm_params_1000.yaml Busan1000 --outdir /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000 --ncores 16 --wallclock 2
 
-만약 가상환경이 활성화가 되지 않은 상황이라면,
+Created: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000
+Generated: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000/make_vm.pbs
+Copyed vm_params_1000.yaml to /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000
+Submitted: qsub -V /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000/make_vm.pbs
+10082371.pbs
+```
 
-activate_env /home01/x2319a02/gmsim/Environments/v211213/
+ncores은 노드 전체의 경우 68, wallclock 은 남한 대부분을 커버하는 100m 모델의 경우 15시간 정도 세팅이 적당하여 디폴트값으로 정해져 있으나 작은 사이즈의 예시로 사용하기 위해 옵션의 사용법을 제시하였다. 
 
-디렉토리로 이동하여 아래 순서들을 진행한 후, make_vm.pbs를 서브밋한다.
-
-cd /scratch/x2319a02/gmsim/Busan_Data/Data/VMs
-
-mkdir Pohang2
-
-cd Pohang2
-
-cp /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang/vm_params.yaml .
-
-(편집, 수정)  
-  
-
-
-cp /scratch/x2319a02/gmsim/Busan_Data/utils/VM/\* .
-
-make_vm.pbs 파일을 체크하고 올바른 버전의 NZVM 바이너리가 사용되는지 확인. Walltime 은 남한 대부분을 커버하는 100m 모델의 경우 10시간 정도 세팅이 적당함
-
-​​  
-  
-
-
-qsub -v REL_NAME=Pohang2,VM_PARAMS_YAML=\`pwd\`/vm_params.yaml,OUTPUT_DIR=\`pwd\` -V /scratch/x2319a02/gmsim/Busan_Data/utils/VM/make_vm.pbs
-
-qsub -v VM_PARAMS_YAML=\`pwd\`/vm_params.yaml,OUTPUT_DIR=\`pwd\`,REL_NAME=Busan -V /scratch/x2319a02/gmsim/Busan_Data/utils/VM/make_vm.pbs
 
 
 ### 진행상황 체크
 
-(python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang2> qstat -u $USER
+속도 모델 생성 명령어를 실행할 때 사용한 `outdir`로 가 관찰해보겠다.
+```
+cd /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000
+```
+
+아래와 같이 vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트이 위치해있다. 속도 모델이 생성되면 또한 이 곳에 위치하게 될 것이다.
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000> ls -ltr
+total 8
+-rw-rw-r-- 1 x2319a02 rd0624 574 Apr 21 23:11 vm_params_1000.yaml
+-rw-rw-r-- 1 x2319a02 rd0624 896 Apr 21 23:11 make_vm.pbs
+```
+
+현재 진행 상활을 체크해 보도록 한다.
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000> qstat -u $USER
 
 pbs:
-
-Req'd Req'd Elap
-
-Job ID Username Queue Jobname SessID NDS TSK Memory Time S Time
-
-\-------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
-
-9180242.pbs x2319a02 normal NZVM 15846 1 68 -- 04:00 R 00:04
+                                                                 Req'd  Req'd   Elap
+Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
+-------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+10082371.pbs         x2319a02 normal   make_vm       --    1  68    --  02:00 Q   --
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000>
+```
+현재 이 job은 제출되어 대기중인 상태로 (Queued) 정상적으로 진행되면 Q->R (running) -> E (ending) 순으로 진행되는 과정을 볼수 있다. 총 2시간을 요청하였으며, 전체 코어가 68개인 노드에서 계산 될 예정이다 (다만 요청은 위에서 ncores =16으로 하였음) 
 
 Job ID를 참고하여, 현재 $HOME 디렉토리에서 임시로 쓰여지고 있는 아웃풋 파일의 업데이트 상황을 모니터할 수 있다
-
-(python3_nurion) x2319a02@login04:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang2> tail -f $HOME/pbs.9180242.pbs.x8z/9180242.pbs.OU
-
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000> tail -f $HOME/pbs.10082371.pbs.x8z/10082371.pbs.OU
+```
+아래와 같은 내용을 볼 수 있을 것이다.
+```
 Completed loading of global surfaces.
-
 Loading basin data.
-
 Loading KVM_21p6 perturbation files.
-
 Completed Loading of perturbation files.
-
 All basin surfaces loaded.
-
 All basin boundaries loaded.
-
 All basin sub model data loaded.
-
 Completed loading basin data.
-
 All global data loaded.
-
-Generating velocity model3% complete.
-
+Generating velocity model
+3% complete.
+```
 
 ### 생성파일 체크
 
@@ -215,14 +205,26 @@ Generating velocity model3% complete.
 관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Stations> python make_stations.py ../VM --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --stat_file Busan_2km 
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Stations> python make_stations.py ../VM/vm_params.yaml --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --name Busan_2km 
 created temp dir ./tmpyaeod58j
 input .ll file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.ll
 output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
 ```
 
-이 스크립트의 첫 인풋 `vm_params.yaml`이 저장되어 있는 디렉터리이다. 옵션으로 실재 관측소 위치 파일 (포맷은 아래 참조)을 `--real_stats`로 추가할 수 있으며, 결과값 파일들이 저장될 디렉토리를 `--outdir`로 지정할 수 있다. (미지정시 현재 위치). 결과 파일이름을 `--stat_file`으로 설정할 수 있다. `Busan_2km.ll`과 `Busan_2km.vs30`가 각각 생성된다. 미지정시 `stats.ll`, `stats.vs30`이 됨.
+이 스크립트의 첫 인풋 `vm_params.yaml`의 패스는 필수이다. 옵션으로 실재 관측소 위치 파일을 `--real_stats`로 추가할 수 있으며, 결과값 파일들이 저장될 디렉토리를 `--outdir`로 지정할 수 있다. (미지정시 현재 위치). 결과 파일이름을 `--name`으로 설정할 수 있다. `Busan_2km.ll`과 `Busan_2km.vs30`가 각각 생성된다. 미지정시 `stats.ll`, `stats.vs30`이 됨.
 
+실재 관측소 위치 파일은 `realstations_20220420.ll`으로 기본 제공되며, 그 포맷은 아래와 같다.
+```
+127.8790 35.4131 SACA
+127.8946 34.9832 GMNA
+127.9188 35.6140 KCH2
+127.9261 34.8167 NAHA
+127.9441 36.4413 HWSA
+128.0402 35.1642 JINA
+...
+(총 121)
+
+```
 
 ## 시뮬레이션 인스톨
 
