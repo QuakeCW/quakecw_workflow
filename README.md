@@ -692,9 +692,9 @@ qsub -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/
 
 # 관측 데이터
 
-## 관측 데이터 변환
+## 관측 데이터 준비 및 가속도->속도 변환
 관측데이터들은 `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs`에 보관되어 있다. 출처에 따라 KIGAM, KINS, KMA로 나뉘어져 있으며, 그 밑에 Pohang, Gyeongju등의 이벤트로 나뉘어져 있다.
-해당 위치에서 qcore가 요구하는 형태 관측소.{000,090,ver} 포맷으로 전환하고, (예)` 171115_Acc_qcore`, 이들을 통합 저장소인 `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined`의 해당 이벤트에 위치한 `Obs_Acc`로 복사한다. (예) `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc` 끝으로 convert_acc2vel.py 스크립트를 이용해 속도 데이터로 변환한다.
+해당 위치에서 qcore가 요구하는 형태 관측소.{000,090,ver} 포맷으로 전환 (@seokhojeong) 하고, (예)` 171115_Acc_qcore`, 이들을 통합 저장소인 `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined`의 해당 이벤트에 위치한 `Obs_Acc`로 복사한다. (예) `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc` 끝으로 convert_acc2vel.py 스크립트를 이용해 속도 데이터로 변환한다.
 
 ```
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang> python ../../convert_acc2vel.py
@@ -702,8 +702,62 @@ qsub -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/
 ```
 
 ## 관측 데이터 IM calc (업데이트 필요)
+가속도 데이터에서 Intensity measurement들을 계산해 낼 수 있다.
+아래 명령어에서 EVENT를 수정하고 나머지를 복사&붙여넣기하면 됨
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Gyeongju> EVENT=Gyeongju python $gmsim/IM_calculation/IM_calculation/scripts/calculate_ims.py Obs_Acc a -o Obs_IM -i $EVENT -r $EVENT -np 40  -t o -c geom -s -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0 
 
-python $gmsim/IM_calculation/IM_calculation/scripts/calculate_ims.py Obs_Acc a -o Obs_IM -np 40 -i Gyeongju -r Gyeongju -t s -c geom -s -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0
+2022-04-22 13:51:11,678 - IM_Calc started
+Reading waveforms in: g
+2022-04-22 13:51:12,361 - Processing HSB - 2 / 46
+2022-04-22 13:51:12,363 - Processing EUSB - 1 / 46
+2022-04-22 13:51:12,364 - Processing HCNA - 3 / 46
+2022-04-22 13:51:12,365 - Processing JINA - 4 / 46
+2022-04-22 13:51:12,366 - Processing YOCB - 5 / 46
+2022-04-22 13:51:12,368 - Processing PHA2 - 6 / 46
+2022-04-22 13:51:12,368 - Processing HWSB - 7 / 46
+2022-04-22 13:51:12,371 - Processing YGN - 8 / 46
+2022-04-22 13:51:12,371 - Processing BBK - 9 / 46
+2022-04-22 13:51:12,372 - Processing AJD - 10 / 46
+2022-04-22 13:51:12,374 - Processing MIYA - 13 / 46
+2022-04-22 13:51:12,373 - Processing HAK - 11 / 46
+2022-04-22 13:51:12,374 - Processing DOKDO - 12 / 46
+2022-04-22 13:51:12,376 - Processing KJM - 14 / 46
+2022-04-22 13:51:12,377 - Processing JJB - 15 / 46
+2022-04-22 13:51:12,378 - Processing KUJA - 16 / 46
+2022-04-22 13:51:12,379 - Processing JRB - 17 / 46
+2022-04-22 13:51:12,381 - Processing KRN - 18 / 46
+2022-04-22 13:51:12,383 - Processing HDB - 19 / 46
+2022-04-22 13:51:12,384 - Processing BGD - 20 / 46
+2022-04-22 13:51:12,385 - Processing MUN - 21 / 46
+2022-04-22 13:51:12,387 - Processing MAK - 22 / 46
+2022-04-22 13:51:12,387 - Processing KSA - 23 / 46
+2022-04-22 13:51:12,389 - Processing CGD - 24 / 46
+2022-04-22 13:51:12,389 - Processing CHS - 25 / 46
+2022-04-22 13:51:12,391 - Processing NPR - 26 / 46
+2022-04-22 13:51:12,392 - Processing DAG2 - 27 / 46
+2022-04-22 13:51:12,394 - Processing CIGB - 28 / 46
+2022-04-22 13:51:12,396 - Processing KCH2 - 29 / 46
+2022-04-22 13:51:12,397 - Processing DKJ - 31 / 46
+2022-04-22 13:51:12,397 - Processing BRS - 30 / 46
+2022-04-22 13:51:12,398 - Processing ADO2 - 32 / 46
+2022-04-22 13:51:12,400 - Processing GRE - 33 / 46
+2022-04-22 13:51:12,402 - Processing KMC - 34 / 46
+2022-04-22 13:51:12,404 - Processing UCN - 35 / 46
+2022-04-22 13:51:12,405 - Processing HKU - 36 / 46
+2022-04-22 13:51:12,406 - Processing EURB - 37 / 46
+2022-04-22 13:51:12,408 - Processing HACA - 38 / 46
+2022-04-22 13:51:12,411 - Processing BRN - 39 / 46
+2022-04-22 13:51:12,412 - Processing RWD - 40 / 46
+2022-04-22 13:51:12,520 - Processing JSB - 41 / 46
+2022-04-22 13:51:12,529 - Processing WSN - 42 / 46
+2022-04-22 13:51:12,552 - Processing MGB - 43 / 46
+2022-04-22 13:51:12,564 - Processing MKL - 44 / 46
+2022-04-22 13:51:12,565 - Processing GSU - 45 / 46
+2022-04-22 13:51:12,569 - Processing PCH - 46 / 46
+100.0% complete. Time taken for this block:  0.99s. Time elapsed:  0.99s. Time remaining:  0.00s. Total time:  0.99s.
+Calculations are output to Obs_IM
+```
 
 ## 관측 데이터와 시뮬레이션 결과값의 비교 (업데이트 필요)
 
