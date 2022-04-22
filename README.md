@@ -656,20 +656,20 @@ total 6226180
 
 누리온 로긴 노드에서 직접 다양한 지도들을 생성할 수 있다.
 
+### IM_plot (업데이트 필요)
+
 IM_Calculation단계를 거쳐야 함.시뮬레이션 디렉토리에서 IM_calc디렉토리에 \*.csv파일이 존재하는 지 확인할 것.
-
-  
-
 
 IM Calculation 결과와 관측점의 위도/경도를 매칭해서 xyz파일을 생성해낸다.
 
 IM_calc의 parent 디렉토리 (LF,HF,BB등이 있는 곳)로 가서 아래를 실행시킴
 
+```
+
 FAULT=Pohang
-
 REL=Pohang
-
 python $gmsim/visualization/im/spatialise_im.py IM_calc/${REL}.csv ../fd_rt01-h0.100.ll -o plot
+```
 
 위에서 non_uniform_im.xyz파일이 plot이라는 디렉토리에 생성되었을 것임. 아울러 im_order.txt라는 파일도 생겨나는데, 계산된 IM들의 순서가 기록된 파일임.
 
@@ -677,26 +677,15 @@ python $gmsim/visualization/im/spatialise_im.py IM_calc/${REL}.csv ../fd_rt01-h0
 plot 디렉토리에 가서 아래 명령어를 입력. FAULT와 REL을 위처럼 변수로 지정해주면 다른 시뮬레이션 결과값에 대응할 수 있다.  
   
 
-
+```
 cd plot
-
 python $gmsim/visualization/sources/plot_items.py -c**../../../../Data/Sources/${FAULT}/Srf/${REL}.srf** --xyz non_uniform_im.xyz -t **${FAULT}** --xyz-cpt-label \`cat im_order.txt\` -f **${FAULT}** --xyz-landmask --xyz-cpt hot --xyz-transparency 30 --xyz-grid --xyz-grid-contours --xyz-grid-search 12m --xyz-size 1k --xyz-cpt-invert --xyz-model-params **../../../../Data/VMs/${FAULT}/model_params_rt01-h0.100** -n 4
-
-  
-  
-
-
-Plot_ts
-
-자동으로 실행되도록 되어 있으나 (task_config.yaml) 현재 아래 문제로 종종 자동 실행이 안되는 경우가 있음.
-
+```
   
 
+### Plot_ts (업데이트 필요)
 
-| Traceback (most recent call last):File "/home01/x2319a02/gmsim/Environments/v211213//workflow/workflow/automation/execution_scripts/add_to_mgmt_queue.py", line 6, in &lt;module>from workflow.automation.lib.shared_automated_workflow import add_to_queueModuleNotFoundError: No module named 'workflow.automation'    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-
-수동으로 실행해야 할 경우, 인스톨 시킨 디렉토리로 돌아가서 (Runs와 Data디렉토리를 포함한 곳) 아래를 실행
+자동으로 실행되도록 되어 있으나, 수동으로 실행해야 할 경우, 인스톨 시킨 디렉토리로 돌아가서 (Runs와 Data디렉토리를 포함한 곳) 아래를 실행
 
 qsub -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=\`pwd\`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
 
@@ -712,11 +701,11 @@ qsub -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/
 
 ```
 
-## 관측 데이터 IM calc
+## 관측 데이터 IM calc (업데이트 필요)
 
 python $gmsim/IM_calculation/IM_calculation/scripts/calculate_ims.py Obs_Acc a -o Obs_IM -np 40 -i Gyeongju -r Gyeongju -t s -c geom -s -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0
 
-## 관측 데이터와 시뮬레이션 결과값의 비교
+## 관측 데이터와 시뮬레이션 결과값의 비교 (업데이트 필요)
 
 
 # 참고 문헌:
