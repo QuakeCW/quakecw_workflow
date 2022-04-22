@@ -17,7 +17,7 @@ Korean Ground Motion Simulation @ Nurion
 Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
 
 ```
-cp /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source/source.yaml /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source/source_Pohang.yaml
+cp /scratch/x2319a02/gmsim/quakecw_workflow/Source/source.yaml /scratch/x2319a02/gmsim/quakecw_workflow/Source/source_Pohang.yaml
 ```
 이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
 ```
@@ -46,7 +46,7 @@ SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_2022042
 아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source> python make_source.py source_Pohang.yaml.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/Source> python make_source.py source_Pohang.yaml.yaml
 ```
 
 ```
@@ -85,7 +85,7 @@ NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치�
 /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang/vm_params.yaml 을 적절히 수정해서 사용 [1]
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/VM> cat vm_params.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/VM> cat vm_params.yaml
 mag: 5.5
 centroidDepth: 4.05399
 MODEL_LAT: 35.5755
@@ -129,7 +129,7 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/VM> python make_vm.py vm_params_1000.yaml Busan1000 --outdir /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000 --ncores 16 --wallclock 2
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/VM> python make_vm.py vm_params_1000.yaml Busan1000 --outdir /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000 --ncores 16 --wallclock 2
 
 Created: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000
 Generated: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000/make_vm.pbs
@@ -220,7 +220,7 @@ Generating velocity model
 관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Stations> python make_stations.py ../VM/vm_params.yaml --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --name Busan_2km 
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/Stations> python make_stations.py ../VM/vm_params.yaml --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --name Busan_2km 
 created temp dir ./tmpyaeod58j
 input .ll file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.ll
 output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
@@ -414,7 +414,7 @@ DT: 0.01
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
 Simulation installed at /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
-Run with : python run_gmsim.sh /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/gmsim.yaml
+Run with : python run_gmsim.sh /scratch/x2319a02/gmsim/quakecw_workflow/gmsim.yaml
  
 ```
 
@@ -505,7 +505,7 @@ quakecw_workflow 디렉토리 안으로 들어가거나, path를 적절히 보�
 
 스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> ./run_gmsim.sh gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow> ./run_gmsim.sh gmsim.yaml
 sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
 workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
 n_max_retries: 2
@@ -579,7 +579,7 @@ job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자�
 
 #### 전체 상황
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> python check_status.py ./gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow> python check_status.py ./gmsim.yaml
 
 /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/query_mgmt_db.py
                  run_name |         process |     status |   job-id |        last_modified
@@ -595,7 +595,7 @@ ________________________________________________________________________________
 모두 완전하게 끝났다면 아래와 같은 출력물을 볼 수 있다
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> python check_status.py ./gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow> python check_status.py ./gmsim.yaml
                  run_name |         process |     status |   job-id |        last_modified
 _________________________________________________________________________________________________
                    Pohang |          EMOD3D |  completed | 10067167 |  2022-04-18 17:38:53
