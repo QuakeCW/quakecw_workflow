@@ -760,6 +760,22 @@ Calculations are output to Obs_IM
 ```
 
 ## 관측 데이터와 시뮬레이션 결과값의 비교 (업데이트 필요)
+```
+mkdir Pohang_waveforms8
+cp /scratch/x2319a02/gmsim/analysis/* Pohang_waveforms8
+cd Pohang_waveforms8
+ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM
+ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc
+ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Vel
+
+cat RELS.txt (<- edit this)
+Pohang_20220422_sdrop20
+Pohang_20220422_sdrop50
+
+FAULT=Pohang REL=Pohang ./run_waveforms.sh
+FAULT=Pohang REL=Pohang ./run_psa_comparison.sh
+FAULT=Pohang REL=Pohang ./collect_im_plots.sh
+```
 
 
 # 참고 문헌:
