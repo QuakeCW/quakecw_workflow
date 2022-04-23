@@ -17,7 +17,7 @@ Korean Ground Motion Simulation @ Nurion
 Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
 
 ```
-cp /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source/source.yaml /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source/source_Pohang.yaml
+cp /scratch/x2319a02/gmsim/quakecw_workflow/Source/source.yaml /scratch/x2319a02/gmsim/quakecw_workflow/Source/source_Pohang.yaml
 ```
 이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
 ```
@@ -46,7 +46,7 @@ SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_2022042
 아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Source> python make_source.py source_Pohang.yaml.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/Source> python make_source.py source_Pohang.yaml.yaml
 ```
 
 ```
@@ -85,7 +85,7 @@ NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치�
 /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang/vm_params.yaml 을 적절히 수정해서 사용 [1]
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/VM> cat vm_params.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/VM> cat vm_params.yaml
 mag: 5.5
 centroidDepth: 4.05399
 MODEL_LAT: 35.5755
@@ -129,7 +129,7 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/VM> python make_vm.py vm_params_1000.yaml Busan1000 --outdir /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000 --ncores 16 --wallclock 2
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/VM> python make_vm.py vm_params_1000.yaml Busan1000 --outdir /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000 --ncores 16 --wallclock 2
 
 Created: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000
 Generated: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000/make_vm.pbs
@@ -220,7 +220,7 @@ Generating velocity model
 관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/Stations> python make_stations.py ../VM/vm_params.yaml --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --name Busan_2km 
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/Stations> python make_stations.py ../VM/vm_params.yaml --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --name Busan_2km 
 created temp dir ./tmpyaeod58j
 input .ll file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.ll
 output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
@@ -414,7 +414,7 @@ DT: 0.01
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
 Simulation installed at /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
-Run with : python run_gmsim.sh /scratch/x2319a02/gmsim/RunFolder/quakecw_workflow/gmsim.yaml
+Run with : python run_gmsim.sh /scratch/x2319a02/gmsim/quakecw_workflow/gmsim.yaml
  
 ```
 
@@ -505,7 +505,7 @@ quakecw_workflow 디렉토리 안으로 들어가거나, path를 적절히 보�
 
 스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> ./run_gmsim.sh gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow> ./run_gmsim.sh gmsim.yaml
 sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
 workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
 n_max_retries: 2
@@ -579,7 +579,7 @@ job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자�
 
 #### 전체 상황
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> python check_status.py ./gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow> python check_status.py ./gmsim.yaml
 
 /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/query_mgmt_db.py
                  run_name |         process |     status |   job-id |        last_modified
@@ -595,7 +595,7 @@ ________________________________________________________________________________
 모두 완전하게 끝났다면 아래와 같은 출력물을 볼 수 있다
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/quakecw_workflow> python check_status.py ./gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow> python check_status.py ./gmsim.yaml
                  run_name |         process |     status |   job-id |        last_modified
 _________________________________________________________________________________________________
                    Pohang |          EMOD3D |  completed | 10067167 |  2022-04-18 17:38:53
@@ -656,20 +656,20 @@ total 6226180
 
 누리온 로긴 노드에서 직접 다양한 지도들을 생성할 수 있다.
 
+### IM_plot (업데이트 필요)
+
 IM_Calculation단계를 거쳐야 함.시뮬레이션 디렉토리에서 IM_calc디렉토리에 \*.csv파일이 존재하는 지 확인할 것.
-
-  
-
 
 IM Calculation 결과와 관측점의 위도/경도를 매칭해서 xyz파일을 생성해낸다.
 
 IM_calc의 parent 디렉토리 (LF,HF,BB등이 있는 곳)로 가서 아래를 실행시킴
 
+```
+
 FAULT=Pohang
-
 REL=Pohang
-
 python $gmsim/visualization/im/spatialise_im.py IM_calc/${REL}.csv ../fd_rt01-h0.100.ll -o plot
+```
 
 위에서 non_uniform_im.xyz파일이 plot이라는 디렉토리에 생성되었을 것임. 아울러 im_order.txt라는 파일도 생겨나는데, 계산된 IM들의 순서가 기록된 파일임.
 
@@ -677,46 +677,105 @@ python $gmsim/visualization/im/spatialise_im.py IM_calc/${REL}.csv ../fd_rt01-h0
 plot 디렉토리에 가서 아래 명령어를 입력. FAULT와 REL을 위처럼 변수로 지정해주면 다른 시뮬레이션 결과값에 대응할 수 있다.  
   
 
-
+```
 cd plot
-
 python $gmsim/visualization/sources/plot_items.py -c**../../../../Data/Sources/${FAULT}/Srf/${REL}.srf** --xyz non_uniform_im.xyz -t **${FAULT}** --xyz-cpt-label \`cat im_order.txt\` -f **${FAULT}** --xyz-landmask --xyz-cpt hot --xyz-transparency 30 --xyz-grid --xyz-grid-contours --xyz-grid-search 12m --xyz-size 1k --xyz-cpt-invert --xyz-model-params **../../../../Data/VMs/${FAULT}/model_params_rt01-h0.100** -n 4
-
-  
-  
-
-
-Plot_ts
-
-자동으로 실행되도록 되어 있으나 (task_config.yaml) 현재 아래 문제로 종종 자동 실행이 안되는 경우가 있음.
-
+```
   
 
+### Plot_ts (업데이트 필요)
 
-| Traceback (most recent call last):File "/home01/x2319a02/gmsim/Environments/v211213//workflow/workflow/automation/execution_scripts/add_to_mgmt_queue.py", line 6, in &lt;module>from workflow.automation.lib.shared_automated_workflow import add_to_queueModuleNotFoundError: No module named 'workflow.automation'    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-
-수동으로 실행해야 할 경우, 인스톨 시킨 디렉토리로 돌아가서 (Runs와 Data디렉토리를 포함한 곳) 아래를 실행
+자동으로 실행되도록 되어 있으나, 수동으로 실행해야 할 경우, 인스톨 시킨 디렉토리로 돌아가서 (Runs와 Data디렉토리를 포함한 곳) 아래를 실행
 
 qsub -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=\`pwd\`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
 
 
 # 관측 데이터
 
-## 관측 데이터 변환
+## 관측 데이터 준비 및 가속도->속도 변환
 관측데이터들은 `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs`에 보관되어 있다. 출처에 따라 KIGAM, KINS, KMA로 나뉘어져 있으며, 그 밑에 Pohang, Gyeongju등의 이벤트로 나뉘어져 있다.
-해당 위치에서 qcore가 요구하는 형태 관측소.{000,090,ver} 포맷으로 전환하고, (예)` 171115_Acc_qcore`, 이들을 통합 저장소인 `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined`의 해당 이벤트에 위치한 `Obs_Acc`로 복사한다. (예) `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc` 끝으로 convert_acc2vel.py 스크립트를 이용해 속도 데이터로 변환한다.
+해당 위치에서 qcore가 요구하는 형태 관측소.{000,090,ver} 포맷으로 전환 (@seokhojeong) 하고, (예)` 171115_Acc_qcore`, 이들을 통합 저장소인 `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined`의 해당 이벤트에 위치한 `Obs_Acc`로 복사한다. (예) `/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc` 끝으로 convert_acc2vel.py 스크립트를 이용해 속도 데이터로 변환한다.
 
 ```
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang> python ../../convert_acc2vel.py
 
 ```
 
-## 관측 데이터 IM calc
+## 관측 데이터 IM calc (업데이트 필요)
+가속도 데이터에서 Intensity measurement들을 계산해 낼 수 있다.
+아래 명령어에서 EVENT를 수정하고 나머지를 복사&붙여넣기하면 됨
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Gyeongju> EVENT=Gyeongju python $gmsim/IM_calculation/IM_calculation/scripts/calculate_ims.py Obs_Acc a -o Obs_IM -i $EVENT -r $EVENT -np 40  -t o -c geom -s -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0 
 
-python $gmsim/IM_calculation/IM_calculation/scripts/calculate_ims.py Obs_Acc a -o Obs_IM -np 40 -i Gyeongju -r Gyeongju -t s -c geom -s -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0
+2022-04-22 13:51:11,678 - IM_Calc started
+Reading waveforms in: g
+2022-04-22 13:51:12,361 - Processing HSB - 2 / 46
+2022-04-22 13:51:12,363 - Processing EUSB - 1 / 46
+2022-04-22 13:51:12,364 - Processing HCNA - 3 / 46
+2022-04-22 13:51:12,365 - Processing JINA - 4 / 46
+2022-04-22 13:51:12,366 - Processing YOCB - 5 / 46
+2022-04-22 13:51:12,368 - Processing PHA2 - 6 / 46
+2022-04-22 13:51:12,368 - Processing HWSB - 7 / 46
+2022-04-22 13:51:12,371 - Processing YGN - 8 / 46
+2022-04-22 13:51:12,371 - Processing BBK - 9 / 46
+2022-04-22 13:51:12,372 - Processing AJD - 10 / 46
+2022-04-22 13:51:12,374 - Processing MIYA - 13 / 46
+2022-04-22 13:51:12,373 - Processing HAK - 11 / 46
+2022-04-22 13:51:12,374 - Processing DOKDO - 12 / 46
+2022-04-22 13:51:12,376 - Processing KJM - 14 / 46
+2022-04-22 13:51:12,377 - Processing JJB - 15 / 46
+2022-04-22 13:51:12,378 - Processing KUJA - 16 / 46
+2022-04-22 13:51:12,379 - Processing JRB - 17 / 46
+2022-04-22 13:51:12,381 - Processing KRN - 18 / 46
+2022-04-22 13:51:12,383 - Processing HDB - 19 / 46
+2022-04-22 13:51:12,384 - Processing BGD - 20 / 46
+2022-04-22 13:51:12,385 - Processing MUN - 21 / 46
+2022-04-22 13:51:12,387 - Processing MAK - 22 / 46
+2022-04-22 13:51:12,387 - Processing KSA - 23 / 46
+2022-04-22 13:51:12,389 - Processing CGD - 24 / 46
+2022-04-22 13:51:12,389 - Processing CHS - 25 / 46
+2022-04-22 13:51:12,391 - Processing NPR - 26 / 46
+2022-04-22 13:51:12,392 - Processing DAG2 - 27 / 46
+2022-04-22 13:51:12,394 - Processing CIGB - 28 / 46
+2022-04-22 13:51:12,396 - Processing KCH2 - 29 / 46
+2022-04-22 13:51:12,397 - Processing DKJ - 31 / 46
+2022-04-22 13:51:12,397 - Processing BRS - 30 / 46
+2022-04-22 13:51:12,398 - Processing ADO2 - 32 / 46
+2022-04-22 13:51:12,400 - Processing GRE - 33 / 46
+2022-04-22 13:51:12,402 - Processing KMC - 34 / 46
+2022-04-22 13:51:12,404 - Processing UCN - 35 / 46
+2022-04-22 13:51:12,405 - Processing HKU - 36 / 46
+2022-04-22 13:51:12,406 - Processing EURB - 37 / 46
+2022-04-22 13:51:12,408 - Processing HACA - 38 / 46
+2022-04-22 13:51:12,411 - Processing BRN - 39 / 46
+2022-04-22 13:51:12,412 - Processing RWD - 40 / 46
+2022-04-22 13:51:12,520 - Processing JSB - 41 / 46
+2022-04-22 13:51:12,529 - Processing WSN - 42 / 46
+2022-04-22 13:51:12,552 - Processing MGB - 43 / 46
+2022-04-22 13:51:12,564 - Processing MKL - 44 / 46
+2022-04-22 13:51:12,565 - Processing GSU - 45 / 46
+2022-04-22 13:51:12,569 - Processing PCH - 46 / 46
+100.0% complete. Time taken for this block:  0.99s. Time elapsed:  0.99s. Time remaining:  0.00s. Total time:  0.99s.
+Calculations are output to Obs_IM
+```
 
-## 관측 데이터와 시뮬레이션 결과값의 비교
+## 관측 데이터와 시뮬레이션 결과값의 비교 (업데이트 필요)
+```
+mkdir Pohang_waveforms8
+cp /scratch/x2319a02/gmsim/analysis/* Pohang_waveforms8
+cd Pohang_waveforms8
+ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM
+ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc
+ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Vel
+
+cat RELS.txt (<- edit this)
+Pohang_20220422_sdrop20
+Pohang_20220422_sdrop50
+
+FAULT=Pohang REL=Pohang ./run_waveforms.sh
+FAULT=Pohang REL=Pohang ./run_psa_comparison.sh
+FAULT=Pohang REL=Pohang ./collect_im_plots.sh
+```
 
 
 # 참고 문헌:
