@@ -1,0 +1,11 @@
+workflow: /opt/gmsim/Environments/qkorea/workflow
+sim_root_dir: /home/quakekorea/QuakeData/RunFolder/Pohang_20220422
+fault_name: Pohang
+source_data:  /home/quakekorea/QuakeData/Busan_Data/Sources/Pohang
+copy_source_data: False
+vm_data: /home/quakekorea/QuakeData/Busan_Data/VMs/Busan_h1000
+copy_vm_data: False
+gmsim_template: /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0
+stat_file: /home/quakekorea/QuakeData/Busan_Data/Stations/Busan_2km_20220420.ll
+n_max_retries: 2
+# fault_list file is auto-generated
