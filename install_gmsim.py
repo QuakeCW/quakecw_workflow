@@ -154,6 +154,6 @@ def main():
     pprint.pprint(root_defaults_params)
 
     print(f"Simulation installed at {sim_root_dir}")
-    print(f"Run with : python run_gmsim.sh {Path(args.yaml_file).resolve()}")
+    print(f"Run with : ./run_gmsim.sh {Path(args.yaml_file).resolve()}")
 if __name__ == "__main__":
     main()
