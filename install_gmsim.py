@@ -115,7 +115,7 @@ def main():
     else:
         res=exe(cmd,debug=False)
         print(res[0])
-        
+        print(res[1]) 
 
 
     print("================================")
