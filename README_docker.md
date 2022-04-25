@@ -5,7 +5,7 @@ Korean Ground Motion Simulation @ Nurion
 
 배성은(University of Canterbury, QuakeCoRE 소프트웨어 팀장 / 창원대학교 BP Fellow)
 
-# 도코 허브
+# 도커 허브
 
 ```
 docker pull glorykingsman/quakekorea
