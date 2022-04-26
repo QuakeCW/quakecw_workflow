@@ -14,6 +14,9 @@ docker pull glorykingsman/quakekorea
 [1] 종종 도커허브가 Permission Denied같은 에러를 일으키는 경우 (특히 `docker push`시) `docker login -u 사용자ID -p 비밀번호` 명령어를 사용해 도커허브에서 허용한 collaborator 계정으로 다시 로그인해줘야 함.
 리눅스에서 `docker info`같은 기본적인 명령어가 퍼미션 에러를 일으키는 경우, docker 그룹에 현재 사용자가 포함되어 있나 확인할 것
 ```
+(py39) seb56@hypocentre:~$ docker ps -s
+Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?size=1": dial unix /var/run/docker.sock: connect: permission denied
+
 (py39) seb56@hypocentre:~$ sudo usermod -aG docker seb56
 (py39) seb56@hypocentre:~$ groups
 seb56 sudo qcore ucqcore
