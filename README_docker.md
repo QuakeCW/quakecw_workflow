@@ -317,4 +317,8 @@ e71d5994aaeb: Layer already exists
 latest: digest: sha256:8e3f069bf56df43233984cd3acaaeb70b9417db1f4e398043b2209ebf21debb2 size: 3281
 ```
 
+다시 도커 컨테이너 안으로 들어가려면
 
+```
+docker attach e4b218ba9ac9
+```
