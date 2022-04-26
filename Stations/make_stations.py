@@ -30,7 +30,9 @@ def load_args():
         args.real_stats=Path(args.real_stats)
         assert(args.real_stats.exists())
 
-    assert(Path(args.outdir).is_dir())
+    Path(args.outdir).mkdir(parents=True,exist_ok=True)
+
+    #assert(Path(args.outdir).is_dir())
 
     with open(args.vm_params_yaml,'r') as file:
         args.params=yaml.safe_load(file)
