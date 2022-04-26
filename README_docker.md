@@ -93,6 +93,7 @@ surface [WARNING]: Possibly some data were half-way between nodes and subject to
 ```
 
 ## 관측소 리스트
+관측소 리스트는 속도모델을 만드는데 사용한 `vm_params.yaml`을 사용하는데, 속도 모델 도메인 내에 2km단위의 그리드를 만들어 가상의 관측점을 생성해낸다. 추가로 실제 관측소 좌표리스트를 더할 수 있는 옵션 `--real_stats`을 이용하면 차후 관측 데이터와 비교 분석하는데 용이하다.
 ```
 (python3_local) quakekorea@23b6d4e0f021:~/quakecw_workflow/Stations$ python make_stations.py ../VM/sample_vm_h1.0/vm_params.yaml --outdir ~/Busan_Data/Stations/ --real_stats ./realstations_20220420.ll --name Busan_2km
 created temp dir ../VM/sample_vm_h1.0/tmpcexy08p9
@@ -106,7 +107,7 @@ output .v30 file: /home/quakekorea/Busan_Data/Stations/Busan_2km.vs30
 
 첨부된 `gmsim_docker.yaml`을 참고해서 시뮬레이션을 인스톨 하도록 하자.
 이 예에서 hh=1.0을 사용하는 관계로 시뮬레이션에서 LF와 HF의 경계가 되는 주파수 flo가 0.1이 되어야 함 (flo = 0.1/hh). 
-참고로, `gmsim_docker.yaml`에 설정되어 있는 gm_templates의 내용은 아래와 같다.
+참고로, `gmsim_docker.yaml`에 예시로 설정되어 있는 gm_templates은 `Pohang_sdrop50_h1.0` 으로 그 내용은 아래와 같다.
 
 ```
 (python3_local) quakekorea@23b6d4e0f021:~/quakecw_workflow$ cat /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0/root_defaults.yaml
@@ -133,7 +134,7 @@ dt: 0.005
 v_1d_mod: kr_gb_kim2011_modified.1d
 ```
 
-모두 준비되었다면 아래 명령어를 실행시켜 시뮬레이션을 인스톨하도록 하자. 도커 컨테이너에서 인스톨할 때는 반드시 *--console* 옵션을 써야 한다는 점을 유의하도록 한다. 디폴트 작동 방식은 누리온에서 `qsub`를 이용해 인스톨 관련 명령어들을 서브밋하도록 되어 있으나, 도커 이미지안에는 PBS가 없기 때문이다.
+모두 준비되었다면 아래 명령어를 실행시켜 시뮬레이션을 인스톨하도록 하자. 도커 컨테이너에서 인스톨할 때는 반드시 *--console* 옵션을 써야 한다는 점을 유의하도록 한다. 이 옵션을 없에면 디폴트 작동 방식인 `qsub`를 이용한 인스톨 관련 명령어 서브밋을 시도하는데, 도커 이미지안에는 PBS가 없기 때문에 에러가 발생한다.
 
 ```
 (python3_local) quakekorea@23b6d4e0f021:~/QuakeData/quakecw_workflow$ python install_gmsim.py gmsim_docker.yaml --console
