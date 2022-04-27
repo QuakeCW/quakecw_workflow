@@ -31,8 +31,6 @@ e4b218ba9ac9  glorykingsman/quakekorea  “bash”  24 minutes ago  Up 24 minute
 
 # 도커 컨테이너 시작
 
-
-
 ```
 docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea/QuakeData glorykingsman/quakekorea bash
 
@@ -45,6 +43,13 @@ docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea
 
 ```
 ./dockerun.bat
+```
+
+# quakecw_workflow 최신버전 받기
+QuakeData 디렉토리 안에 quakecw_workflow를 최신 버전으로 업데이트 하도록 한다.
+```
+cd ~/QuakeData/quakecw_workflow
+git pull 
 ```
 
 # 시뮬레이션 실행
