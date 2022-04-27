@@ -253,7 +253,6 @@ Run with : ./run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/gmsim_dock
 
 ```
 
-(python3_local) quakekorea@23b6d4e0f021:~/QuakeData/quakecw_workflow$ ./run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/gmsim_docker.yaml
 (python3_local) quakekorea@e4b218ba9ac9:~/quakecw_workflow$ ./run_gmsim.sh gmsim_docker.yaml
 sim_root_dir: /home/quakekorea/QuakeData/RunFolder/Pohang_20220422
 workflow: /opt/gmsim/Environments/qkorea/workflow
