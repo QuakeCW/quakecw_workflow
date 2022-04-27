@@ -37,7 +37,7 @@ e4b218ba9ac9  glorykingsman/quakekorea  “bash”  24 minutes ago  Up 24 minute
 docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea/QuakeData glorykingsman/quakekorea bash
 
 ```
-도커 이미지 속에 quakekorea라는 유저 (UID 1000)와 그룹 (GID 1000)을 만들어두었으며, 이 이미지를 quakekorea 어카운트를 사용하여 실행하도록 강제하였다. 로컨 컴퓨터에 QuakeData라는 디렉토리를 두어 도커 컨테이너에서 억세스할 수 있게 함으로써 시뮬레이션 인풋이나 시뮬레이션 결과값을 저장하는 위치로 사용하도록 한다.
+도커 이미지 속에 quakekorea라는 유저 (UID 1000)와 그룹 (GID 1000)을 만들어두었으며, 이 이미지를 quakekorea 어카운트를 사용하여 실행하도록 강제하였다. 로컬 컴퓨터에 QuakeData라는 디렉토리를 두어 도커 컨테이너에서 억세스할 수 있게 함으로써 시뮬레이션 인풋이나 시뮬레이션 결과값을 저장하는 위치로 사용하도록 한다.
 
 ![QuakeData](https://user-images.githubusercontent.com/466989/165229631-0ab1b399-4963-4cbe-b9de-7a3c3e3f9aa8.png)
 
@@ -48,7 +48,7 @@ docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea
 ```
 
 # 시뮬레이션 실행
-도코 컨테이너 안에서 시뮬레이션을 실행시키는 과정을 서술함. README.md에 있는 내용과 겹치는 내용은 제외하고, 도커 컨테이너의 예외적인 부분에 대해서 중점적으로 다룰 것임.
+도 컨테이너 안에서 시뮬레이션을 실행시키는 과정을 서술함. README.md에 있는 내용과 겹치는 내용은 제외하고, 도커 컨테이너의 예외적인 부분에 대해서 중점적으로 다룰 것임.
 
 ## 단층 모델 (Source)
 Source 디렉토리로 가서 `source_docker.yaml`을 참고/수정한 다음 아래 명령어를 실행시킴
