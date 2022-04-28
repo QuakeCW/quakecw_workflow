@@ -741,7 +741,7 @@ Calculations are output to Obs_IM
 ## 관측 데이터와 시뮬레이션 결과값의 비교 (업데이트 필요)
 ```
 mkdir Pohang_waveforms8
-cp /scratch/x2319a02/gmsim/analysis/* Pohang_waveforms8
+cp //scratch/x2319a02/gmsim/quakecw_workflow/analysis/* Pohang_waveforms8
 cd Pohang_waveforms8
 ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM
 ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc
