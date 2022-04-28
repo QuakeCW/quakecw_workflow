@@ -316,13 +316,17 @@ yaml파일이 스크립트의 유일한 인풋으로, 필요에 따라 여러개
 ```
 Pohang 1r
 
-qsub -V /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/install.pbs
-b'10065872.pbs\n'
-```
-실행되는 과정에서 Pohang 단층의 realisation이 1개 (srf 파일의 갯수를 통해)임을 찾아내었으며, 인스톨하기 위한 명령어를 조합하여 install.pbs라는 PBS스크립트를 만들어 제출하였음을, 그리고, 제출한 job의 ID가 10065872라는 것을 알수 있다.
+2022-04-28 15:49:32,723 - Installing /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/Sources/Pohang/Srf/Pohang.srf
+****************************************************************************************************
+2022-04-28 15:49:32,739 - installing bb
+****************************************************************************************************
+2022-04-28 15:49:32,739 -                                      EMOD3D HF/BB Preparation Ver.slurm
+****************************************************************************************************
+2022-04-28 15:49:32,739 - installing bb finished
+2022-04-28 15:49:32,803 - /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220422.ll
+2022-04-28 15:49:32,803 - From: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220422.ll. To: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.ll
 
-추가로 이 시뮬레이션 셋업에 관한 여러 정보들을 화면에 보여준다.
-```
+
 ================================
              Source
 ================================
@@ -367,8 +371,9 @@ DT: 0.01
  'sufx': '_rt01-h0.100',
  'topo_type': 'BULLDOZED'}
 ================================
-  GMSIM template:/home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
+       GMSIM template
 ================================
+/home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3/root_defaults.yaml
 {'bb': {'fmidbot': 0.5, 'fmin': 0.2, 'no-lf-amp': True},
  'dt': 0.005,
  'emod3d': {'emod3d_version': '3.0.4'},
@@ -414,38 +419,8 @@ DT: 0.01
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
 Simulation installed at /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
-Run with : python run_gmsim.sh /scratch/x2319a02/gmsim/quakecw_workflow/gmsim.yaml
+Run with : ./run_gmsim.sh /scratch/x2319a02/gmsim/quakecw_workflow/gmsim.yaml
  
-```
-
-
-설치 진행 상황은 아래 명령어로 확인할 수 있다.   
-```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417> qstat -u $USER
-
-pbs:
-                                                                 Req'd  Req'd   Elap
-Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
--------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
-10066916.pbs         x2319a02 normal   serial_job  58196   1  68    --  01:00 R 00:05
-```
-
-S 항목의 R는 현재 이 Job이 Queue에 추가되어 실행중인 (Running) 상태임을 의미하며, 정상적인 상황이라면 Q->R->E  (Queued -> Running -> Ending) 순으로 진행된다.
-
-
-Job이 진행되는 과정의 아웃풋은 같은 디렉토리 내의 serial_job.oXXXXXXXX 혹은 serial_job.eXXXXXXXX을 살펴보면 된다.
-
-```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder> cat serial_job.o10065872
-2022-04-18 15:36:18,719 - Installing /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/Sources/Pohang/Srf/Pohang.srf
-****************************************************************************************************
-2022-04-18 15:36:18,779 - installing bb
-****************************************************************************************************
-2022-04-18 15:36:18,780 -                                      EMOD3D HF/BB Preparation Ver.slurm
-****************************************************************************************************
-2022-04-18 15:36:18,780 - installing bb finished
-2022-04-18 15:36:18,866 - /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll
-2022-04-18 15:36:18,867 - From: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll. To: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.ll
 ```
 
 
@@ -557,6 +532,10 @@ Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S 
 10067167.pbs         x2319a02 normal   emod3d.Po*    --   26 17*    --  09:06 Q   --
 10067168.pbs         x2319a02 normal   hf.Pohang   14394   1  68    --  00:30 R 00:01
 ```
+
+
+`-u $USER`는 누리온 슈퍼컴퓨터에 존재하는 모든 작업 중에서 현재 사용자가 제출한 것들만 출력하라는 옵션이다. 현재 두개의 job들, 10067167.pbs, 10067168.pbs가 PBS스케쥴러에 있음을 보여주는데, S 항목의 Q는 이 작업이 추가(Queued)되어 실행 대기중임을, R는 현재 이 실행중인 (Running) 상태임을 의미한다. 정상적인 상황이라면 Q->R->E  (Queued -> Running -> Ending) 순으로 진행된다.
+
 
 `run_gmsim.sh`은 사실 `run_cybershake.py`을 실행하기 쉽도록 가공한 스크립트이다. Cybershake 실행할 때 제공한 task_config.yaml에서 요청한 바에 따라 워크플로우는 인스톨된 단층모델들, Pohang 각 1개씩의 realisation의 저주파(LF, 주로 EMOD3D로 불리움), 고주파(HF), BB (broadband = LF+HF) 등의 job을 누리온에 자동으로 submit하고 각 job의 진행상황을 모니터함과 동시에,의존도가 충족되면 다음 단계의 job을 다시 submit하고 모니터링한다.
 
