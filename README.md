@@ -658,7 +658,7 @@ plot 디렉토리에 가서 아래 명령어를 입력. FAULT와 REL을 위처�
 
 ```
 cd plot
-python $gmsim/visualization/sources/plot_items.py -c**../../../../Data/Sources/${FAULT}/Srf/${REL}.srf** --xyz non_uniform_im.xyz -t **${FAULT}** --xyz-cpt-label \`cat im_order.txt\` -f **${FAULT}** --xyz-landmask --xyz-cpt hot --xyz-transparency 30 --xyz-grid --xyz-grid-contours --xyz-grid-search 12m --xyz-size 1k --xyz-cpt-invert --xyz-model-params **../../../../Data/VMs/${FAULT}/model_params_rt01-h0.100** -n 4
+python $gmsim/visualization/sources/plot_items.py -c ../../../../Data/Sources/${FAULT}/Srf/${REL}.srf --xyz non_uniform_im.xyz -t ${FAULT} --xyz-cpt-label \`cat im_order.txt\` -f ${FAULT} --xyz-landmask --xyz-cpt hot --xyz-transparency 30 --xyz-grid --xyz-grid-contours --xyz-grid-search 12m --xyz-size 1k --xyz-cpt-invert --xyz-model-params ../../../../Data/VMs/${FAULT}/model_params_rt01-h0.100 -n 4
 ```
   
 
