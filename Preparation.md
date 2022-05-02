@@ -76,6 +76,7 @@ nano ~/.bashrc
 아래 내용을 제일 밑바닥에 추가하도록 하자.
 
 ```
+source /home01/x2319a02/gmsim/share/bashrc.uceq
 export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w> '
 export PATH=$PATH:$HOME/gmsim/Environments/nurion/ROOT/bin
 export CWSCRATCH=/scratch/x2319a02/users
