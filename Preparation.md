@@ -78,6 +78,8 @@ nano ~/.bashrc
 ```
 export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w> '
 export PATH=$PATH:/home01/x2319a02/gmsim/Environments/nurion/ROOT/bin
+export CWSCRATCH=/scratch/x2319a02/users
+export MYSCRATCH=/scratch/x2319a02/users/$USER
 alias bash="/bin/bash"
 alias act_env='activate_env /home01/x2319a02/gmsim/Environments/v211213/'
 ```
@@ -87,7 +89,8 @@ alias act_env='activate_env /home01/x2319a02/gmsim/Environments/v211213/'
 x2319a02@login02:~> source ~/.bashrc
 ```
 
-제대로 로딩되었는지 확인하려면 `act_env` 명령어를 실행해본다.
+제대로 로딩되었는지 확인하려면 `act_env` 명령어를 실행해본다. Activate Environment라는 의미를 가진 단축키 (alias)로 `~/.bashrc` 제일 아래에 지정한 내용이다.
+
 ```
 x2319a02@login02:~> act_env
 
@@ -104,3 +107,13 @@ x2319a02@login02:~> act_env
 
 (python3_nurion) x2319a02@login02:~>
 ```
+
+터미널의 프롬프트가 `(python3_nurion) x2319a02@login02:~>` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
+
+마지막으로 `CWSCRATCH` 디렉토리 (`/scratch/x2319a02/users`)에 `MYSCRATCH` 디렉트로리를 만들어주자.
+```
+x2319a02@login02:/scratch/x2319a02/users> mkdir $MYSCRATCH
+x2319a02@login02:/scratch/x2319a02/users> cd $MYSCRATCH
+x2319a02@login02:/scratch/x2319a02/users/x2319a02>
+```
+
