@@ -117,6 +117,7 @@ x2319a02@login02:~> act_env
 
 (python3_nurion) x2319a02@login02:~>
 ```
+실행시 출력되는 내용은 무시해도 무방.
 
 터미널의 프롬프트가 `(python3_nurion) x2319a02@login02:~>` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
 
