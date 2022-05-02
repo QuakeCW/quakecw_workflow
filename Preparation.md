@@ -77,7 +77,7 @@ nano ~/.bashrc
 
 ```
 export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w> '
-export PATH=$PATH:/home01/x2319a02/gmsim/Environments/nurion/ROOT/bin
+export PATH=$PATH:$HOME/gmsim/Environments/nurion/ROOT/bin
 export CWSCRATCH=/scratch/x2319a02/users
 export MYSCRATCH=/scratch/x2319a02/users/$USER
 alias bash="/bin/bash"
@@ -88,6 +88,16 @@ alias act_env='activate_env /home01/x2319a02/gmsim/Environments/v211213/'
 ```
 x2319a02@login02:~> source ~/.bashrc
 ```
+
+### 프로그램 패키지 인스톨
+배성은 (x2319a02)이 2022/05/02 제작한 패키지를 복사해온다.
+
+```
+cd $HOME
+cp /scratch/x2319a02/users/x2319a02/gmsim20220502.tar .
+tar xvf gmsim20220502.tar
+````
+35기가 정도되는 파일로, 시간이 상당히 소요될 수 있다.
 
 제대로 로딩되었는지 확인하려면 `act_env` 명령어를 실행해본다. Activate Environment라는 의미를 가진 단축키 (alias)로 `~/.bashrc` 제일 아래에 지정한 내용이다.
 
@@ -111,6 +121,7 @@ x2319a02@login02:~> act_env
 터미널의 프롬프트가 `(python3_nurion) x2319a02@login02:~>` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
 
 마지막으로 `CWSCRATCH` 디렉토리 (`/scratch/x2319a02/users`)에 `MYSCRATCH` 디렉트로리를 만들어주자.
+
 ```
 x2319a02@login02:/scratch/x2319a02/users> mkdir $MYSCRATCH
 ```
@@ -121,7 +132,7 @@ x2319a02@login02:/scratch/x2319a02/users> cd $MYSCRATCH
 x2319a02@login02:/scratch/x2319a02/users/x2319a02>
 ```
 
-`git clone`명령어로 이 GITHUB 저장소로부터 파일들을 내려받음.
+`git clone` 명령어로 이 GITHUB 저장소로부터 파일들을 내려받음.
 
 ```
 x2319a02@login02:/scratch/x2319a02/users/x2319a02> git clone https://github.com/QuakeCW/quakecw_workflow.git
