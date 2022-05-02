@@ -81,7 +81,7 @@ export PATH=$PATH:$HOME/gmsim/Environments/nurion/ROOT/bin
 export CWSCRATCH=/scratch/x2319a02/users
 export MYSCRATCH=/scratch/x2319a02/users/$USER
 alias bash="/bin/bash"
-alias act_env='activate_env /home01/x2319a02/gmsim/Environments/v211213/'
+alias act_env='activate_env $HOME/gmsim/Environments/v211213/'
 ```
 
 저장하고 `source`명령어를 실행하면 고친 내용이 로딩된다. (다음번 누리온에 로그인하면 자동으로 로딩됨)
