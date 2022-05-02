@@ -113,7 +113,25 @@ x2319a02@login02:~> act_env
 마지막으로 `CWSCRATCH` 디렉토리 (`/scratch/x2319a02/users`)에 `MYSCRATCH` 디렉트로리를 만들어주자.
 ```
 x2319a02@login02:/scratch/x2319a02/users> mkdir $MYSCRATCH
+```
+
+$MYSCRATCH로 이동해간다.
+```
 x2319a02@login02:/scratch/x2319a02/users> cd $MYSCRATCH
+x2319a02@login02:/scratch/x2319a02/users/x2319a02>
+```
+
+`git clone`명령어로 이 GITHUB 저장소로부터 파일들을 내려받음.
+
+```
+x2319a02@login02:/scratch/x2319a02/users/x2319a02> git clone https://github.com/QuakeCW/quakecw_workflow.git
+Cloning into 'quakecw_workflow'...
+remote: Enumerating objects: 268, done.
+remote: Counting objects: 100% (54/54), done.
+remote: Compressing objects: 100% (31/31), done.
+remote: Total 268 (delta 38), reused 23 (delta 23), pack-reused 214
+Receiving objects: 100% (268/268), 33.29 MiB | 9.04 MiB/s, done.
+Resolving deltas: 100% (126/126), done.
 x2319a02@login02:/scratch/x2319a02/users/x2319a02>
 ```
 
