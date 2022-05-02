@@ -94,8 +94,7 @@ x2319a02@login02:~> source ~/.bashrc
 
 ```
 cd $HOME
-cp /scratch/x2319a02/users/x2319a02/gmsim20220502.tar .
-tar xvf gmsim20220502.tar
+tar xvf /scratch/x2319a02/users/x2319a02/gmsim20220502.tar
 ````
 35기가 정도되는 파일로, 시간이 상당히 소요될 수 있다.
 
