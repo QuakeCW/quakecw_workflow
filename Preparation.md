@@ -5,7 +5,7 @@
 
 `nano ~/.ssh/config`
 
-아래 내용을 집어넣고 User 항목에 자신의 유저 어카운트를 넣어준다.
+아래 내용을 집어넣고 User 항목에 자신의 로그인 어카운트 (예: x2319a02) 를 넣어준다.
 ```
 Host *
   ControlMaster auto
@@ -17,25 +17,28 @@ Host *
   ControlPath ~/.ssh/sockets/ssh_mux_%h_%p_%r
   
 Host nurion1
-	User 유저어카운트
+	User 로그인_어카운트
     Hostname 150.183.150.11
 Host nurion2
-	User 유저어카운트
+	User 로그인_어카운트
     Hostname 150.183.150.12
 Host nurion3
-	User 유저어카운트
+	User 로그인_어카운트
     Hostname 150.183.150.13
 Host nurion4
-	User 유저어카운트
+	User 로그인_어카운트
     Hostname 150.183.150.14
 Host nurion
-	User 유저어카운트
+	User 로그인_어카운트
 	Hostname nurion.ksc.re.kr
 Host nurion-dm
-	User 유저어카운트
+	User 로그인_어카운트
 	Hostname nurion-dm.ksc.re.kr
 ```
 
 그리고, `~/.ssh` 아래에 `sockets` 라는 디렉토리를 생성
 
 `mkdir ~/.ssh/sockets`
+
+새로 만든 디렉토리의 권한을 (755)로 설정
+`chmod 755 ~/.ssh/sockets`
