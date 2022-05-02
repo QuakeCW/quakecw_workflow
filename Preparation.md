@@ -43,5 +43,64 @@ Host nurion-dm
 새로 만든 디렉토리의 권한을 (755)로 설정
 `chmod 755 ~/.ssh/sockets`
 
-이제부터, ssh nurion, 혹은 ssh nurion1...4를 사용해서 누리온에 접속할 수 있으며, 터미널 한 곳이라도 연결이 되어 있다면, 다른 터미널에서 OTP와 비밀번호를 넣지 않고도 바로 접속이 가능해짐.
+이제부터, `ssh nurion`, 혹은 `ssh nurion1...4`를 사용해서 누리온에 접속할 수 있으며, 터미널 한 곳이라도 연결이 되어 있다면, 다른 터미널에서 OTP와 비밀번호를 넣지 않고도 바로 접속이 가능해짐. 
 
+```
+ssh nurion
+(x2319a02@150.183.150.12) Password(OTP):
+(x2319a02@150.183.150.12) Password:
+Last failed login: Mon May  2 15:29:22 KST 2022 from 1.219.251.31 on ssh:notty
+There were 10 failed login attempts since the last successful login.
+Last login: Sun May  1 20:35:13 2022 from 161.202.72.155
+================ KISTI 5th NURION System ====================
+ * Any unauthorized attempts to use/access the system can be
+   investigated and prosecuted by the related Act
+   (THE PROTECTION OF INFORMATION AND COMMUNICATIONS INFRASTRUCTURE)
+....
+
+x2319a02@login02:~>
+```
+
+`ssh nurion`이라고 하면 로그인 노드 1번부터 4번 중 하나가 자동 배정되며, `ssh nurion1...4`는 로그인 노드의 하나를 특정해서 접속할 수 있다. 시뮬레이션을 돌릴 때, 특정 노드를 지정하는 것이 편리할 때가 있음.
+
+## 누리온 사용환경 설정
+
+다음은 배성은 (x2319a02)가 구축해 놓은 시뮬레이션 환경을 사용하기 위한 설정이다.
+
+누리온에 로그인해서 ~/.bashrc를 수정한다.
+
+```
+nano ~/.bashrc
+```
+
+아래 내용을 제일 밑바닥에 추가하도록 하자.
+
+```
+export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w> '
+export PATH=$PATH:/home01/x2319a02/gmsim/Environments/nurion/ROOT/bin
+alias bash="/bin/bash"
+alias act_env='activate_env /home01/x2319a02/gmsim/Environments/v211213/'
+```
+
+저장하고 `source`명령어를 실행하면 고친 내용이 로딩된다. (다음번 누리온에 로그인하면 자동으로 로딩됨)
+```
+x2319a02@login02:~> source ~/.bashrc
+```
+
+제대로 로딩되었는지 확인하려면 `act_env` 명령어를 실행해본다.
+```
+x2319a02@login02:~> act_env
+
+ 	'gcc/8.3.0' supports the following modules
+
+	{MPI}
+	'mvapich2/2.3.1' 'mvapich2/2.3.6' 'openmpi/3.1.0'
+
+	{cpu_types}
+	'craype-mic-knl' 'craype-x86-skylake'
+
+	{libraries}
+	'CDO/1.8.2' 'hdf4/4.2.13' 'hdf5/1.10.2' 'lapack/3.7.0' 'libxc/4.0.0' 'libxc/4.3.4' 'NCO/4.7.4' 'NCO/4.9.2' 'ncl/6.5.0' 'ncview/2.1.7' 'netcdf/4.6.1'
+
+(python3_nurion) x2319a02@login02:~>
+```
