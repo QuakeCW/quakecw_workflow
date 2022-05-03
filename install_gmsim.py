@@ -30,7 +30,7 @@ def load_args():
         "yaml_file",type=str, help="gmsim yaml file"
     )
     parser.add_argument(
-        "--console",help="Run directly in console, not submitted as a job", action="store_true")
+        "--pbs",help="Run via PBS scheduler. Does VM validation", action="store_true", default=False)
 
     args = parser.parse_args()
     assert(Path(args.yaml_file).exists())
@@ -97,7 +97,7 @@ def main():
 
     cmd=f"python {params['workflow']}/workflow/automation/install_scripts/install_cybershake.py {sim_root_dir} {sim_root_dir/FAULT_LIST} {Path(params['gmsim_template']).name} --stat_file_path {params['stat_file']} --keep_dup_station"
 
-    if not args.console:
+    if args.pbs:
         env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve()))
         pbs_template = env.get_template(PBS_TEMPLATE)
         pbs=pbs_template.render(name=f"install_{params['fault_name']}", cmd=cmd)
@@ -113,6 +113,7 @@ def main():
         logger.debug(f"{job_id} submitted")
 
     else:
+        cmd += " --skip_validate_vm"
         res=exe(cmd,debug=False)
         print(res[0])
         print(res[1]) 
@@ -123,12 +124,17 @@ def main():
     print("================================")
 
     setSrfParams=source_fault_dir/"setSrfParams.py"
-    assert(setSrfParams.exists())
-    print(setSrfParams)
-    srfParams=load_py_cfg(str(setSrfParams))
-    
-    for p in ['LAT','LON','DEPTH','MAG','STK','DIP','RAK','DT']:
-        print(f"{p}: {srfParams[p]}")
+    try:
+        assert(setSrfParams.exists())
+        print(setSrfParams)
+        srfParams=load_py_cfg(str(setSrfParams))
+    except:
+        print(f"{setSrfParams} is not present")
+    else:
+
+        for p in ['LAT','LON','DEPTH','MAG','STK','DIP','RAK','DT']:
+            print(f"{p}: {srfParams[p]}")
+
 
     print("================================")
     print("             VM")

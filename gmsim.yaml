@@ -1,4 +1,4 @@
-an_2km_stats_20220orkflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
+workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
 sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
 fault_name: Pohang
 source_data: /scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_v2022_3
