@@ -25,8 +25,13 @@ def load_args():
     parser.add_argument(
         "--wallclock",type=int, help="Wallclock limit (1-48)",default=15)
 
+    parser.add_argument(
+        "--pbs_template",type=str, help="PBS script template",default=MAKE_VM_PBS_TEMPLATE)
+
+
     args = parser.parse_args()
     args.vm_params_yaml=Path(args.vm_params_yaml).resolve()
+    #print(args.pbs_template)
     assert(args.vm_params_yaml.exists())
     
 
@@ -46,10 +51,10 @@ if __name__ == '__main__':
     print(f"Copied {args.vm_params_yaml.name} to {outdir}")
 
     env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve()))
-    pbs_template = env.get_template(MAKE_VM_PBS_TEMPLATE)
+    pbs_template = env.get_template(Path(args.vm_params_yaml).resolve())
     pbs=pbs_template.render(ncores=args.ncores,wallclock=f"{args.wallclock:02d}",vm_params_yaml=new_vm_params_yaml,output_dir=outdir,rel_name=args.name)
 
-    MAKE_VM_PBS=MAKE_VM_PBS_TEMPLATE.replace(".template",".pbs")
+    MAKE_VM_PBS=args.pbs_template.replace(".template",".pbs")
     with open(outdir/MAKE_VM_PBS,"w") as f:
         f.write(pbs)
         f.write("\n")
@@ -58,7 +63,7 @@ if __name__ == '__main__':
 
 
     os.chdir(outdir)
-    cmd=f"qsub -V {MAKE_VM_PBS}"
+    cmd=f"qsub -V {outdir/MAKE_VM_PBS}"
     print(f"Submitted: {cmd}")
     res=exe(cmd,debug=False)
     job_id=res[0].strip()
