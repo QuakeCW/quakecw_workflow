@@ -56,10 +56,10 @@ $QUAKECW 디렉토리로 옮겨간다.
 Runs디렉토리 아래에 Pohang 디렉토리를 하나 만들자.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow> cd Runs
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs> mkdir Pohang
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs> cd Pohang
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang>
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow> cd RunFolder
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> mkdir Pohang
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> cd Pohang
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang>
 ```
 
 
@@ -67,14 +67,14 @@ Runs디렉토리 아래에 Pohang 디렉토리를 하나 만들자.
 Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cp $QUAKECW/Source/source.yaml ./source_Pohang.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cp $QUAKECW/Source/source.yaml ./source_Pohang.yaml
 
 ```
 이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
 
 ```
 
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cat source_Pohang.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat source_Pohang.yaml
 TYPE: 2
 FAULT: Pohang
 # latitude (float)
@@ -94,13 +94,13 @@ RAK: 152
 # rupture timestep
 DT: 0.01
 VELOCITY_MODEL: "$QUAKECW/VM/kr_gb_kim2011_modified.1d"
-SOURCE_DATA_DIR: "$QUAKCW/Runs/Pohang/Source"
+SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source"
 ```
 
 .yaml파일내의 $QUAKECW와 같은 변수를 인식하지 못하기 때문에, 실제 경로를 집어넣어줘야 한다. 각 사용자마다 $QUAKECW값이 다르므로, 아래 명령어를 사용해서 출력된 값을 복사/붙여넣기하도록 하겠다.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> echo $QUAKECW
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> echo $QUAKECW
 /scratch/x2319a02/users/x2319a02/quakecw_workflow
 ```
 nano를 사용해 제일 아래 두줄의 $QUAKECW 부분을 붙여넣기로 수정해준 다음 저장.
@@ -136,8 +136,8 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 ```
 위와 같은 내용이 출력되었다면 성공적으로 단층 모델이 만들어졌다. 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cd Source
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/Source> tree
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cd Source
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Source> tree
 .
  |-__pycache__
  | |-srf_config.cpython-37.pyc
@@ -167,16 +167,15 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 
 NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치는  
 
-
 ```
 /home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) (To do: github 에서 maintain)
 ```
 
 
-/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Pohang/vm_params.yaml 을 적절히 수정해서 사용 [1]
+$QUAKE/VM/vm_params.yaml 을 적절히 수정해서 사용 [1]
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/VM> cat vm_params.yaml
+python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat $QUAKECW/VM/vm_params.yaml
 mag: 5.5
 centroidDepth: 4.05399
 MODEL_LAT: 35.5755
@@ -220,13 +219,15 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/VM> python make_vm.py vm_params_1000.yaml Busan1000 --outdir /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000 --ncores 16 --wallclock 2
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
 
-Created: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000
-Generated: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000/make_vm.pbs
-Copyed vm_params_1000.yaml to /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000
-Submitted: qsub -V /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000/make_vm.pbs
-10082371.pbs
+Created: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM
+Loaded: /scratch/x2319a02/users/x2319a02/quakecw_workflow/VM/vm_params_1000.yaml
+Copied vm_params_1000.yaml to /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM
+/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/tmpduik7ld_.template
+Generated: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM/make_vm.pbs
+Submitted: qsub -V /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM/make_vm.pbs
+10082371.pbs 
 ```
 
 ncores은 노드 전체의 경우 68, wallclock 은 남한 대부분을 커버하는 100m 모델의 경우 15시간 정도 세팅이 적당하여 디폴트값으로 정해져 있으나 작은 사이즈의 예시로 사용하기 위해 옵션의 사용법을 제시하였다. 
@@ -235,35 +236,32 @@ ncores은 노드 전체의 경우 68, wallclock 은 남한 대부분을 커버�
 
 ### 진행상황 체크
 
-속도 모델 생성 명령어를 실행할 때 사용한 `outdir`로 가 관찰해보겠다.
+속도 모델 생성 명령어를 실행할 때 `outdir`로 현재 디렉토리의 `VM`을 설정하였다.
 ```
-cd /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cd VM
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> ls
+make_vm.pbs  vm_params.yaml
 ```
 
-아래와 같이 vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트이 위치해있다. 속도 모델이 생성되면 또한 이 곳에 위치하게 될 것이다.
-```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000> ls -ltr
-total 8
--rw-rw-r-- 1 x2319a02 rd0624 574 Apr 21 23:11 vm_params_1000.yaml
--rw-rw-r-- 1 x2319a02 rd0624 896 Apr 21 23:11 make_vm.pbs
-```
+vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트이 위치해있다. 속도 모델이 생성되면 또한 이 곳에 위치하게 될 것이다.
+
 
 현재 진행 상활을 체크해 보도록 한다.
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000> qstat -u $USER
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> qstat -u $USER
 
 pbs:
                                                                  Req'd  Req'd   Elap
 Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 -------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
 10082371.pbs         x2319a02 normal   make_vm       --    1  68    --  02:00 Q   --
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000>
+
 ```
 현재 이 job은 제출되어 대기중인 상태로 (Queued) 정상적으로 진행되면 Q->R (running) -> E (ending) 순으로 진행되는 과정을 볼수 있다. 총 2시간을 요청하였으며, 전체 코어가 68개인 노드에서 계산 될 예정이다 (다만 요청은 위에서 ncores =16으로 하였음) 
 
-Job ID를 참고하여, 현재 $HOME 디렉토리에서 임시로 쓰여지고 있는 아웃풋 파일의 업데이트 상황을 모니터할 수 있다
+`R`로 진행되고 나면 Job ID를 참고하여, 현재 $HOME 디렉토리에서 임시로 쓰여지고 있는 아웃풋 파일의 업데이트 상황을 모니터할 수 있다
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000> tail -f $HOME/pbs.10082371.pbs.x8z/10082371.pbs.OU
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> tail -f $HOME/pbs.10082371.pbs.x8z/10082371.pbs.OU
 ```
 아래와 같은 내용을 볼 수 있을 것이다.
 ```
@@ -285,7 +283,7 @@ Generating velocity model
 위에서 서브밋한 pbs스크립트는 16코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 아래와 같은 파일들이 최종적으로 디렉토리에 상주하게 됨
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan1000> tree
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> tree
 .
  |-nzvm.cfg
  |-vm_params2vm_log.txt
@@ -311,10 +309,10 @@ Generating velocity model
 관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/Stations> python make_stations.py ../VM/vm_params.yaml --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --name Busan_2km 
-created temp dir ./tmpyaeod58j
-input .ll file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.ll
-output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
+created temp dir VM/tmp4x3shtd5
+input .ll file: Stations/Busan_2km.ll
+output .v30 file: Stations/Busan_2km.vs30
 ```
 
 이 스크립트의 첫 인풋 `vm_params.yaml`의 패스는 필수이다. 옵션으로 실재 관측소 위치 파일을 `--real_stats`로 추가할 수 있으며, 결과값 파일들이 저장될 디렉토리를 `--outdir`로 지정할 수 있다. (미지정시 현재 위치). 결과 파일이름을 `--name`으로 설정할 수 있다. `Busan_2km.ll`과 `Busan_2km.vs30`가 각각 생성된다. 미지정시 `stats.ll`, `stats.vs30`이 됨.
@@ -336,22 +334,44 @@ output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
 
 단층 모델과 속도 모델이 준비되어 있다고 가정하고 시뮬레이션 실행법에 대해 기술하겠음. 단층 모델이나 속도 모델이 준비 되지 않았다면, 위에서 서술한 단계를 따라 이들을 우선 생성하도록 할것.
 
-KISTI 누리온 5호기에서 x2319a02계정으로 실행할 것임.
+KISTI 누리온 5호기에서 x2319a02계정으로 실행할 것임. 
 
-이 github 저장소를 클론하면 gmsim.yaml을 볼수 있는데, 이 파일을 템플렛처럼 사용하도록 한다.
+$QUAKECW의 gmsim.yaml을 복사해서 수정해 사용하자.
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cp $QUAKECW/gmsim.yaml gmsim_Pohang.yaml
+```
+
+gmsim_Pohang.yaml에 $HOME, $QUAKECW 변수들을 echo 명령어로 실제 경로를 파악하여 수정, 저장한다.
+
+```
+workflow: $HOME/gmsim/Environments/v211213/workflow
+sim_root_dir: $QUAKECW/RunFolder/Pohang
+fault_name: Pohang
+source_data: $QUAKECW/RunFolder/Pohang/Source
+copy_source_data: False
+vm_data: $QUAKECW/RunFolder/Pohang/VM
+copy_vm_data: False
+gmsim_template: $HOME/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
+stat_file: $QUAKECW/RunFolder/Pohang/Stations/Busan_2km.ll
+n_max_retries: 2
+```
+
+로그인 어카운트가 x2319a02인 사용자의 경우 아래와 같이 저장한다. 
 
 ```
 workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
-sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
+sim_root_dir: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang
 fault_name: Pohang
-source_data: /scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_v2022_3
+source_data: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Source
 copy_source_data: False
-vm_data: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan_20220324
+vm_data: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan_20220324 <-----
 copy_vm_data: False
 gmsim_template: /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
-stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll
+stat_file: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
+특별히 `vm_data`에 유의할 것. 우리가 위에서 생성한 속도모델은 hh=1.0로 지나치게 단순하여, 기존 시뮬레이션에서 주로 사용하는 hh=0.1 속도모델을 사용하기로 한다. 
 
 각각의 변수들을 설명하자면
 1. workflow: slurm_gm_workflow가 인스톨되어 있는 위치
@@ -370,16 +390,14 @@ n_max_retries: 2
 다음 명령어를 실행하셔 screen 안으로 들어간다.
 
 ```
-export TMOUT= #(= 다음에 아무 것도 추가하지 않고 엔터.)
-screen
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> export TMOUT=
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> screen
 ```
 
 가상 환경을 활성화 해준다. (screen 세션이 시작될 때 기존에 있었던 가상 환경이 리셋됨)
 ```
-activate_env /home01/x2319a02/gmsim/Environments/v211213
+x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> act_env
 ```
-`activate_env` 명령어는 /home01/x2319a02/gmsim/share/bashrc.uceq 에 정의되어 있음 
-./bashrc에 `source /home01/x2319a02/gmsim/share/bashrc.uceq` 를 추가하는 것을 추천함.
 
 아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
 
@@ -396,32 +414,35 @@ cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[
 스크립트를 실행시켜 시뮬레이션을 설치
 
 ```
-(python3_nurion) ..> python ./install_gmsim.py ./gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/
+install_gmsim.py gmsim_Pohang.yaml
 ```
 
-yaml파일이 스크립트의 유일한 인풋으로, 필요에 따라 여러개의 yaml파일을 생성해서 사용할 수 있다.
 
 실행 장면
 
 
 ```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/install_gmsim.py gmsim_Pohang.yaml
 Pohang 1r
 
-2022-04-28 15:49:32,723 - Installing /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/Sources/Pohang/Srf/Pohang.srf
+python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/install_scripts/install_cybershake.py /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/fault_list.txt /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3 --stat_file_path /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll --keep_dup_station
+Version path: /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
+2022-05-05 01:55:39,880 - Installing /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/Srf/Pohang.srf
 ****************************************************************************************************
-2022-04-28 15:49:32,739 - installing bb
+2022-05-05 01:55:39,895 - installing bb
 ****************************************************************************************************
-2022-04-28 15:49:32,739 -                                      EMOD3D HF/BB Preparation Ver.slurm
+2022-05-05 01:55:39,896 -                                      EMOD3D HF/BB Preparation Ver.slurm
 ****************************************************************************************************
-2022-04-28 15:49:32,739 - installing bb finished
-2022-04-28 15:49:32,803 - /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220422.ll
-2022-04-28 15:49:32,803 - From: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220422.ll. To: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.ll
+2022-05-05 01:55:39,896 - installing bb finished
+2022-05-05 01:55:40,095 - /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
+2022-05-05 01:55:40,095 - From: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll. To: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.ll
 
 
 ================================
              Source
 ================================
-/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/Sources/Pohang/setSrfParams.py
+/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py
 LAT: 36.109
 LON: 129.366
 DEPTH: 7
@@ -433,7 +454,7 @@ DT: 0.01
 ================================
              VM
 ================================
-/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/VMs/Pohang/vm_params.yaml
+/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Data/VMs/Pohang/vm_params.yaml
 {'GRIDFILE': './gridfile_rt01-h0.100',
  'GRIDOUT': './gridout_rt01-h0.100',
  'MODEL_BOUNDS': './model_bounds_rt01-h0.100',
@@ -509,8 +530,8 @@ DT: 0.01
                          7.5,
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
-Simulation installed at /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
-Run with : ./run_gmsim.sh /scratch/x2319a02/gmsim/quakecw_workflow/gmsim.yaml
+Simulation installed at /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang
+Run with : $QUAKECW/run_gmsim.sh /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml
  
 ```
 
@@ -530,32 +551,38 @@ VM extents not contained within NZVM DEM: 130.306569, 33.771972
 `$gmsim/workflow/workflow/automation/install_scripts/install_cybershake_fault.py` 의 라인 173에서 시뮬레이션 위치가 뉴질랜드 영토인지 체크하는 부분 때문에 에러가 발생한 것으로 코드를 수정하여 무시하도록 하면 됨.
 
 
-시뮬레이션 실행 디렉토리에 인스톨이 끝나면 아래와 같은 디렉토리 구조를 가지게 됨
+시뮬레이션 실행 디렉토리에 인스톨이 끝나면 아래와 같은 디렉토리 구조를 가지게 됨. (Source, VM, Stations를 제외한 모습)
 
 ```
 .
+
  |-slurm_mgmt.db
+ |-Stations
+ | |-Busan_2km.vs30
+ | |-Busan_2km.ll
+ |-source_Pohang.yaml
  |-task_config.yaml
- |-mgmt_db_queue
+ |-master_log_20220504_231859.txt
+ |-queue_monitor_log_20220504_231859.txt
+ |-wrapper_log_20220504_231859.txt
+ |-install_quakecw_log_20220504_233017.txt
+ |-install_cybershake_log_20220504_233137.txt
+ |-main_auto_submit_log_20220504_231859.txt
  |-Data
  | |-Sources
  | | |-Pohang
  | |-VMs
  | | |-Pohang
+ |-gmsim_Pohang.yaml
  |-fault_list.txt
+ |-scheduler_log_20220504_231859.txt
  |-Runs
  | |-Pohang
  | | |-Pohang
  | | | |-LF
  | | | |-HF
  | | | |-IM_calc
- | | | |-sim_params.yaml
  | | | |-BB
- | | |-fd_rt01-h0.100.statcords
- | | |-fd_rt01-h0.100.ll
- | | |-fault_params.yaml
- | |-root_params.yaml
- 
 ```
 
 
@@ -566,47 +593,54 @@ Cybershake 워크플로우를 인스톨하면 자동화 스케쥴러를 사용�
 quakecw_workflow 디렉토리 안으로 들어가거나, path를 적절히 보태어서 아래 명령을 실행한다.
 
 ```
-(python3_nurion) ..> ./run_gmsim.sh ./gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> $QUAKECW/run_gmsim.sh /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml
 ```
 
 스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow> ./run_gmsim.sh gmsim.yaml
-sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
+sim_root_dir: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang
 workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
 n_max_retries: 2
-python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417 x2319a02 /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/task_config.yaml --n_max_retries 2
+python /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang x2319a02 /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/task_config.yaml --n_max_retries 2
+2022-05-05 01:56:24,909 - MainThread - Logger file added
+2022-05-05 01:56:24,919 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.merge_ts: 2>, <ProcessType.plot_ts: 3>, <ProcessType.IM_plot: 7>]
+2022-05-05 01:56:24,923 - MainThread - Created queue_monitor thread
+2022-05-05 01:56:24,923 - MainThread - Created main auto_submit thread
+2022-05-05 01:56:24,924 - MainThread - Started main auto_submit thread
+2022-05-05 01:56:24,924 - queue monitor - Running queue-monitor, exit with Ctrl-C.
+2022-05-05 01:56:24,925 - MainThread - Started queue_monitor thread
+2022-05-05 01:56:24,941 - main auto submit - Loaded root params file: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/root_params.yaml
+2022-05-05 01:56:25,878 - main auto submit - Number of runnable tasks: 2
+2022-05-05 01:56:25,879 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D, Pohang-HF
+2022-05-05 01:56:26,147 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-05-05 01:56:26,151 - queue monitor - No entries in the mgmt db queue.
+submit_time not in proc_Data.keys(),value 2022-05-05_01:56:25
 
-2022-04-18 17:13:46,439 - MainThread - Logger file added
-2022-04-18 17:13:46,449 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.merge_ts: 2>, <ProcessType.plot_ts: 3>, <ProcessType.IM_plot: 7>]
-2022-04-18 17:13:46,453 - MainThread - Created queue_monitor thread
-2022-04-18 17:13:46,454 - MainThread - Created main auto_submit thread
-2022-04-18 17:13:46,455 - MainThread - Started main auto_submit thread
-2022-04-18 17:13:46,455 - queue monitor - Running queue-monitor, exit with Ctrl-C.
-2022-04-18 17:13:46,456 - MainThread - Started queue_monitor thread
-2022-04-18 17:13:46,471 - main auto submit - Loaded root params file: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/root_params.yaml
-2022-04-18 17:13:46,619 - main auto submit - Number of runnable tasks: 2
-2022-04-18 17:13:46,620 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D, Pohang-HF
-2022-04-18 17:13:47,139 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-04-18 17:13:47,143 - queue monitor - No entries in the mgmt db queue.
-submit_time not in proc_Data.keys(),value 2022-04-18_17:13:46
+submit_time not in proc_Data.keys(),value 2022-05-05_01:56:28
 
-submit_time not in proc_Data.keys(),value 2022-04-18_17:13:49
-
-2022-04-18 17:13:52,571 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-04-18 17:13:52,577 - queue monitor - Updating 2 mgmt db tasks.
-2022-04-18 17:13:52,577 - queue monitor - Acquiring db connection.
-2022-04-18 17:13:58,198 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-04-18 17:13:58,199 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-queued, Pohang-HF-10067168-queued
-2022-04-18 17:13:58,202 - queue monitor - No entries in the mgmt db queue.
-2022-04-18 17:14:04,816 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-04-18 17:14:04,818 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-queued, Pohang-HF-10067168-queued
+2022-05-05 01:56:31,917 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-05-05 01:56:31,922 - queue monitor - Updating 2 mgmt db tasks.
+2022-05-05 01:56:31,923 - queue monitor - Acquiring db connection.
+2022-05-05 01:56:37,527 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-05-05 01:56:37,529 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2022-05-05 01:56:37,531 - queue monitor - No entries in the mgmt db queue.
+2022-05-05 01:56:42,848 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-05-05 01:56:42,850 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2022-05-05 01:56:42,852 - queue monitor - No entries in the mgmt db queue.
+2022-05-05 01:56:48,334 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-05-05 01:56:48,336 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2022-05-05 01:56:48,338 - queue monitor - No entries in the mgmt db queue.
+2022-05-05 01:56:53,695 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-05-05 01:56:53,696 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2022-05-05 01:56:53,698 - queue monitor - No entries in the mgmt db queue.
+2022-05-05 01:56:59,031 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2022-05-05 01:56:59,033 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2022-05-05 01:56:59,035 - queue monitor - No entries in the mgmt db queue.
 ....
-2022-04-18 19:30:04,246 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-04-18 19:30:04,248 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-queued, Pohang-HF-10067168-running
-....
-2022-04-18 22:38:01,781 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-04-18 22:38:01,783 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10067167-running
+2022-05-05 02:33:37,033 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-running, Pohang-HF-10170380-running
+2022-05-05 02:33:37,035 - queue monitor - No entries in the mgmt db queue.
+...
+
 ```
 
 
@@ -649,9 +683,7 @@ job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자�
 
 #### 전체 상황
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow> python check_status.py ./gmsim.yaml
-
-/home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/query_mgmt_db.py
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
                  run_name |         process |     status |   job-id |        last_modified
 _________________________________________________________________________________________________
                    Pohang |        merge_ts |    created |     None |  2022-04-17 09:27:24
@@ -665,7 +697,7 @@ ________________________________________________________________________________
 모두 완전하게 끝났다면 아래와 같은 출력물을 볼 수 있다
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow> python check_status.py ./gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
                  run_name |         process |     status |   job-id |        last_modified
 _________________________________________________________________________________________________
                    Pohang |          EMOD3D |  completed | 10067167 |  2022-04-18 17:38:53
@@ -686,7 +718,7 @@ ________________________________________________________________________________
 LF/Rlog디렉토리에 \*.rlog파일이 업데이트 되는 과정을 관찰하면 됨
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang20220328/Runs/Pohang/Pohang/LF/Rlog/tail -f Pohang-00000.rlog
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/LF/Rlog/tail -f Pohang-00000.rlog
 
 ...
     17300     28.43  2578.12   1.00      88.78   0.98         13692.   0.99
@@ -710,7 +742,7 @@ PROGRAM emod3d-mpi IS FINISHED
 HF/Acc에 HF.bin, HF.log 파일 사이즈가 증가하는 것이 관찰되면 정상적으로 작동하고 있다고 짐작할 수 있음
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/RunFolder/Pohang20220328_2/Runs/Pohang/Pohang/HF/Acc> ls -ltr
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
 total 6226180
 -rw-rw-r-- 1 x2319a02 rd0624          8 Mar 28 09:17 SEED
 -rw-rw-r-- 1 x2319a02 rd0624 6358882976 Mar 28 09:27 HF.bin
