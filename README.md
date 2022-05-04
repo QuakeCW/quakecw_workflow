@@ -116,7 +116,7 @@ Plotting SRF as map plot...
 mag= 5.40 median mag= 5.22 nslip= 1 nhypo= 1
 nx= 41 ny= 41 dx=     0.0994 dy=     0.0994
   0:   129.37172    36.10345 41 41     4.0738     4.0738 230.0 69.0     5.0984
-****    16.5000	   16.5000
+\****    16.5000	   16.5000
 ratio (negative slip)/(positive slip)= 0.052228
 mom=   1.41254e+24 avgslip= 26 maxslip= 78
 orig_sigma= 0.264089 ... new_sigma= 0.710031
