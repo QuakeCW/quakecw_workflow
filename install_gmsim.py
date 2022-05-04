@@ -95,7 +95,8 @@ def main():
     shutil.copyfile(Path(__file__).parent.resolve()/TASK_CONFIG,sim_root_dir/TASK_CONFIG)
     logger.debug(f"{TASK_CONFIG} is added to {sim_root_dir}")
 
-    cmd=f"python {params['workflow']}/workflow/automation/install_scripts/install_cybershake.py {sim_root_dir} {sim_root_dir/FAULT_LIST} {Path(params['gmsim_template']).name} --stat_file_path {params['stat_file']} --keep_dup_station"
+    cmd=f"python {params['workflow']}/workflow/automation/install_scripts/install_cybershake.py {sim_root_dir} {sim_root_dir/FAULT_LIST} {Path(params['gmsim_template'])} --stat_file_path {params['stat_file']} --keep_dup_station"
+    print(cmd)
 
     if args.pbs:
         env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve()))
@@ -160,6 +161,6 @@ def main():
     pprint.pprint(root_defaults_params)
 
     print(f"Simulation installed at {sim_root_dir}")
-    print(f"Run with : ./run_gmsim.sh {Path(args.yaml_file).resolve()}")
+    print(f"Run with : $QUAKECW/run_gmsim.sh {Path(args.yaml_file).resolve()}")
 if __name__ == "__main__":
     main()
