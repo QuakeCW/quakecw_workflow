@@ -7,20 +7,72 @@ Korean Ground Motion Simulation @ Nurion
 
 # 시뮬레이션
 
+이 문서를 따르기 전, Preparation.md 페이지를 참조하고 미리 세팅을 해두도록 한다.
+
+누리온에 로그인하고, act_env 명령어로 가상환경을 실행시킨다.
+```
+(!522) $ ssh nurion2
+Last login: Wed May  4 18:43:35 2022 from 116.120.40.87
+================ KISTI 5th NURION System ====================
+ * Any unauthorized attempts to use/access the system can be
+   investigated and prosecuted by the related Act
+   (THE PROTECTION OF INFORMATION AND COMMUNICATIONS INFRASTRUCTURE)
+
+ ....
+Filesystem       KBytes        Quota      Files      Quota
+------------------------------------------------------------
+   /home01       41.24G          64G     140010     200000
+  /scratch       56.46T         100T    1665342    2000000
+============================================================
+
+x2319a02@login02:~> act_env
+
+ 	'gcc/8.3.0' supports the following modules
+
+	{MPI}
+	'mvapich2/2.3.1' 'mvapich2/2.3.6' 'openmpi/3.1.0'
+
+	{cpu_types}
+	'craype-mic-knl' 'craype-x86-skylake'
+
+	{libraries}
+	'CDO/1.8.2' 'hdf4/4.2.13' 'hdf5/1.10.2' 'lapack/3.7.0' 'libxc/4.0.0' 'libxc/4.3.4' 'NCO/4.7.4' 'NCO/4.9.2' 'ncl/6.5.0' 'ncview/2.1.7' 'netcdf/4.6.1'
+
+(python3_nurion) x2319a02@login02:~>
+```
+
+$QUAKECW 디렉토리로 옮겨간다.
+
+```
+(python3_nurion) x2319a02@login02:~> cd $QUAKECW
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow>
+```
 
 
 # 인풋 모델 만들기
 
+이 예제에서 포항지진을 시뮬레이션해보도록 한다.
+
+Runs디렉토리 아래에 Pohang 디렉토리를 하나 만들자.
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow> cd Runs
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs> mkdir Pohang
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs> cd Pohang
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang>
+```
 
 
 ## 단층 모델 만들기
 Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
 
 ```
-cp /scratch/x2319a02/gmsim/quakecw_workflow/Source/source.yaml /scratch/x2319a02/gmsim/quakecw_workflow/Source/source_Pohang.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cp $QUAKECW/Source/source.yaml ./source_Pohang.yaml
+
 ```
 이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
-```
+
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cat source_Pohang.yaml
 TYPE: 2
 FAULT: Pohang
 # latitude (float)
@@ -39,19 +91,55 @@ DIP: 69
 RAK: 152
 # # rupture timestep
 DT: 0.01
-VELOCITY_MODEL: "/home01/x2319a02/gmsim/VelocityModel/Mod-1D/kr_gb_kim2011_modified.1d"
-SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_20220421"
+VELOCITY_MODEL: "$QUAKECW/VM/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "$QUAKCW/Runs/Pohang/Source"
 ```
+
+.yaml파일내의 $QUAKECW와 같은 변수를 인식하지 못하기 때문에, 실제 경로를 집어넣어줘야 한다. 각 사용자마다 $QUAKECW값이 다르므로, 아래 명령어를 사용해서 출력된 값을 복사/붙여넣기하도록 하겠다.
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> echo $QUAKECW
+/scratch/x2319a02/users/x2319a02/quakecw_workflow
+```
+nano를 사용해 제일 아래 두줄의 $QUAKECW 부분을 붙여넣기로 수정해준 다음 저장.
 
 아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/Source> python make_source.py source_Pohang.yaml.yaml
-```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/Source> python $QUAKECW/Source/make_source.py source_Pohang.yaml
+
+Executing createSRF.py
+2022-05-04 20:12:15,905 - Creating SRF with command: /home01/x2319a02/gmsim/opt/nurion/hybrid_sim_tools/current/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/scratch/x2319a02/users/x2319a02/quakecw_workflow/VM/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
+Plotting SRF as square plot...
+Plotting SRF as map plot...
+
+mag= 5.40 median mag= 5.22 nslip= 1 nhypo= 1
+nx= 41 ny= 41 dx=     0.0994 dy=     0.0994
+  0:   129.37172    36.10345 41 41     4.0738     4.0738 230.0 69.0     5.0984
+****    16.5000	   16.5000
+ratio (negative slip)/(positive slip)= 0.052228
+mom=   1.41254e+24 avgslip= 26 maxslip= 78
+orig_sigma= 0.264089 ... new_sigma= 0.710031
+rt_scalefac= 6.097533
+ravg=   1.00000e+00 rmed=   9.99530e-01 rmin=   4.67114e-01 rmax=   1.53759e+00
+target_dx= 2.000000 actual dx= 2.035000
+target_dy= 2.000000 actual dy= 2.035000
+seg= 0
+nstk= 41 nx= 2 nxdiv= 2 nxsum= 41
+ndip= 41 ny= 2 nydiv= 2 nysum= 41
+/home01/x2319a02/gmsim/Environments/v211213/virt_envs/python3_nurion/lib/python3.7/site-packages/shapely/ops.py:42: ShapelyDeprecationWarning: Iteration over multi-part geometries is deprecated and will be removed in Shapely 2.0. Use the `geoms` property to access the constituent parts of a multi-part geometry.
+  source = iter(source)
+WARNING:root:maximum allowed iterations reached while optimizing the alpha parameter
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_20220421> tree
+위와 같은 내용이 출력되었다면 성공적으로 단층 모델이 만들어졌다. 
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cd Source
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/Source> tree
 .
+ |-__pycache__
+ | |-srf_config.cpython-37.pyc
+ | |-setSrfParams.cpython-37.pyc
  |-Stoch
  | |-Pohang.stoch
  |-setSrfParams.py
@@ -66,6 +154,7 @@ SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_2022042
  |-createSRF.py
  |-cnrs.txt
  |-createSRF_log.txt
+
 ```
 
 
