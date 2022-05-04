@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import argparse
 from pathlib import Path
 
-fname_dataset = r"./global_vs30.tif"
+fname_dataset = Path(__file__).parent / "global_vs30.tif"
 
 
 def load_args():

@@ -75,8 +75,9 @@ if __name__ == '__main__':
         all_stats.lat = all_stats.lat.round(5)
         all_stats.lon = all_stats.lon.round(5)
         all_stats.to_csv(Path(args.outdir)/f"{args.name}.ll",sep=' ',header=None,index=None)
-
-        res=exe(f"python extract_Vs30.py {Path(args.outdir)/args.name}.ll",debug=False)
+        cmd=f"python {Path(__file__).parent.resolve()}/extract_Vs30.py {Path(args.outdir)/args.name}.ll"
+        #print(cmd)
+        res=exe(cmd,debug=False)
         print(res[0])
 
 
