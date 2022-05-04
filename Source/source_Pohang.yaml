@@ -1,0 +1,20 @@
+TYPE: 2
+FAULT: Pohang
+# latitude (float)
+LAT: 36.109
+# # longitude (float)
+LON: 129.366
+# # depth (float)
+DEPTH: 5
+# # magnitude (float)
+MAG: 5.4
+# # strike (int)
+STK: 230
+# # dip (int)
+DIP: 69
+# # rake (int)
+RAK: 152
+# # rupture timestep
+DT: 0.01
+VELOCITY_MODEL: "/home01/x2319a02/gmsim/VelocityModel/Mod-1D/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "/scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_20220421" 
