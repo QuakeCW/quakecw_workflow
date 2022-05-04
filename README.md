@@ -56,10 +56,10 @@ $QUAKECW 디렉토리로 옮겨간다.
 Runs디렉토리 아래에 Pohang 디렉토리를 하나 만들자.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow> cd Runs
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs> mkdir Pohang
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs> cd Pohang
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang>
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow> cd RunFolder
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> mkdir Pohang
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> cd Pohang
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang>
 ```
 
 
@@ -67,14 +67,14 @@ Runs디렉토리 아래에 Pohang 디렉토리를 하나 만들자.
 Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cp $QUAKECW/Source/source.yaml ./source_Pohang.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cp $QUAKECW/Source/source.yaml ./source_Pohang.yaml
 
 ```
 이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
 
 ```
 
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cat source_Pohang.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat source_Pohang.yaml
 TYPE: 2
 FAULT: Pohang
 # latitude (float)
@@ -94,13 +94,13 @@ RAK: 152
 # rupture timestep
 DT: 0.01
 VELOCITY_MODEL: "$QUAKECW/VM/kr_gb_kim2011_modified.1d"
-SOURCE_DATA_DIR: "$QUAKCW/Runs/Pohang/Source"
+SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source"
 ```
 
 .yaml파일내의 $QUAKECW와 같은 변수를 인식하지 못하기 때문에, 실제 경로를 집어넣어줘야 한다. 각 사용자마다 $QUAKECW값이 다르므로, 아래 명령어를 사용해서 출력된 값을 복사/붙여넣기하도록 하겠다.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> echo $QUAKECW
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> echo $QUAKECW
 /scratch/x2319a02/users/x2319a02/quakecw_workflow
 ```
 nano를 사용해 제일 아래 두줄의 $QUAKECW 부분을 붙여넣기로 수정해준 다음 저장.
@@ -136,8 +136,8 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 ```
 위와 같은 내용이 출력되었다면 성공적으로 단층 모델이 만들어졌다. 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cd Source
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/Source> tree
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cd Source
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Source> tree
 .
  |-__pycache__
  | |-srf_config.cpython-37.pyc
@@ -175,7 +175,7 @@ NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치�
 $QUAKE/VM/vm_params.yaml 을 적절히 수정해서 사용 [1]
 
 ```
-python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cat $QUAKECW/VM/vm_params.yaml
+python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat $QUAKECW/VM/vm_params.yaml
 mag: 5.5
 centroidDepth: 4.05399
 MODEL_LAT: 35.5755
@@ -219,14 +219,14 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
 
-Created: /scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/VM
+Created: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM
 Loaded: /scratch/x2319a02/users/x2319a02/quakecw_workflow/VM/vm_params_1000.yaml
-Copied vm_params_1000.yaml to /scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/VM
-/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/tmpduik7ld_.template
-Generated: /scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/VM/make_vm.pbs
-Submitted: qsub -V /scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/VM/make_vm.pbs
+Copied vm_params_1000.yaml to /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM
+/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/tmpduik7ld_.template
+Generated: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM/make_vm.pbs
+Submitted: qsub -V /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM/make_vm.pbs
 10082371.pbs 
 ```
 
@@ -238,8 +238,8 @@ ncores은 노드 전체의 경우 68, wallclock 은 남한 대부분을 커버�
 
 속도 모델 생성 명령어를 실행할 때 `outdir`로 현재 디렉토리의 `VM`을 설정하였다.
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cd VM
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/VM> ls
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cd VM
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> ls
 make_vm.pbs  vm_params.yaml
 ```
 
@@ -248,7 +248,7 @@ vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트이 위치�
 
 현재 진행 상활을 체크해 보도록 한다.
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/VM> qstat -u $USER
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> qstat -u $USER
 
 pbs:
                                                                  Req'd  Req'd   Elap
@@ -261,7 +261,7 @@ Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S 
 
 `R`로 진행되고 나면 Job ID를 참고하여, 현재 $HOME 디렉토리에서 임시로 쓰여지고 있는 아웃풋 파일의 업데이트 상황을 모니터할 수 있다
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/VM> tail -f $HOME/pbs.10082371.pbs.x8z/10082371.pbs.OU
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> tail -f $HOME/pbs.10082371.pbs.x8z/10082371.pbs.OU
 ```
 아래와 같은 내용을 볼 수 있을 것이다.
 ```
@@ -283,7 +283,7 @@ Generating velocity model
 위에서 서브밋한 pbs스크립트는 16코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 아래와 같은 파일들이 최종적으로 디렉토리에 상주하게 됨
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang/VM> tree
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> tree
 .
  |-nzvm.cfg
  |-vm_params2vm_log.txt
@@ -309,7 +309,7 @@ Generating velocity model
 관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
 created temp dir VM/tmp4x3shtd5
 input .ll file: Stations/Busan_2km.ll
 output .v30 file: Stations/Busan_2km.vs30
@@ -334,22 +334,44 @@ output .v30 file: Stations/Busan_2km.vs30
 
 단층 모델과 속도 모델이 준비되어 있다고 가정하고 시뮬레이션 실행법에 대해 기술하겠음. 단층 모델이나 속도 모델이 준비 되지 않았다면, 위에서 서술한 단계를 따라 이들을 우선 생성하도록 할것.
 
-KISTI 누리온 5호기에서 x2319a02계정으로 실행할 것임.
+KISTI 누리온 5호기에서 x2319a02계정으로 실행할 것임. 
 
-이 github 저장소를 클론하면 gmsim.yaml을 볼수 있는데, 이 파일을 템플렛처럼 사용하도록 한다.
+$QUAKECW의 gmsim.yaml을 복사해서 수정해 사용하자.
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cp $QUAKECW/gmsim.yaml gmsim_Pohang.yaml
+```
+
+gmsim_Pohang.yaml에 $HOME, $QUAKECW 변수들을 실제 경로로 수정, 저장한다.
+
+```
+workflow: $HOME/gmsim/Environments/v211213/workflow
+sim_root_dir: $QUAKECW/RunFolder/Pohang
+fault_name: Pohang
+source_data: $QUAKECW/RunFolder/Pohang/Source
+copy_source_data: False
+vm_data: $QUAKECW/RunFolder/Pohang/VM
+copy_vm_data: False
+gmsim_template: $HOME/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
+stat_file: $QUAKECW/RunFolder/Pohang/Stations/Busan_2km.ll
+n_max_retries: 2
+```
+
+아래와 같이 저장한다.
 
 ```
 workflow: /home01/x2319a02/gmsim/Environments/v211213/workflow
-sim_root_dir: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
+sim_root_dir: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang
 fault_name: Pohang
-source_data: /scratch/x2319a02/gmsim/Busan_Data/Data/Sources/Pohang_v2022_3
+source_data: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Source
 copy_source_data: False
-vm_data: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan_20220324
+vm_data: /scratch/x2319a02/gmsim/Busan_Data/Data/VMs/Busan_20220324 <-----
 copy_vm_data: False
 gmsim_template: /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
-stat_file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220414.ll
+stat_file: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
+
 
 각각의 변수들을 설명하자면
 1. workflow: slurm_gm_workflow가 인스톨되어 있는 위치
@@ -368,16 +390,14 @@ n_max_retries: 2
 다음 명령어를 실행하셔 screen 안으로 들어간다.
 
 ```
-export TMOUT= #(= 다음에 아무 것도 추가하지 않고 엔터.)
-screen
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> export TMOUT=
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> screen
 ```
 
 가상 환경을 활성화 해준다. (screen 세션이 시작될 때 기존에 있었던 가상 환경이 리셋됨)
 ```
-activate_env /home01/x2319a02/gmsim/Environments/v211213
+x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> act_env
 ```
-`activate_env` 명령어는 /home01/x2319a02/gmsim/share/bashrc.uceq 에 정의되어 있음 
-./bashrc에 `source /home01/x2319a02/gmsim/share/bashrc.uceq` 를 추가하는 것을 추천함.
 
 아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
 
@@ -394,10 +414,10 @@ cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[
 스크립트를 실행시켜 시뮬레이션을 설치
 
 ```
-(python3_nurion) ..> python ./install_gmsim.py ./gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/
+install_gmsim.py gmsim_Pohang.yaml
 ```
 
-yaml파일이 스크립트의 유일한 인풋으로, 필요에 따라 여러개의 yaml파일을 생성해서 사용할 수 있다.
 
 실행 장면
 
@@ -405,21 +425,20 @@ yaml파일이 스크립트의 유일한 인풋으로, 필요에 따라 여러개
 ```
 Pohang 1r
 
-2022-04-28 15:49:32,723 - Installing /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/Sources/Pohang/Srf/Pohang.srf
+2022-05-04 23:17:12,004 - Installing /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/Srf/Pohang.srf
 ****************************************************************************************************
-2022-04-28 15:49:32,739 - installing bb
+2022-05-04 23:17:12,026 - installing bb
 ****************************************************************************************************
-2022-04-28 15:49:32,739 -                                      EMOD3D HF/BB Preparation Ver.slurm
+2022-05-04 23:17:12,026 -                                      EMOD3D HF/BB Preparation Ver.slurm
 ****************************************************************************************************
-2022-04-28 15:49:32,739 - installing bb finished
-2022-04-28 15:49:32,803 - /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220422.ll
-2022-04-28 15:49:32,803 - From: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km_stats_20220422.ll. To: /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Runs/Pohang/fd_rt01-h0.100.ll
+2022-05-04 23:17:12,026 - installing bb finished
+2022-05-04 23:17:12,026 - The parameter 'flo' does not match in the VM params and root params files. Please ensure you are installing the correct gmsim version0.1 1.0
 
 
 ================================
              Source
 ================================
-/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/Sources/Pohang/setSrfParams.py
+/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py
 LAT: 36.109
 LON: 129.366
 DEPTH: 7
@@ -431,33 +450,33 @@ DT: 0.01
 ================================
              VM
 ================================
-/scratch/x2319a02/gmsim/RunFolder/Pohang_20220417/Data/VMs/Pohang/vm_params.yaml
-{'GRIDFILE': './gridfile_rt01-h0.100',
- 'GRIDOUT': './gridout_rt01-h0.100',
- 'MODEL_BOUNDS': './model_bounds_rt01-h0.100',
- 'MODEL_COORDS': './model_coords_rt01-h0.100',
- 'MODEL_LAT': 35.753,
- 'MODEL_LON': 128.4038,
- 'MODEL_PARAMS': './model_params_rt01-h0.100',
+/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Data/VMs/Pohang/vm_params.yaml
+{'GRIDFILE': '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM/gridfile_rt01-h1.0',
+ 'GRIDOUT': '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM/gridout_rt01-h1.0',
+ 'MODEL_BOUNDS': '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM/model_bounds_rt01-h1.0',
+ 'MODEL_COORDS': '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM/model_coords_rt01-h1.0',
+ 'MODEL_LAT': 35.5755,
+ 'MODEL_LON': 128.9569,
+ 'MODEL_PARAMS': '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM/model_params_rt01-h1.0',
  'MODEL_ROT': 0.0,
  'centroidDepth': 4.05399,
  'code': 'rt',
- 'extent_x': 325,
- 'extent_y': 360,
- 'extent_zmax': 68,
+ 'extent_x': 250,
+ 'extent_y': 400,
+ 'extent_zmax': 40,
  'extent_zmin': 0.0,
  'extracted_slice_parameters_directory': 'SliceParametersNZ/SliceParametersExtracted.txt',
- 'flo': 1.0,
- 'hh': 0.1,
+ 'flo': 0.1,
+ 'hh': 1.0,
  'mag': 5.5,
  'min_vs': 0.2,
  'model_version': 'KVM_21p6',
- 'nx': 3250,
- 'ny': 3600,
- 'nz': 680,
+ 'nx': 250,
+ 'ny': 400,
+ 'nz': 40,
  'output_directory': 'output',
- 'sim_duration': 90,
- 'sufx': '_rt01-h0.100',
+ 'sim_duration': 60,
+ 'sufx': '_rt01-h1.0',
  'topo_type': 'BULLDOZED'}
 ================================
        GMSIM template
@@ -507,8 +526,8 @@ DT: 0.01
                          7.5,
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
-Simulation installed at /scratch/x2319a02/gmsim/RunFolder/Pohang_20220417
-Run with : ./run_gmsim.sh /scratch/x2319a02/gmsim/quakecw_workflow/gmsim.yaml
+Simulation installed at /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang
+Run with : $QUAKECW/run_gmsim.sh /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml
  
 ```
 
@@ -528,32 +547,38 @@ VM extents not contained within NZVM DEM: 130.306569, 33.771972
 `$gmsim/workflow/workflow/automation/install_scripts/install_cybershake_fault.py` 의 라인 173에서 시뮬레이션 위치가 뉴질랜드 영토인지 체크하는 부분 때문에 에러가 발생한 것으로 코드를 수정하여 무시하도록 하면 됨.
 
 
-시뮬레이션 실행 디렉토리에 인스톨이 끝나면 아래와 같은 디렉토리 구조를 가지게 됨
+시뮬레이션 실행 디렉토리에 인스톨이 끝나면 아래와 같은 디렉토리 구조를 가지게 됨. (Source, VM, Stations를 제외한 모습)
 
 ```
 .
+
  |-slurm_mgmt.db
+ |-Stations
+ | |-Busan_2km.vs30
+ | |-Busan_2km.ll
+ |-source_Pohang.yaml
  |-task_config.yaml
- |-mgmt_db_queue
+ |-master_log_20220504_231859.txt
+ |-queue_monitor_log_20220504_231859.txt
+ |-wrapper_log_20220504_231859.txt
+ |-install_quakecw_log_20220504_233017.txt
+ |-install_cybershake_log_20220504_233137.txt
+ |-main_auto_submit_log_20220504_231859.txt
  |-Data
  | |-Sources
  | | |-Pohang
  | |-VMs
  | | |-Pohang
+ |-gmsim_Pohang.yaml
  |-fault_list.txt
+ |-scheduler_log_20220504_231859.txt
  |-Runs
  | |-Pohang
  | | |-Pohang
  | | | |-LF
  | | | |-HF
  | | | |-IM_calc
- | | | |-sim_params.yaml
  | | | |-BB
- | | |-fd_rt01-h0.100.statcords
- | | |-fd_rt01-h0.100.ll
- | | |-fault_params.yaml
- | |-root_params.yaml
- 
 ```
 
 
@@ -564,7 +589,7 @@ Cybershake 워크플로우를 인스톨하면 자동화 스케쥴러를 사용�
 quakecw_workflow 디렉토리 안으로 들어가거나, path를 적절히 보태어서 아래 명령을 실행한다.
 
 ```
-(python3_nurion) ..> ./run_gmsim.sh ./gmsim.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> ./run_gmsim.sh /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml
 ```
 
 스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
