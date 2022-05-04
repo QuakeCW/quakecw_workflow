@@ -309,10 +309,10 @@ Generating velocity model
 관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/gmsim/quakecw_workflow/Stations> python make_stations.py ../VM/vm_params.yaml --real_stats /scratch/x2319a02/gmsim/Busan_Data/Stations/realstations_20220324.ll --outdir /scratch/x2319a02/gmsim/Busan_Data/Stations --name Busan_2km 
-created temp dir ./tmpyaeod58j
-input .ll file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.ll
-output .v30 file: /scratch/x2319a02/gmsim/Busan_Data/Stations/Busan_2km.vs30
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
+created temp dir VM/tmp4x3shtd5
+input .ll file: Stations/Busan_2km.ll
+output .v30 file: Stations/Busan_2km.vs30
 ```
 
 이 스크립트의 첫 인풋 `vm_params.yaml`의 패스는 필수이다. 옵션으로 실재 관측소 위치 파일을 `--real_stats`로 추가할 수 있으며, 결과값 파일들이 저장될 디렉토리를 `--outdir`로 지정할 수 있다. (미지정시 현재 위치). 결과 파일이름을 `--name`으로 설정할 수 있다. `Busan_2km.ll`과 `Busan_2km.vs30`가 각각 생성된다. 미지정시 `stats.ll`, `stats.vs30`이 됨.
