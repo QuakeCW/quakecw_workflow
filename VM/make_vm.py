@@ -3,6 +3,7 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from pathlib import Path
 import shutil
+import tempfile
 
 from qcore.shared import exe
 
@@ -26,7 +27,7 @@ def load_args():
         "--wallclock",type=int, help="Wallclock limit (1-48)",default=15)
 
     parser.add_argument(
-        "--pbs_template",type=str, help="PBS script template",default=MAKE_VM_PBS_TEMPLATE)
+        "--pbs_template",type=Path, help="PBS script template",default=Path(__file__).parent.resolve()/MAKE_VM_PBS_TEMPLATE)
 
 
     args = parser.parse_args()
@@ -50,13 +51,23 @@ if __name__ == '__main__':
     shutil.copyfile(args.vm_params_yaml,new_vm_params_yaml)
     print(f"Copied {args.vm_params_yaml.name} to {outdir}")
 
-    env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve()))
-    pbs_template = env.get_template(Path(args.vm_params_yaml).resolve())
-    pbs=pbs_template.render(ncores=args.ncores,wallclock=f"{args.wallclock:02d}",vm_params_yaml=new_vm_params_yaml,output_dir=outdir,rel_name=args.name)
+    # if args.pbs_template is in a different directory, things can get a little messy
+    # we will make a temporary file that is a copy of the original args.pbs_template, 
+    # and 
+    CWD=Path().cwd()
+    temp_handle, temp_template = tempfile.mkstemp(suffix=".template",dir=CWD)
+    print(temp_template)
+    shutil.copyfile(args.pbs_template,temp_template)
 
-    MAKE_VM_PBS=args.pbs_template.replace(".template",".pbs")
+    env = Environment(loader=FileSystemLoader(CWD))
+    pbs_template = env.get_template(Path(temp_template).name) # get_template wants to handle the filename only
+    pbs_script = pbs_template.render(ncores=args.ncores,wallclock=f"{args.wallclock:02d}",vm_params_yaml=new_vm_params_yaml,output_dir=outdir,rel_name=args.name)
+    os.close(temp_handle)
+    os.remove(temp_template)
+
+    MAKE_VM_PBS=str(args.pbs_template.name).replace(".template",".pbs")
     with open(outdir/MAKE_VM_PBS,"w") as f:
-        f.write(pbs)
+        f.write(pbs_script)
         f.write("\n")
 
     print(f"Generated: {outdir/MAKE_VM_PBS}")
