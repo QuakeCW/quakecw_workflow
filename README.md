@@ -72,6 +72,8 @@ Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어�
 ```
 이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
 
+```
+
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cat source_Pohang.yaml
 TYPE: 2
 FAULT: Pohang
