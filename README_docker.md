@@ -7,6 +7,8 @@ Korean Ground Motion Simulation @ Nurion
 
 # 도커 허브
 
+도커 이미지를 최신 버전으로 업데이트 한다.
+
 ```
 docker pull glorykingsman/quakekorea
 ```
@@ -27,17 +29,24 @@ docker sudo seb56 qcore ucqcore
 CONTAINER ID  IMAGE           COMMAND  CREATED     STATUS     PORTS   NAMES       SIZE
 e4b218ba9ac9  glorykingsman/quakekorea  “bash”  24 minutes ago  Up 24 minutes       competent_lamarr  7.85MB (virtual 47.9GB)
 ```
+# QuakeData 다운로드 및 압축 풀기 (최초 한번만)
 
+QuakeData 압축 파일을 다운 받아 압축을 풀어준다. `C:\Users\GloryKim`에 `QuakeData`라는 폴더가 생성되었다고 가정하자. 
+
+다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7VxHP8egankFJLKsw?e=5A5jBP
 
 # 도커 컨테이너 시작
 
+위에서 압축을 푼 `C:\Users\GloryKim\QuakeData`라는 디렉토리를 마운트하면서 도커 컨테이너를 실행시킨다.
 ```
 docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea/QuakeData glorykingsman/quakekorea bash
 
 ```
-도커 이미지 속에 quakekorea라는 유저 (UID 1000)와 그룹 (GID 1000)을 만들어두었으며, 이 이미지를 quakekorea 어카운트를 사용하여 실행하도록 강제하였다. 로컬 컴퓨터에 QuakeData라는 디렉토리를 두어 도커 컨테이너에서 억세스할 수 있게 함으로써 시뮬레이션 인풋이나 시뮬레이션 결과값을 저장하는 위치로 사용하도록 한다.
+도커 이미지 속에 quakekorea라는 유저 (UID 1000)와 그룹 (GID 1000)을 만들어두었으며, 이 이미지를 quakekorea 어카운트를 사용하여 실행하도록 강제하였다. QuakeData 디렉토리를 마운트함으로써 도커 컨테이너와 도커 바깥 환경(윈도우,리눅스)에서 동시에 억세스할 수 있게 된다. 시뮬레이션 인풋이나 시뮬레이션 결과값을 저장하는 위치로 사용하도록 한다.
 
 ![QuakeData](https://user-images.githubusercontent.com/466989/165229631-0ab1b399-4963-4cbe-b9de-7a3c3e3f9aa8.png)
+
+
 
 위 실행 명령어는 배치파일 (or 스크립트)를 만들어 실행시키면 편하다.
 
