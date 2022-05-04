@@ -77,21 +77,21 @@ Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어�
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/Runs/Pohang> cat source_Pohang.yaml
 TYPE: 2
 FAULT: Pohang
-\# latitude (float)
+# latitude (float)
 LAT: 36.109
-\# longitude (float)
+# longitude (float)
 LON: 129.366
-\# depth (float)
+# depth (float)
 DEPTH: 7
-\# magnitude (float)
+# magnitude (float)
 MAG: 5.4
-\# strike (int)
+# strike (int)
 STK: 230
-\# dip (int)
+# dip (int)
 DIP: 69
-\# rake (int)
+# rake (int)
 RAK: 152
-\# rupture timestep
+# rupture timestep
 DT: 0.01
 VELOCITY_MODEL: "$QUAKECW/VM/kr_gb_kim2011_modified.1d"
 SOURCE_DATA_DIR: "$QUAKCW/Runs/Pohang/Source"
@@ -118,7 +118,7 @@ Plotting SRF as map plot...
 mag= 5.40 median mag= 5.22 nslip= 1 nhypo= 1
 nx= 41 ny= 41 dx=     0.0994 dy=     0.0994
   0:   129.37172    36.10345 41 41     4.0738     4.0738 230.0 69.0     5.0984
-\****    16.5000	   16.5000
+****    16.5000	   16.5000
 ratio (negative slip)/(positive slip)= 0.052228
 mom=   1.41254e+24 avgslip= 26 maxslip= 78
 orig_sigma= 0.264089 ... new_sigma= 0.710031
