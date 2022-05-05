@@ -41,6 +41,20 @@ x2319a02@login02:~> act_env
 (python3_nurion) x2319a02@login02:~>
 ```
 
+
+최신 버전 소프트웨어로 업데이트한다.
+
+```
+cd $gmsim
+cd workflow
+git checkout quakecw_changes
+git pull origin quakecw_changes
+
+cd ../qcore
+git pull
+
+```
+
 $QUAKECW 디렉토리로 옮겨간다.
 
 ```
