@@ -45,10 +45,13 @@ x2319a02@login02:~> act_env
 최신 버전 소프트웨어로 업데이트한다.
 
 ```
+cd $QUAKECW
+git pull
+
 cd $gmsim
 cd workflow
 git checkout quakecw_changes
-git pull origin quakecw_changes
+git pull
 
 cd ../qcore
 git pull
