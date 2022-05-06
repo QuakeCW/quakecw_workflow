@@ -262,6 +262,7 @@ Submitted: qsub -V /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/P
 ```
 
 ncores은 노드 전체의 경우 68, wallclock 은 남한 대부분을 커버하는 100m 모델의 경우 15시간 정도 세팅이 적당하여 디폴트값으로 정해져 있으나 작은 사이즈의 예시로 사용하기 위해 옵션의 사용법을 제시하였다. 
+위의 출력값 제일 마지막 줄 10082371.pbs 은 제출한 Job ID를 가리킨다.
 
 
 
@@ -280,6 +281,13 @@ vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트이 위치�
 현재 진행 상활을 체크해 보도록 한다.
 ```
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> qstat -u $USER
+```
+
+혹은
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> qstat 10082371.pbs
+```
+명령어로 특정 Job을 지정해서 볼수도 있다. 보통 `-u $USER`를 쓰는 것을 권장한다.
 
 pbs:
                                                                  Req'd  Req'd   Elap
