@@ -289,6 +289,8 @@ vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트이 위치�
 ```
 명령어로 특정 Job을 지정해서 볼수도 있다. 보통 `-u $USER`를 쓰는 것을 권장한다.
 
+```
+
 pbs:
                                                                  Req'd  Req'd   Elap
 Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
