@@ -149,6 +149,16 @@ Resolving deltas: 100% (126/126), done.
 x2319a02@login02:/scratch/x2319a02/users/x2319a02>
 ```
 
+한국 부산 분지를 포함한 NZVM 패키지를 복사, 압축을 풀어준다.
+
+```
+cp /scratch/x2319a02/users/x2319a02/VM_KVM.tar $MYSCRATCH
+cd $MYSCRATCH
+tar xvf VM_KVM.tar
+cd ~/
+ln -s $MYSCRATCH/VM_KVM
+```
+
 끝으로 global_vs30.tif를 다음 명령어를 사용해 복사해준다.
 
 ```
