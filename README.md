@@ -76,9 +76,10 @@ $QUAKECW 디렉토리로 옮겨간다.
 
 이 예제에서 포항지진을 시뮬레이션해보도록 한다.
 
-Runs디렉토리 아래에 Pohang 디렉토리를 하나 만들자.
+$QUAKECW 디렉토리 아래에 RunFolder 디렉토리, 그리고 그 아래에 Pohang 디렉토리를 하나 만들자.
 
 ```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow> mkdir RunFolder
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow> cd RunFolder
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> mkdir Pohang
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> cd Pohang
