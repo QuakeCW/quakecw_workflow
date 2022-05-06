@@ -50,8 +50,11 @@ git pull
 
 cd $gmsim
 cd workflow
-git checkout quakecw_changes
 git pull
+(
+만약 처음이라면, 이 명령어도 실행시켜준다
+git checkout quakecw_changes
+)
 
 cd ../qcore
 git pull
