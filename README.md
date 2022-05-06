@@ -413,7 +413,7 @@ gmsim_template: /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/ca
 stat_file: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
-특별히 `vm_data`에 유의할 것. 우리가 위에서 생성한 속도모델은 hh=1.0로 지나치게 단순하여, 기존 시뮬레이션에서 주로 사용하는 hh=0.1 속도모델을 사용하기로 한다. 
+특별히 `vm_data`에 유의할 것. 우리가 위에서 생성한 속도모델은 hh=1.0로 지나치게 단순하여, 기존 시뮬레이션에서 주로 사용하는 hh=0.1 속도모델을 사용하기로 한다. *위의 vm_data 내용을 수정하지 말고 그대로 사용하자.*
 
 각각의 변수들을 설명하자면
 1. workflow: slurm_gm_workflow가 인스톨되어 있는 위치
