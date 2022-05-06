@@ -198,14 +198,15 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치는  
 
 ```
-/home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) (To do: github 에서 maintain)
+/home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) 
 ```
-
+이며, 첨부한 make_vm.template에 이 바이너리를 사용하도록 지정되어 있다.
 
 $QUAKE/VM/vm_params.yaml 을 적절히 수정해서 사용 [1]
 
 ```
-python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat $QUAKECW/VM/vm_params.yaml
+python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cp $QUAKECW/VM/vm_params.yaml .
+python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat vm_params.yaml
 mag: 5.5
 centroidDepth: 4.05399
 MODEL_LAT: 35.5755
