@@ -202,11 +202,11 @@ NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치�
 ```
 이며, 첨부한 make_vm.template에 이 바이너리를 사용하도록 지정되어 있다.
 
-$QUAKE/VM/vm_params.yaml 을 적절히 수정해서 사용 [1]
+우선 $QUAKE/VM/vm_params.yaml 의 내용을 보도록 하자 [1]
+
 
 ```
-python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cp $QUAKECW/VM/vm_params.yaml .
-python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat vm_params.yaml
+python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat  $QUAKECW/VM/vm_params.yaml
 mag: 5.5
 centroidDepth: 4.05399
 MODEL_LAT: 35.5755
