@@ -351,6 +351,7 @@ Generating velocity model
 
 ```
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
+
 created temp dir VM/tmp4x3shtd5
 input .ll file: Stations/Busan_2km.ll
 output .v30 file: Stations/Busan_2km.vs30
