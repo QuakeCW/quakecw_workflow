@@ -634,7 +634,7 @@ cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[
 아래 명령을 실행시키자. 혹은 install_gmsim.py의 출력값 제일 아래줄의 명령어를 복사/붙여넣기해도 된다.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> $QUAKECW/run_gmsim.sh /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> $QUAKECW/run_gmsim.sh $QUAKECW/RunFolder/Pohang/gmsim_Pohang.yaml
 ```
 
 스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
