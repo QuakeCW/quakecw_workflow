@@ -117,7 +117,7 @@ DIP: 69
 RAK: 152
 # rupture timestep
 DT: 0.01
-VELOCITY_MODEL: "$QUAKECW/VM/kr_gb_kim2011_modified.1d" <====== 수정 필요
+VELOCITY_MODEL: "$QUAKECW/Source/kr_gb_kim2011_modified.1d" <====== 수정 필요
 SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source" <====== 수정 필요
 ```
 
