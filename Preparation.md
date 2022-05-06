@@ -159,6 +159,11 @@ cd ~/
 ln -s $MYSCRATCH/VM_KVM
 ```
 
+`ls -al`해서 아래와 같은 라인이 보이면 잘되었음을 의미한다.
+```
+lrwxrwxrwx    1 x2319a02 rd0624     35 Mar 15 02:07 VM_KVM -> /scratch/x2319a02/users/x2319a02/VM_KVM
+```
+
 끝으로 global_vs30.tif를 다음 명령어를 사용해 복사해준다.
 
 ```
