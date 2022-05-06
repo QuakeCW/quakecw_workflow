@@ -81,6 +81,7 @@ export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w> '
 export PATH=$PATH:$HOME/gmsim/Environments/nurion/ROOT/bin
 export CWSCRATCH=/scratch/x2319a02/users
 export MYSCRATCH=/scratch/x2319a02/users/$USER
+export QUAKECW=$MYSCRATCH/quakecw_workflow 
 alias bash="/bin/bash"
 alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
 alias act_env='activate_env $HOME/gmsim/Environments/v211213/'
