@@ -117,8 +117,8 @@ DIP: 69
 RAK: 152
 # rupture timestep
 DT: 0.01
-VELOCITY_MODEL: "$QUAKECW/VM/kr_gb_kim2011_modified.1d"
-SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source"
+VELOCITY_MODEL: "$QUAKECW/VM/kr_gb_kim2011_modified.1d" <====== 수정 필요
+SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source" <====== 수정 필요
 ```
 
 .yaml파일내의 $QUAKECW와 같은 변수를 인식하지 못하기 때문에, 실제 경로를 집어넣어줘야 한다. 각 사용자마다 $QUAKECW값이 다르므로, 아래 명령어를 사용해서 출력된 값을 복사/붙여넣기하도록 하겠다.
@@ -127,7 +127,13 @@ SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source"
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> echo $QUAKECW
 /scratch/x2319a02/users/x2319a02/quakecw_workflow
 ```
-nano를 사용해 제일 아래 두줄의 $QUAKECW 부분을 붙여넣기로 수정해준 다음 저장.
+nano를 사용해 source_Pohang.yaml 제일 아래 두줄의 $QUAKECW 부분을 붙여넣기로 수정해준 다음 저장.
+
+수정 후 
+```
+VELOCITY_MODEL: "/scratch/x2319a02/users/x2319a02/quakecw_workflow/VM/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Source"
+```
 
 아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
 
