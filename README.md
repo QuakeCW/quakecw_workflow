@@ -41,6 +41,29 @@ x2319a02@login02:~> act_env
 (python3_nurion) x2319a02@login02:~>
 ```
 
+
+최신 버전 소프트웨어로 업데이트한다.
+
+```
+cd $QUAKECW
+git pull
+
+cd $gmsim
+cd workflow
+git pull
+(
+만약 처음이라면, 이 명령어도 실행시켜준다
+git checkout quakecw_changes
+
+만약 문제가 있으면
+git reset --hard를 먼저 실행시키고, 다시 위의 git checkout을 시도
+)
+
+cd ../qcore
+git pull
+
+```
+
 $QUAKECW 디렉토리로 옮겨간다.
 
 ```
@@ -53,9 +76,10 @@ $QUAKECW 디렉토리로 옮겨간다.
 
 이 예제에서 포항지진을 시뮬레이션해보도록 한다.
 
-Runs디렉토리 아래에 Pohang 디렉토리를 하나 만들자.
+$QUAKECW 디렉토리 아래에 RunFolder 디렉토리, 그리고 그 아래에 Pohang 디렉토리를 하나 만들자.
 
 ```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow> mkdir RunFolder
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow> cd RunFolder
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> mkdir Pohang
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> cd Pohang
@@ -93,8 +117,8 @@ DIP: 69
 RAK: 152
 # rupture timestep
 DT: 0.01
-VELOCITY_MODEL: "$QUAKECW/VM/kr_gb_kim2011_modified.1d"
-SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source"
+VELOCITY_MODEL: "$QUAKECW/Source/kr_gb_kim2011_modified.1d" <====== 수정 필요
+SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source" <====== 수정 필요
 ```
 
 .yaml파일내의 $QUAKECW와 같은 변수를 인식하지 못하기 때문에, 실제 경로를 집어넣어줘야 한다. 각 사용자마다 $QUAKECW값이 다르므로, 아래 명령어를 사용해서 출력된 값을 복사/붙여넣기하도록 하겠다.
@@ -103,7 +127,13 @@ SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source"
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> echo $QUAKECW
 /scratch/x2319a02/users/x2319a02/quakecw_workflow
 ```
-nano를 사용해 제일 아래 두줄의 $QUAKECW 부분을 붙여넣기로 수정해준 다음 저장.
+nano를 사용해 source_Pohang.yaml 제일 아래 두줄의 $QUAKECW 부분을 붙여넣기로 수정해준 다음 저장.
+
+수정 후 
+```
+VELOCITY_MODEL: "/scratch/x2319a02/users/x2319a02/quakecw_workflow/Source/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Source"
+```
 
 아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
 
