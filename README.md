@@ -54,6 +54,9 @@ git pull
 (
 만약 처음이라면, 이 명령어도 실행시켜준다
 git checkout quakecw_changes
+
+만약 문제가 있으면
+git reset --hard를 먼저 실행시키고, 다시 위의 git checkout을 시도
 )
 
 cd ../qcore
