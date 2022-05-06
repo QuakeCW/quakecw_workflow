@@ -131,7 +131,7 @@ nano를 사용해 source_Pohang.yaml 제일 아래 두줄의 $QUAKECW 부분을 
 
 수정 후 
 ```
-VELOCITY_MODEL: "/scratch/x2319a02/users/x2319a02/quakecw_workflow/VM/kr_gb_kim2011_modified.1d"
+VELOCITY_MODEL: "/scratch/x2319a02/users/x2319a02/quakecw_workflow/Source/kr_gb_kim2011_modified.1d"
 SOURCE_DATA_DIR: "/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Source"
 ```
 
