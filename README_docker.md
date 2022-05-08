@@ -210,6 +210,22 @@ Busan_2km.ll  Busan_2km.vs30
 ## 시뮬레이션 인스톨
 
 첨부된 `gmsim_docker.yaml`을 참고해서 시뮬레이션을 인스톨 하도록 하자.
+
+```
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cp $QUAKECW/gmsim_docker.yaml .
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cat ./gmsim_docker.yaml
+workflow: /opt/gmsim/Environments/qkorea/workflow
+sim_root_dir: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang
+fault_name: Pohang
+source_data:  /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Source
+copy_source_data: False
+vm_data: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/VM
+copy_vm_data: False
+gmsim_template: /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0
+stat_file: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
+n_max_retries: 2
+```
+
 이 예에서 hh=1.0을 사용하는 관계로 시뮬레이션에서 LF와 HF의 경계가 되는 주파수 flo가 0.1이 되어야 함 (flo = 0.1/hh). 
 참고로, `gmsim_docker.yaml`에 예시로 설정되어 있는 gm_templates은 `Pohang_sdrop50_h1.0` 으로 그 내용은 아래와 같다.
 
