@@ -33,7 +33,8 @@ e4b218ba9ac9  glorykingsman/quakekorea  “bash”  24 minutes ago  Up 24 minute
 
 QuakeData 압축 파일을 다운 받아 압축을 풀어준다. `C:\Users\GloryKim`에 `QuakeData`라는 폴더가 생성되었다고 가정하자. 
 
-다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7VxHP8egankFJLKsw?e=5A5jBP
+다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7VxHP8egankFJLKsw?e=5A5jBP 
+
 
 BB 다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7Vyap05_WrBbahiEA?e=iuw8OL
 
@@ -374,29 +375,44 @@ Run with : $QUAKECW/run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/Run
 인스톨이 완료되면서 알려주는 명령어를 실행시키면 시뮬레이션이 시작된다.
 
 ```
-
-(python3_local) quakekorea@e4b218ba9ac9:~/quakecw_workflow$ ./run_gmsim.sh gmsim_docker.yaml
-sim_root_dir: /home/quakekorea/QuakeData/RunFolder/Pohang_20220422
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow$ cd RunFolder/Pohang
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ $QUAKECW/run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/gmsim_docker.yaml
+sim_root_dir: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang
 workflow: /opt/gmsim/Environments/qkorea/workflow
 n_max_retries: 2
-python /opt/gmsim/Environments/qkorea/workflow/workflow/automation/execution_scripts/run_cybershake.py /home/quakekorea/QuakeData/RunFolder/Pohang_20220422 /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/task_config.yaml --n_max_retries 2
-2022-04-26 15:19:42,926 - MainThread - Logger file added
-2022-04-26 15:19:42,927 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.clean_up: 11>]
-2022-04-26 15:19:42,927 - MainThread - Created queue_monitor thread
-2022-04-26 15:19:42,927 - MainThread - Created main auto_submit thread
-2022-04-26 15:19:42,928 - MainThread - Started main auto_submit thread
-2022-04-26 15:19:42,932 - main auto submit - Loaded root params file: /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Runs/root_params.yaml
-2022-04-26 15:19:42,932 - queue monitor - Running queue-monitor, exit with Ctrl-C.
-2022-04-26 15:19:42,932 - MainThread - Started queue_monitor thread
-2022-04-26 15:19:42,934 - queue monitor - No entries in the mgmt db queue.
-2022-04-26 15:19:42,935 - main auto submit - Number of runnable tasks: 2
-2022-04-26 15:19:42,935 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D
-script_location:/home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Runs/Pohang/Pohang/run_emod3d_Pohang_20220426_151942.sh
-target_machine:local
+python /opt/gmsim/Environments/qkorea/workflow/workflow/automation/execution_scripts/run_cybershake.py /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/task_config.yaml --n_max_retries 2
+2022-05-08 18:21:26,167 - MainThread - Logger file added
+2022-05-08 18:21:26,169 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.clean_up: 11>]
+2022-05-08 18:21:26,169 - MainThread - Created queue_monitor thread
+2022-05-08 18:21:26,169 - MainThread - Created main auto_submit thread
+2022-05-08 18:21:26,169 - MainThread - Started main auto_submit thread
+2022-05-08 18:21:26,175 - queue monitor - Running queue-monitor, exit with Ctrl-C.
+2022-05-08 18:21:26,177 - main auto submit - Loaded root params file: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Runs/root_params.yaml
+2022-05-08 18:21:26,177 - MainThread - Started queue_monitor thread
+2022-05-08 18:21:26,182 - main auto submit - Number of runnable tasks: 2
+2022-05-08 18:21:26,182 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D
+2022-05-08 18:21:31,188 - queue monitor - Updating 1 mgmt db tasks.
+2022-05-08 18:21:31,188 - queue monitor - Acquiring db connection.
+2022-05-08 18:21:31,188 - queue monitor - Received entry SchedulerTask(run_name='Pohang', proc_type=1, status=3, job_id=None, error=None), status is more than created but the job_id is not set.
+2022-05-08 18:21:36,208 - queue monitor - Task 'EMOD3D' on 'Pohang' not found on ps or in the management db folder; resetting the status to 'created' for resubmission
+start_time not in proc_Data.keys(),value 0
+
+end_time not in proc_Data.keys(),value 0
+
+run_time not in proc_Data.keys(),value 0
+
+cores not in proc_Data.keys(),value 1
+
+status not in proc_Data.keys(),value RUNNING
+
+2022-05-08 18:21:36,210 - queue monitor - Updating 1 mgmt db tasks.
+2022-05-08 18:21:36,210 - queue monitor - Received entry SchedulerTask(run_name='Pohang', proc_type=1, status=7, job_id=None, error='Disappeared from ps. Creating a new task.'), status is more than created but the job_id is not set.
 ...
 
 
 ```
+
+시뮬레이션이 모두 수행되면 최종적으로 Runs/Pohang/Pohang/{LF,HF,BB,IM_calc,verification} 디렉토리에 결과물들이 위치하게 된다.
 
 
 # 도커 컨테이너 업데이트
