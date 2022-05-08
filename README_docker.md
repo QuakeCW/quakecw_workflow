@@ -35,7 +35,7 @@ QuakeData 압축 파일을 다운 받아 압축을 풀어준다. `C:\Users\Glory
 
 다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7VxHP8egankFJLKsw?e=5A5jBP
 
-BB 다운로드 링크: *** 추가 필요 ***
+BB 다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7Vyap05_WrBbahiEA?e=iuw8OL
 
 # 도커 컨테이너 시작
 
