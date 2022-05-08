@@ -407,6 +407,7 @@ status not in proc_Data.keys(),value RUNNING
 
 2022-05-08 18:21:36,210 - queue monitor - Updating 1 mgmt db tasks.
 2022-05-08 18:21:36,210 - queue monitor - Received entry SchedulerTask(run_name='Pohang', proc_type=1, status=7, job_id=None, error='Disappeared from ps. Creating a new task.'), status is more than created but the job_id is not set.
+2022-05-08 18:27:47,120 - queue monitor - Received entry SchedulerTask(run_name='Pohang', proc_type=4, status=7, job_id=None, error='/home/quakekorea/QuakeData/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc/HF.bin /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h1.0.ll The waveform for station 005D49 contains all zeros, please investigate.'), status is more than created but the job_id is not set.
 ...
 
 
