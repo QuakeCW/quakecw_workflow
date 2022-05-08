@@ -33,7 +33,7 @@ e4b218ba9ac9  glorykingsman/quakekorea  “bash”  24 minutes ago  Up 24 minute
 
 QuakeData 압축 파일을 다운 받아 압축을 풀어준다. `C:\Users\GloryKim`에 `QuakeData`라는 폴더가 생성되었다고 가정하자. 
 
-다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7VxHP8egankFJLKsw?e=5A5jBP 
+다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7V1zlzOEX7FkySpmA?e=H7asYg
 
 
 BB 다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7Vyap05_WrBbahiEA?e=iuw8OL
