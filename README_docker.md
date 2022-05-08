@@ -64,21 +64,62 @@ git pull
 ```
 
 # 시뮬레이션 실행
-도 컨테이너 안에서 시뮬레이션을 실행시키는 과정을 서술함. README.md에 있는 내용과 겹치는 내용은 제외하고, 도커 컨테이너의 예외적인 부분에 대해서 중점적으로 다룰 것임.
+도커 컨테이너 안에서 시뮬레이션을 실행시키는 과정을 서술함. README.md에 있는 내용과 겹치는 내용은 제외하고, 도커 컨테이너의 예외적인 부분에 대해서 중점적으로 다룰 것임.
+$QUAKECW (.bashrc에 설정되어 있음)으로 가서 디렉토리를 만들자.
+```
+(python3_local) quakekorea@a5fe9fb8917e:~/QuakeData/quakecw_workflow$ cd $QUAKECW
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow$ mkdir -p RunFolder/Pohang
+```
+
 
 ## 단층 모델 (Source)
-Source 디렉토리로 가서 `source_docker.yaml`을 참고/수정한 다음 아래 명령어를 실행시킴
+위에서 만든 Pohang 디렉토리 아래에 Source 디렉토리를 만들고 (엄밀히 말하면 위치는 자유이나 정리된 디렉토리 구조를 이용하면 여러가지 수고를 덜 수 있다.)
+미리 설정되어 있는 `source_docker.yaml`을 가져와서 참고/수정해 사용하도록 하자.
+
 ```
-(python3_local) quakekorea@23b6d4e0f021:~/quakecw_workflow/Source$ python make_source.py source_docker.yaml
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow$ cd RunFolder/Pohang
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ mkdir Source
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cd Source
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/Source$ cp $QUAKECW/Source/source_docker.yaml .
+```
+이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
+```
+TYPE: 2
+FAULT: Pohang
+# latitude (float)
+LAT: 36.109
+# # longitude (float)
+LON: 129.366
+# # depth (float)
+DEPTH: 7
+# # magnitude (float)
+MAG: 5.4
+# # strike (int)
+STK: 230
+# # dip (int)
+DIP: 69
+# # rake (int)
+RAK: 152
+# # rupture timestep
+DT: 0.01
+VELOCITY_MODEL: "/home/quakekorea/quakecw_workflow/Source/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "/home/quakekorea/quakecw_workflow/RunFolder/Pohang/Source"
+```
+
+여기에서, `SOURCE_DATA_DIR`은 생성된 단층모델 데이터를 저장할 위치를 의미한다. 우리는 방금전 만든 디렉토리에 단층모델 데이터가 저장되도록 설정하였다. 
+
+단층 모델 생성하는 명령어를 실행해 보자.
+```
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/Source$ python $QUAKECW/Source/make_source.py ./source_docker.yaml
 Executing createSRF.py
-2022-04-26 14:49:18,400 - Creating SRF with command: /opt/gmsim/Environments/qkorea/ROOT/local/gnu/bin/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/home/quakekorea/quakecw_workflow/Source/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
+2022-05-08 14:35:03,037 - Creating SRF with command: /opt/gmsim/Environments/qkorea/ROOT/local/gnu/bin/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/home/quakekorea/quakecw_workflow/Source/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
 Plotting SRF as square plot...
 Plotting SRF as map plot...
 
 mag= 5.40 median mag= 5.22 nslip= 1 nhypo= 1
 nx= 41 ny= 41 dx=     0.0994 dy=     0.0994
   0:   129.37172    36.10345 41 41     4.0738     4.0738 230.0 69.0     5.0984
-****    16.5000    16.5000
+****    16.5000	   16.5000
 ratio (negative slip)/(positive slip)= 0.052228
 mom=   1.41254e+24 avgslip= 26 maxslip= 78
 orig_sigma= 0.264089 ... new_sigma= 0.710031
@@ -99,24 +140,71 @@ surface [WARNING]: Check that previous processing steps write results with enoug
 surface [WARNING]: Possibly some data were half-way between nodes and subject to IEEE 754 rounding.
 ```
 
+위와 비슷한 형태의 출력값이 나왔다면 잘 진행되고 있다고 이해해도 좋다.
+
+`.bashrc`에 설정된 `tree`라는 명령어를 실행해 이 디렉토리의 구조를 살펴보도록 하자.
+```
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/Source$ tree
+.
+ |-__pycache__
+ | |-setSrfParams.cpython-38.pyc
+ | |-srf_config.cpython-38.pyc
+ |-Stoch
+ | |-Pohang.stoch <--------------- 
+ |-Srf
+ | |-Pohang.info
+ | |-Pohang.SEED
+ | |-Pohang_map.png
+ | |-Pohang_slip_rise_rake.png
+ | |-Pohang.gsf
+ | |-Pohang.srf.  <---------------
+ |-srf_config.py
+ |-source_docker.yaml
+ |-setSrfParams.py
+ |-createSRF_log.txt
+ |-createSRF.py
+ |-cnrs.txt
+```
+
+Pohang.stoch과 Pohang.srf가 보인다면 성공적으로 단층모델이 생성되었음을 의미한다.
+
+Pohang_slip_rise_rake.png와 
+Pohang.stoch과 Pohang.srf가 보인다면 성공적으로 단층모델이 생성되었음을 의미한다.
+Pohang_map.png과 Pohang_slip_rise_rake.png은 만들어진 단층 모델의 위치와 형상을 시각화한 것이다.
+
+![Pohang_map](https://user-images.githubusercontent.com/466989/167283932-b27f1feb-dcda-4ecc-9bd8-8d8ddec4d135.png)
+
+![Pohang_slip_rise_rake](https://user-images.githubusercontent.com/466989/167283937-78833265-32e7-4412-b8bd-3ef212a4a5ff.png)
 
 ## 속도 모델
 속도모델은 하드웨어 리소스 부족으로 현재까지 도커 컨테이너 상에서 만드는 것이 불가능해 보인다. 첨부한 샘플 속도 모델을 사용하도록 한다.
 
 ```
-(python3_local) quakekorea@23b6d4e0f021:~/Busan_Data/VMs$ ln -s ~/quakecw_workflow/VM/sample_vm_h1.0
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ ln -s $QUAKECW/VM/sample_vm_h1.0/ VM
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cd VM
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/VM$ ls
+VeloModCorners.txt  gridout_rt01-h1.0       model_coords_rt01-h1.0  nzvm.cfg     vm_params.yaml               vp3dfile.p
+gridfile_rt01-h1.0  model_bounds_rt01-h1.0  model_params_rt01-h1.0  rho3dfile.d  vm_params2vm_Pohang_log.txt  vs3dfile.s
 
 ```
+vp3dfile.p, vs3dfile.s 그리고 rho3dfile.d가 속도모델을 구성하는 3개의 파일들이다. 나머지 model.., grid..파일들은 속도모델의 위치와 도메인에 관련해 생성된 부산물이며, 시뮬레이션에서 참조되기도 하므로 지우거나 수정하지 않도록 한다.
+
 
 ## 관측소 리스트
 관측소 리스트는 속도모델을 만드는데 사용한 `vm_params.yaml`을 사용하는데, 속도 모델 도메인 내에 2km단위의 그리드를 만들어 가상의 관측점을 생성해낸다. 추가로 실제 관측소 좌표리스트를 더할 수 있는 옵션 `--real_stats`을 이용하면 차후 관측 데이터와 비교 분석하는데 용이하다.
 ```
-(python3_local) quakekorea@23b6d4e0f021:~/quakecw_workflow/Stations$ python make_stations.py ../VM/sample_vm_h1.0/vm_params.yaml --outdir ~/Busan_Data/Stations/ --real_stats ./realstations_20220420.ll --name Busan_2km
-created temp dir ../VM/sample_vm_h1.0/tmpcexy08p9
-input .ll file: /home/quakekorea/Busan_Data/Stations/Busan_2km.ll
-output .v30 file: /home/quakekorea/Busan_Data/Stations/Busan_2km.vs30
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
+created temp dir VM/tmpgewn73x7
+python /home/quakekorea/QuakeData/quakecw_workflow/Stations/extract_Vs30.py Stations/Busan_2km.ll
+input .ll file: Stations/Busan_2km.ll
+output .v30 file: Stations/Busan_2km.vs30
+
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cd Stations/
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/Stations$ ls
+Busan_2km.ll  Busan_2km.vs30
 
 ```
+만약  Busan_2km.vs30가 보이지 않는다면, $QUAKECW/Stations에 global_vs30.tif파일이 있는지 확인해볼 것. 최신 버전은 다음 링크를 방문해, Vs30 Raster Download를 클립하면 다운 받을 수 있다. https://usgs.maps.arcgis.com/apps/webappviewer/index.html?id=8ac19bc334f747e486550f32837578e1
 
 
 ## 시뮬레이션 인스톨
