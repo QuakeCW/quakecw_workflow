@@ -204,7 +204,7 @@ output .v30 file: Stations/Busan_2km.vs30
 Busan_2km.ll  Busan_2km.vs30
 
 ```
-만약  Busan_2km.vs30가 보이지 않는다면, $QUAKECW/Stations에 global_vs30.tif파일이 있는지 확인해볼 것. 최신 버전은 다음 링크를 방문해, Vs30 Raster Download를 클립하면 다운 받을 수 있다. https://usgs.maps.arcgis.com/apps/webappviewer/index.html?id=8ac19bc334f747e486550f32837578e1
+만약  Busan_2km.vs30가 보이지 않는다면, $QUAKECW/Stations에 global_vs30.tif파일이 있는지 확인해볼 것. 최신 버전은 다음 링크를 방문해, Vs30 Raster Download를 클릭하면 다운 받을 수 있다. https://usgs.maps.arcgis.com/apps/webappviewer/index.html?id=8ac19bc334f747e486550f32837578e1
 
 
 ## 시뮬레이션 인스톨
