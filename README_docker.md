@@ -209,7 +209,7 @@ Busan_2km.ll  Busan_2km.vs30
 
 ## 시뮬레이션 인스톨
 
-첨부된 `gmsim_docker.yaml`을 참고해서 시뮬레이션을 인스톨 하도록 하자.
+첨부된 `gmsim_docker.yaml`을 사용해서 시뮬레이션을 인스톨 하도록 하자. 이 예시에서는 아무 수정없이 사용 가능하나, 다른 경우에는 sim_root_dir, source_data, vm_data, stat_file등의 위치에 따라 적절히 수정해서 사용하도록 한다.
 
 ```
 (python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cp $QUAKECW/gmsim_docker.yaml .
@@ -257,24 +257,26 @@ v_1d_mod: kr_gb_kim2011_modified.1d
 모두 준비되었다면 아래 명령어를 실행시켜 시뮬레이션을 인스톨하도록 하자. 도커 컨테이너에서 인스톨할 때는 반드시 *--console* 옵션을 써야 한다는 점을 유의하도록 한다. 이 옵션을 없에면 디폴트 작동 방식인 `qsub`를 이용한 인스톨 관련 명령어 서브밋을 시도하는데, 도커 이미지안에는 PBS가 없기 때문에 에러가 발생한다.
 
 ```
-(python3_local) quakekorea@23b6d4e0f021:~/QuakeData/quakecw_workflow$ python install_gmsim.py gmsim_docker.yaml --console
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ python $QUAKECW/install_gmsim.py gmsim_docker.yaml
 Pohang 1r
 
-2022-04-26 15:13:05,650 - Installing /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Data/Sources/Pohang/Srf/Pohang.srf
+python /opt/gmsim/Environments/qkorea/workflow/workflow/automation/install_scripts/install_cybershake.py /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/fault_list.txt /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0 --stat_file_path /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll --keep_dup_station
+Version path: /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0
+2022-05-08 15:55:58,034 - Installing /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/Srf/Pohang.srf
 ****************************************************************************************************
-2022-04-26 15:13:05,680 - installing bb
+2022-05-08 15:55:58,039 - installing bb
 ****************************************************************************************************
-2022-04-26 15:13:05,680 -                                      EMOD3D HF/BB Preparation Ver.slurm
+2022-05-08 15:55:58,039 -                                      EMOD3D HF/BB Preparation Ver.slurm
 ****************************************************************************************************
-2022-04-26 15:13:05,681 - installing bb finished
-2022-04-26 15:13:05,707 - /home/quakekorea/QuakeData/Busan_Data/Stations/Busan_2km.ll
-2022-04-26 15:13:05,707 - From: /home/quakekorea/QuakeData/Busan_Data/Stations/Busan_2km.ll. To: /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Runs/Pohang/fd_rt01-h1.0.statcords, /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Runs/Pohang/fd_rt01-h1.0.ll
+2022-05-08 15:55:58,039 - installing bb finished
+2022-05-08 15:55:58,053 - /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
+2022-05-08 15:55:58,053 - From: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll. To: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h1.0.statcords, /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h1.0.ll
 
 
 ================================
              Source
 ================================
-/home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Data/Sources/Pohang/setSrfParams.py
+/home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py
 LAT: 36.109
 LON: 129.366
 DEPTH: 7
@@ -286,7 +288,7 @@ DT: 0.01
 ================================
              VM
 ================================
-/home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Data/VMs/Pohang/vm_params.yaml
+/home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Data/VMs/Pohang/vm_params.yaml
 {'GRIDFILE': './gridfile_rt01-h1.0',
  'GRIDOUT': './gridout_rt01-h1.0',
  'MODEL_BOUNDS': './model_bounds_rt01-h1.0',
@@ -362,8 +364,8 @@ DT: 0.01
                          7.5,
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
-Simulation installed at /home/quakekorea/QuakeData/RunFolder/Pohang_20220422
-Run with : ./run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/gmsim_docker.yaml
+Simulation installed at /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang
+Run with : $QUAKECW/run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/gmsim_docker.yaml
 ```
 
 
