@@ -166,7 +166,6 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 ```
 위와 같은 내용이 출력되었다면 성공적으로 단층 모델이 만들어졌다. 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cd Source
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Source> tree
 .
  |-__pycache__
