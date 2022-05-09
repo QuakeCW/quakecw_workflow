@@ -20,7 +20,7 @@ docker pull glorykingsman/quakekorea
 Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?size=1": dial unix /var/run/docker.sock: connect: permission denied
 
 (py39) seb56@hypocentre:~$ sudo usermod -aG docker seb56
-(py39) seb56@hypocentre:~$ groups
+(py39) seb56@hypocentre:~$ groupscd 
 seb56 sudo qcore ucqcore
 (py39) seb56@hypocentre:~$ newgrp docker
 (py39) seb56@hypocentre:~$ groups
@@ -36,7 +36,9 @@ QuakeData 압축 파일을 다운 받아 압축을 풀어준다. `C:\Users\Glory
 다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7V1zlzOEX7FkySpmA?e=H7asYg
 
 
-BB 다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7Vyap05_WrBbahiEA?e=dNpSUq
+BB 다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7Vyap05_WrBbahiEA?e=dNpSUq  (포항 20220422_sdrop50 버전)
+
+QuakeData내에 sample이라는 폴더를 만들어 BB.bin을 보관해두자.
 
 # 도커 컨테이너 시작
 
@@ -49,7 +51,12 @@ docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea
 
 ![QuakeData](https://user-images.githubusercontent.com/466989/165229631-0ab1b399-4963-4cbe-b9de-7a3c3e3f9aa8.png)
 
+QuakeData를 처음 다운받아 설정할때, 파일들의 Owner가 root로 되어 있을 가능성이 있다.
+```
 
+```
+
+QuakeData안에 RunFolder라는 폴더를 만
 
 위 실행 명령어는 배치파일 (or 스크립트)를 만들어 실행시키면 편하다.
 
