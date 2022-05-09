@@ -54,8 +54,8 @@ docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea
 ```
 ## 최초 1회 셋업 필요한 것들
 도커 이미지 속에 quakekorea라는 유저 (UID 1000)와 그룹 (GID 1000)을 만들어두었으며, 이 이미지를 quakekorea 어카운트를 사용하여 실행하도록 강제하였다. QuakeData 디렉토리를 마운트함으로써 도커 컨테이너와 도커 바깥 환경(윈도우,리눅스)에서 동시에 억세스할 수 있게 된다. 시뮬레이션 인풋이나 시뮬레이션 결과값을 저장하는 위치로 사용하도록 한다.
+![화면 캡처 2022-05-09 162106](https://user-images.githubusercontent.com/466989/167359983-2527c154-c999-4e95-a58c-ab14b8561ee7.png)
 
-![QuakeData](https://user-images.githubusercontent.com/466989/165229631-0ab1b399-4963-4cbe-b9de-7a3c3e3f9aa8.png)
 
 QuakeData를 처음 다운받아 설정할때, 파일들의 Owner가 root로 되어 있을 가능성이 있다. chown 명령어로 Onwer를 바꿔주자. (sudo를 쓸때 패스워드는 유저id와 같다.)
 ```
@@ -65,7 +65,7 @@ drwxrwxrwx 1 root       root       4096 Apr 26 10:56 Busan_Data
 drwxrwxrwx 1 root       root       4096 May  3 22:26 gmsim_templates
 drwxrwxrwx 1 root       root       4096 May  8 16:24 quakecw_workflow
 
-(python3_local) quakekorea@96b125bcac4c:~/QuakeData$ sudo chown -R quakekorea.quakekorea *
+(python3_local) quakekorea@96b125bcac4c:~$ sudo chown -R quakekorea.quakekorea QuakeData
 [sudo] password for quakekorea:
 ```
 
@@ -89,6 +89,50 @@ QuakeData 디렉토리 안에 quakecw_workflow를 최신 버전으로 업데이�
 ```
 cd ~/QuakeData/quakecw_workflow
 git pull 
+```
+간혹 docker의 최신 이미지에 최신의 코드가 누락되는 경우들이 있다. 그러한 경우 Github에서 최신의 코드를 받아오도록 하자.
+
+QuakeCoRE의 코드들은 $gmsim디렉토리에 있다.
+
+```
+(python3_local) quakekorea@96b125bcac4c:~$ cd $gmsim
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/qkorea$
+```
+먼저 qcore를 업데이트
+```
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/qkorea$ cd qcore
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/qkorea/qcore$ git pull
+remote: Enumerating objects: 48, done.
+remote: Counting objects: 100% (48/48), done.
+remote: Compressing objects: 100% (22/22), done.
+remote: Total 48 (delta 28), reused 37 (delta 26), pack-reused 0
+Unpacking objects: 100% (48/48), 22.85 KiB | 1.27 MiB/s, done.
+From https://github.com/ucgmsim/qcore
+   4dabbb3..7258119  master           -> origin/master
+   7ad67cc..dc0e32e  site_specific_BB -> origin/site_specific_BB
+Updating 4dabbb3..7258119
+Fast-forward
+ qcore/constants.py                                     |   3 +-
+ qcore/geo.py                                           |  30 ++--
+ qcore/nhm.py                                           |   6 +-
+ qcore/uncertainties/__init__.py                        |   0
+ qcore/uncertainties/distributions.py                   | 104 ++++++++++++++
+ qcore/uncertainties/mag_scaling.py                     | 422 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ qcore/uncertainties/magnitude_scaling/allen_2017.py    |  64 +++++++++
+ qcore/uncertainties/magnitude_scaling/strasser_2010.py |  68 +++++++++
+ 8 files changed, 678 insertions(+), 19 deletions(-)
+ create mode 100644 qcore/uncertainties/__init__.py
+ create mode 100644 qcore/uncertainties/distributions.py
+ create mode 100644 qcore/uncertainties/mag_scaling.py
+ create mode 100644 qcore/uncertainties/magnitude_scaling/allen_2017.py
+ create mode 100644 qcore/uncertainties/magnitude_scaling/strasser_2010.py
+```
+그리고 workflow를 업데이트. 현재 도커 컨테이너 상에서 작동되는 workflow코드는 glory_kim_local 브랜치에서 개발중이다. 이 브랜치에 재대로 연결이 되어있도록 확인하자
+
+```
+(python3_local) quakekorea@96b125bcac4c:~$ cd $gmsim/workflow
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/workflow$ git checkout glory_kim_local
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/workflow$ git pull
 ```
 
 # 시뮬레이션 실행
