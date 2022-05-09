@@ -47,23 +47,43 @@ QuakeData내에 sample이라는 폴더를 만들어 BB.bin을 보관해두자.
 docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea/QuakeData glorykingsman/quakekorea bash
 
 ```
-도커 이미지 속에 quakekorea라는 유저 (UID 1000)와 그룹 (GID 1000)을 만들어두었으며, 이 이미지를 quakekorea 어카운트를 사용하여 실행하도록 강제하였다. QuakeData 디렉토리를 마운트함으로써 도커 컨테이너와 도커 바깥 환경(윈도우,리눅스)에서 동시에 억세스할 수 있게 된다. 시뮬레이션 인풋이나 시뮬레이션 결과값을 저장하는 위치로 사용하도록 한다.
-
-![QuakeData](https://user-images.githubusercontent.com/466989/165229631-0ab1b399-4963-4cbe-b9de-7a3c3e3f9aa8.png)
-
-QuakeData를 처음 다운받아 설정할때, 파일들의 Owner가 root로 되어 있을 가능성이 있다.
-```
-
-```
-
-QuakeData안에 RunFolder라는 폴더를 만
-
 위 실행 명령어는 배치파일 (or 스크립트)를 만들어 실행시키면 편하다.
 
 ```
 ./dockerun.bat
 ```
+## 최초 1회 셋업 필요한 것들
+도커 이미지 속에 quakekorea라는 유저 (UID 1000)와 그룹 (GID 1000)을 만들어두었으며, 이 이미지를 quakekorea 어카운트를 사용하여 실행하도록 강제하였다. QuakeData 디렉토리를 마운트함으로써 도커 컨테이너와 도커 바깥 환경(윈도우,리눅스)에서 동시에 억세스할 수 있게 된다. 시뮬레이션 인풋이나 시뮬레이션 결과값을 저장하는 위치로 사용하도록 한다.
 
+![QuakeData](https://user-images.githubusercontent.com/466989/165229631-0ab1b399-4963-4cbe-b9de-7a3c3e3f9aa8.png)
+
+QuakeData를 처음 다운받아 설정할때, 파일들의 Owner가 root로 되어 있을 가능성이 있다. chown 명령어로 Onwer를 바꿔주자. (sudo를 쓸때 패스워드는 유저id와 같다.)
+```
+(python3_local) quakekorea@96b125bcac4c:~/QuakeData$ ls -ltr
+total 0
+drwxrwxrwx 1 root       root       4096 Apr 26 10:56 Busan_Data
+drwxrwxrwx 1 root       root       4096 May  3 22:26 gmsim_templates
+drwxrwxrwx 1 root       root       4096 May  8 16:24 quakecw_workflow
+
+(python3_local) quakekorea@96b125bcac4c:~/QuakeData$ sudo chown -R quakekorea.quakekorea *
+[sudo] password for quakekorea:
+```
+
+QuakeData안에 RunFolder라는 폴더를 만들어준다.
+
+```
+(python3_local) quakekorea@96b125bcac4c:~/QuakeData$ mkdir RunFolder
+```
+
+$HOME/.bashrc안에 아래와 같은 내용들이 추가되어 있는지 확인해보자.
+```
+source /opt/gmsim/Environments/qkorea/virt_envs/python3_local/bin/activate
+PATH=$PATH:/usr/local/bin:/opt/gmsim/Environments/qkorea/cmake-3.20.0/bin:/opt/gmsim/Environments/qkorea/ROOT/local/gnu/bin
+alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
+export gmsim=/opt/gmsim/Environments/qkorea
+export qkorea=$gmsim/Environments/qkorea
+export QUAKECW=$HOME/quakecw_workflow
+```
 # quakecw_workflow 최신버전 받기
 QuakeData 디렉토리 안에 quakecw_workflow를 최신 버전으로 업데이트 하도록 한다.
 ```
