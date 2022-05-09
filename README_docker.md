@@ -36,7 +36,7 @@ QuakeData 압축 파일을 다운 받아 압축을 풀어준다. `C:\Users\Glory
 다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7V1zlzOEX7FkySpmA?e=H7asYg
 
 
-BB 다운로드 링크:https://1drv.ms/u/s!As4Rczo4lNsOh7V3ZkNVXjk5a1zglQ?e=to3OOP(포항 20220422_sdrop50 버전)
+BB 다운로드 링크:https://1drv.ms/u/s!As4Rczo4lNsOh7V3ZkNVXjk5a1zglQ?e=to3OOP (포항 20220422_sdrop50 버전)
 
 QuakeData내에 sample이라는 폴더를 만들어 BB.bin을 보관해두자.
 
