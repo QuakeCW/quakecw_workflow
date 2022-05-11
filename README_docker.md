@@ -20,7 +20,7 @@ docker pull glorykingsman/quakekorea
 Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?size=1": dial unix /var/run/docker.sock: connect: permission denied
 
 (py39) seb56@hypocentre:~$ sudo usermod -aG docker seb56
-(py39) seb56@hypocentre:~$ groupscd 
+(py39) seb56@hypocentre:~$ groups
 seb56 sudo qcore ucqcore
 (py39) seb56@hypocentre:~$ newgrp docker
 (py39) seb56@hypocentre:~$ groups
