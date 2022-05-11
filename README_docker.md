@@ -33,7 +33,12 @@ e4b218ba9ac9  glorykingsman/quakekorea  “bash”  24 minutes ago  Up 24 minute
 
 QuakeData 압축 파일을 다운 받아 압축을 풀어준다. `C:\Users\GloryKim`에 `QuakeData`라는 폴더가 생성되었다고 가정하자. 
 
-다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7VxHP8egankFJLKsw?e=5A5jBP
+다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7V1zlzOEX7FkySpmA?e=H7asYg
+
+
+BB 다운로드 링크:https://1drv.ms/u/s!As4Rczo4lNsOh7V3ZkNVXjk5a1zglQ?e=to3OOP (포항 20220422_sdrop50 버전)
+
+QuakeData내에 sample이라는 폴더를 만들어 BB.bin을 보관해두자.
 
 # 도커 컨테이너 시작
 
@@ -42,41 +47,151 @@ QuakeData 압축 파일을 다운 받아 압축을 풀어준다. `C:\Users\Glory
 docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea/QuakeData glorykingsman/quakekorea bash
 
 ```
-도커 이미지 속에 quakekorea라는 유저 (UID 1000)와 그룹 (GID 1000)을 만들어두었으며, 이 이미지를 quakekorea 어카운트를 사용하여 실행하도록 강제하였다. QuakeData 디렉토리를 마운트함으로써 도커 컨테이너와 도커 바깥 환경(윈도우,리눅스)에서 동시에 억세스할 수 있게 된다. 시뮬레이션 인풋이나 시뮬레이션 결과값을 저장하는 위치로 사용하도록 한다.
-
-![QuakeData](https://user-images.githubusercontent.com/466989/165229631-0ab1b399-4963-4cbe-b9de-7a3c3e3f9aa8.png)
-
-
-
 위 실행 명령어는 배치파일 (or 스크립트)를 만들어 실행시키면 편하다.
 
 ```
 ./dockerun.bat
 ```
+## 최초 1회 셋업 필요한 것들
+도커 이미지 속에 quakekorea라는 유저 (UID 1000)와 그룹 (GID 1000)을 만들어두었으며, 이 이미지를 quakekorea 어카운트를 사용하여 실행하도록 강제하였다. QuakeData 디렉토리를 마운트함으로써 도커 컨테이너와 도커 바깥 환경(윈도우,리눅스)에서 동시에 억세스할 수 있게 된다. 시뮬레이션 인풋이나 시뮬레이션 결과값을 저장하는 위치로 사용하도록 한다.
+![화면 캡처 2022-05-09 162106](https://user-images.githubusercontent.com/466989/167359983-2527c154-c999-4e95-a58c-ab14b8561ee7.png)
 
+
+QuakeData를 처음 다운받아 설정할때, 파일들의 Owner가 root로 되어 있을 가능성이 있다. chown 명령어로 Owner를 바꿔주자. (sudo를 쓸때 패스워드는 유저id와 같다.)
+```
+(python3_local) quakekorea@96b125bcac4c:~/QuakeData$ ls -ltr
+total 0
+drwxrwxrwx 1 root       root       4096 Apr 26 10:56 Busan_Data
+drwxrwxrwx 1 root       root       4096 May  3 22:26 gmsim_templates
+drwxrwxrwx 1 root       root       4096 May  8 16:24 quakecw_workflow
+
+(python3_local) quakekorea@96b125bcac4c:~$ sudo chown -R quakekorea.quakekorea QuakeData
+[sudo] password for quakekorea:
+```
+
+QuakeData안에 RunFolder라는 폴더를 만들어준다.
+
+```
+(python3_local) quakekorea@96b125bcac4c:~/QuakeData$ mkdir RunFolder
+```
+
+$HOME/.bashrc안에 아래와 같은 내용들이 추가되어 있는지 확인해보자.
+```
+source /opt/gmsim/Environments/qkorea/virt_envs/python3_local/bin/activate
+PATH=$PATH:/usr/local/bin:/opt/gmsim/Environments/qkorea/cmake-3.20.0/bin:/opt/gmsim/Environments/qkorea/ROOT/local/gnu/bin
+alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
+export gmsim=/opt/gmsim/Environments/qkorea
+export qkorea=$gmsim/Environments/qkorea
+export QUAKECW=$HOME/quakecw_workflow
+```
 # quakecw_workflow 최신버전 받기
 QuakeData 디렉토리 안에 quakecw_workflow를 최신 버전으로 업데이트 하도록 한다.
 ```
 cd ~/QuakeData/quakecw_workflow
 git pull 
 ```
+간혹 docker의 최신 이미지에 최신의 코드가 누락되는 경우들이 있다. 그러한 경우 Github에서 최신의 코드를 받아오도록 하자.
+
+QuakeCoRE의 코드들은 $gmsim디렉토리에 있다.
+
+```
+(python3_local) quakekorea@96b125bcac4c:~$ cd $gmsim
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/qkorea$
+```
+먼저 qcore를 업데이트
+```
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/qkorea$ cd qcore
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/qkorea/qcore$ git pull
+remote: Enumerating objects: 48, done.
+remote: Counting objects: 100% (48/48), done.
+remote: Compressing objects: 100% (22/22), done.
+remote: Total 48 (delta 28), reused 37 (delta 26), pack-reused 0
+Unpacking objects: 100% (48/48), 22.85 KiB | 1.27 MiB/s, done.
+From https://github.com/ucgmsim/qcore
+   4dabbb3..7258119  master           -> origin/master
+   7ad67cc..dc0e32e  site_specific_BB -> origin/site_specific_BB
+Updating 4dabbb3..7258119
+Fast-forward
+ qcore/constants.py                                     |   3 +-
+ qcore/geo.py                                           |  30 ++--
+ qcore/nhm.py                                           |   6 +-
+ qcore/uncertainties/__init__.py                        |   0
+ qcore/uncertainties/distributions.py                   | 104 ++++++++++++++
+ qcore/uncertainties/mag_scaling.py                     | 422 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ qcore/uncertainties/magnitude_scaling/allen_2017.py    |  64 +++++++++
+ qcore/uncertainties/magnitude_scaling/strasser_2010.py |  68 +++++++++
+ 8 files changed, 678 insertions(+), 19 deletions(-)
+ create mode 100644 qcore/uncertainties/__init__.py
+ create mode 100644 qcore/uncertainties/distributions.py
+ create mode 100644 qcore/uncertainties/mag_scaling.py
+ create mode 100644 qcore/uncertainties/magnitude_scaling/allen_2017.py
+ create mode 100644 qcore/uncertainties/magnitude_scaling/strasser_2010.py
+```
+그리고 workflow를 업데이트. 현재 도커 컨테이너 상에서 작동되는 workflow코드는 glory_kim_local 브랜치에서 개발중이다. 이 브랜치에 제대로 연결이 되어있도록 확인하자
+
+```
+(python3_local) quakekorea@96b125bcac4c:~$ cd $gmsim/workflow
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/workflow$ git checkout glory_kim_local
+(python3_local) quakekorea@96b125bcac4c:/opt/gmsim/Environments/workflow$ git pull
+```
 
 # 시뮬레이션 실행
-도 컨테이너 안에서 시뮬레이션을 실행시키는 과정을 서술함. README.md에 있는 내용과 겹치는 내용은 제외하고, 도커 컨테이너의 예외적인 부분에 대해서 중점적으로 다룰 것임.
+도커 컨테이너 안에서 시뮬레이션을 실행시키는 과정을 서술함. README.md에 있는 내용과 겹치는 내용은 제외하고, 도커 컨테이너의 예외적인 부분에 대해서 중점적으로 다룰 것임.
+$QUAKECW (.bashrc에 설정되어 있음)으로 가서 디렉토리를 만들자.
+```
+(python3_local) quakekorea@a5fe9fb8917e:~/QuakeData/quakecw_workflow$ cd $QUAKECW
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow$ mkdir -p RunFolder/Pohang
+```
+
 
 ## 단층 모델 (Source)
-Source 디렉토리로 가서 `source_docker.yaml`을 참고/수정한 다음 아래 명령어를 실행시킴
+위에서 만든 Pohang 디렉토리 아래에 Source 디렉토리를 만들고 (엄밀히 말하면 위치는 자유이나 정리된 디렉토리 구조를 이용하면 여러가지 수고를 덜 수 있다.)
+미리 설정되어 있는 `source_docker.yaml`을 가져와서 참고/수정해 사용하도록 하자.
+
 ```
-(python3_local) quakekorea@23b6d4e0f021:~/quakecw_workflow/Source$ python make_source.py source_docker.yaml
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow$ cd RunFolder/Pohang
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ mkdir Source
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cd Source
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/Source$ cp $QUAKECW/Source/source_docker.yaml .
+```
+이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
+```
+TYPE: 2
+FAULT: Pohang
+# latitude (float)
+LAT: 36.109
+# # longitude (float)
+LON: 129.366
+# # depth (float)
+DEPTH: 7
+# # magnitude (float)
+MAG: 5.4
+# # strike (int)
+STK: 230
+# # dip (int)
+DIP: 69
+# # rake (int)
+RAK: 152
+# # rupture timestep
+DT: 0.01
+VELOCITY_MODEL: "/home/quakekorea/quakecw_workflow/Source/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "/home/quakekorea/quakecw_workflow/RunFolder/Pohang/Source"
+```
+
+여기에서, `SOURCE_DATA_DIR`은 생성된 단층모델 데이터를 저장할 위치를 의미한다. 우리는 방금전 만든 디렉토리에 단층모델 데이터가 저장되도록 설정하였다. 
+
+단층 모델 생성하는 명령어를 실행해 보자.
+```
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/Source$ python $QUAKECW/Source/make_source.py ./source_docker.yaml
 Executing createSRF.py
-2022-04-26 14:49:18,400 - Creating SRF with command: /opt/gmsim/Environments/qkorea/ROOT/local/gnu/bin/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/home/quakekorea/quakecw_workflow/Source/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
+2022-05-08 14:35:03,037 - Creating SRF with command: /opt/gmsim/Environments/qkorea/ROOT/local/gnu/bin/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/home/quakekorea/quakecw_workflow/Source/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
 Plotting SRF as square plot...
 Plotting SRF as map plot...
 
 mag= 5.40 median mag= 5.22 nslip= 1 nhypo= 1
 nx= 41 ny= 41 dx=     0.0994 dy=     0.0994
   0:   129.37172    36.10345 41 41     4.0738     4.0738 230.0 69.0     5.0984
-****    16.5000    16.5000
+****    16.5000	   16.5000
 ratio (negative slip)/(positive slip)= 0.052228
 mom=   1.41254e+24 avgslip= 26 maxslip= 78
 orig_sigma= 0.264089 ... new_sigma= 0.710031
@@ -97,29 +212,92 @@ surface [WARNING]: Check that previous processing steps write results with enoug
 surface [WARNING]: Possibly some data were half-way between nodes and subject to IEEE 754 rounding.
 ```
 
+위와 비슷한 형태의 출력값이 나왔다면 잘 진행되고 있다고 이해해도 좋다.
+
+`.bashrc`에 설정된 `tree`라는 명령어를 실행해 이 디렉토리의 구조를 살펴보도록 하자.
+```
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/Source$ tree
+.
+ |-__pycache__
+ | |-setSrfParams.cpython-38.pyc
+ | |-srf_config.cpython-38.pyc
+ |-Stoch
+ | |-Pohang.stoch <--------------- 
+ |-Srf
+ | |-Pohang.info
+ | |-Pohang.SEED
+ | |-Pohang_map.png
+ | |-Pohang_slip_rise_rake.png
+ | |-Pohang.gsf
+ | |-Pohang.srf.  <---------------
+ |-srf_config.py
+ |-source_docker.yaml
+ |-setSrfParams.py
+ |-createSRF_log.txt
+ |-createSRF.py
+ |-cnrs.txt
+```
+
+Pohang.stoch과 Pohang.srf가 보인다면 성공적으로 단층모델이 생성되었음을 의미한다.
+
+Pohang_slip_rise_rake.png와 
+Pohang.stoch과 Pohang.srf가 보인다면 성공적으로 단층모델이 생성되었음을 의미한다.
+Pohang_map.png과 Pohang_slip_rise_rake.png은 만들어진 단층 모델의 위치와 형상을 시각화한 것이다.
+
+![Pohang_map](https://user-images.githubusercontent.com/466989/167283932-b27f1feb-dcda-4ecc-9bd8-8d8ddec4d135.png)
+
+![Pohang_slip_rise_rake](https://user-images.githubusercontent.com/466989/167283937-78833265-32e7-4412-b8bd-3ef212a4a5ff.png)
 
 ## 속도 모델
 속도모델은 하드웨어 리소스 부족으로 현재까지 도커 컨테이너 상에서 만드는 것이 불가능해 보인다. 첨부한 샘플 속도 모델을 사용하도록 한다.
 
 ```
-(python3_local) quakekorea@23b6d4e0f021:~/Busan_Data/VMs$ ln -s ~/quakecw_workflow/VM/sample_vm_h1.0
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ ln -s $QUAKECW/VM/sample_vm_h1.0/ VM
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cd VM
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/VM$ ls
+VeloModCorners.txt  gridout_rt01-h1.0       model_coords_rt01-h1.0  nzvm.cfg     vm_params.yaml               vp3dfile.p
+gridfile_rt01-h1.0  model_bounds_rt01-h1.0  model_params_rt01-h1.0  rho3dfile.d  vm_params2vm_Pohang_log.txt  vs3dfile.s
 
 ```
+vp3dfile.p, vs3dfile.s 그리고 rho3dfile.d가 속도모델을 구성하는 3개의 파일들이다. 나머지 model.., grid..파일들은 속도모델의 위치와 도메인에 관련해 생성된 부산물이며, 시뮬레이션에서 참조되기도 하므로 지우거나 수정하지 않도록 한다.
+
 
 ## 관측소 리스트
 관측소 리스트는 속도모델을 만드는데 사용한 `vm_params.yaml`을 사용하는데, 속도 모델 도메인 내에 2km단위의 그리드를 만들어 가상의 관측점을 생성해낸다. 추가로 실제 관측소 좌표리스트를 더할 수 있는 옵션 `--real_stats`을 이용하면 차후 관측 데이터와 비교 분석하는데 용이하다.
 ```
-(python3_local) quakekorea@23b6d4e0f021:~/quakecw_workflow/Stations$ python make_stations.py ../VM/sample_vm_h1.0/vm_params.yaml --outdir ~/Busan_Data/Stations/ --real_stats ./realstations_20220420.ll --name Busan_2km
-created temp dir ../VM/sample_vm_h1.0/tmpcexy08p9
-input .ll file: /home/quakekorea/Busan_Data/Stations/Busan_2km.ll
-output .v30 file: /home/quakekorea/Busan_Data/Stations/Busan_2km.vs30
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
+created temp dir VM/tmpgewn73x7
+python /home/quakekorea/QuakeData/quakecw_workflow/Stations/extract_Vs30.py Stations/Busan_2km.ll
+input .ll file: Stations/Busan_2km.ll
+output .v30 file: Stations/Busan_2km.vs30
+
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cd Stations/
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang/Stations$ ls
+Busan_2km.ll  Busan_2km.vs30
 
 ```
+만약  Busan_2km.vs30가 보이지 않는다면, $QUAKECW/Stations에 global_vs30.tif파일이 있는지 확인해볼 것. 최신 버전은 다음 링크를 방문해, Vs30 Raster Download를 클릭하면 다운 받을 수 있다. https://usgs.maps.arcgis.com/apps/webappviewer/index.html?id=8ac19bc334f747e486550f32837578e1
 
 
 ## 시뮬레이션 인스톨
 
-첨부된 `gmsim_docker.yaml`을 참고해서 시뮬레이션을 인스톨 하도록 하자.
+첨부된 `gmsim_docker.yaml`을 사용해서 시뮬레이션을 인스톨 하도록 하자. 이 예시에서는 아무 수정없이 사용 가능하나, 다른 경우에는 sim_root_dir, source_data, vm_data, stat_file등의 위치에 따라 적절히 수정해서 사용하도록 한다.
+
+```
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cp $QUAKECW/gmsim_docker.yaml .
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ cat ./gmsim_docker.yaml
+workflow: /opt/gmsim/Environments/qkorea/workflow
+sim_root_dir: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang
+fault_name: Pohang
+source_data:  /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Source
+copy_source_data: False
+vm_data: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/VM
+copy_vm_data: False
+gmsim_template: /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0
+stat_file: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
+n_max_retries: 2
+```
+
 이 예에서 hh=1.0을 사용하는 관계로 시뮬레이션에서 LF와 HF의 경계가 되는 주파수 flo가 0.1이 되어야 함 (flo = 0.1/hh). 
 참고로, `gmsim_docker.yaml`에 예시로 설정되어 있는 gm_templates은 `Pohang_sdrop50_h1.0` 으로 그 내용은 아래와 같다.
 
@@ -148,27 +326,29 @@ dt: 0.005
 v_1d_mod: kr_gb_kim2011_modified.1d
 ```
 
-모두 준비되었다면 아래 명령어를 실행시켜 시뮬레이션을 인스톨하도록 하자. 도커 컨테이너에서 인스톨할 때는 반드시 *--console* 옵션을 써야 한다는 점을 유의하도록 한다. 이 옵션을 없에면 디폴트 작동 방식인 `qsub`를 이용한 인스톨 관련 명령어 서브밋을 시도하는데, 도커 이미지안에는 PBS가 없기 때문에 에러가 발생한다.
+모두 준비되었다면 아래 명령어를 실행시켜 시뮬레이션을 인스톨하도록 하자. 
 
 ```
-(python3_local) quakekorea@23b6d4e0f021:~/QuakeData/quakecw_workflow$ python install_gmsim.py gmsim_docker.yaml --console
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ python $QUAKECW/install_gmsim.py gmsim_docker.yaml
 Pohang 1r
 
-2022-04-26 15:13:05,650 - Installing /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Data/Sources/Pohang/Srf/Pohang.srf
+python /opt/gmsim/Environments/qkorea/workflow/workflow/automation/install_scripts/install_cybershake.py /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/fault_list.txt /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0 --stat_file_path /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll --keep_dup_station
+Version path: /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0
+2022-05-08 15:55:58,034 - Installing /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/Srf/Pohang.srf
 ****************************************************************************************************
-2022-04-26 15:13:05,680 - installing bb
+2022-05-08 15:55:58,039 - installing bb
 ****************************************************************************************************
-2022-04-26 15:13:05,680 -                                      EMOD3D HF/BB Preparation Ver.slurm
+2022-05-08 15:55:58,039 -                                      EMOD3D HF/BB Preparation Ver.slurm
 ****************************************************************************************************
-2022-04-26 15:13:05,681 - installing bb finished
-2022-04-26 15:13:05,707 - /home/quakekorea/QuakeData/Busan_Data/Stations/Busan_2km.ll
-2022-04-26 15:13:05,707 - From: /home/quakekorea/QuakeData/Busan_Data/Stations/Busan_2km.ll. To: /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Runs/Pohang/fd_rt01-h1.0.statcords, /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Runs/Pohang/fd_rt01-h1.0.ll
+2022-05-08 15:55:58,039 - installing bb finished
+2022-05-08 15:55:58,053 - /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
+2022-05-08 15:55:58,053 - From: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll. To: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h1.0.statcords, /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h1.0.ll
 
 
 ================================
              Source
 ================================
-/home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Data/Sources/Pohang/setSrfParams.py
+/home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py
 LAT: 36.109
 LON: 129.366
 DEPTH: 7
@@ -180,7 +360,7 @@ DT: 0.01
 ================================
              VM
 ================================
-/home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Data/VMs/Pohang/vm_params.yaml
+/home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Data/VMs/Pohang/vm_params.yaml
 {'GRIDFILE': './gridfile_rt01-h1.0',
  'GRIDOUT': './gridout_rt01-h1.0',
  'MODEL_BOUNDS': './model_bounds_rt01-h1.0',
@@ -256,8 +436,8 @@ DT: 0.01
                          7.5,
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
-Simulation installed at /home/quakekorea/QuakeData/RunFolder/Pohang_20220422
-Run with : ./run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/gmsim_docker.yaml
+Simulation installed at /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang
+Run with : $QUAKECW/run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/gmsim_docker.yaml
 ```
 
 
@@ -266,29 +446,45 @@ Run with : ./run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/gmsim_dock
 인스톨이 완료되면서 알려주는 명령어를 실행시키면 시뮬레이션이 시작된다.
 
 ```
-
-(python3_local) quakekorea@e4b218ba9ac9:~/quakecw_workflow$ ./run_gmsim.sh gmsim_docker.yaml
-sim_root_dir: /home/quakekorea/QuakeData/RunFolder/Pohang_20220422
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow$ cd RunFolder/Pohang
+(python3_local) quakekorea@a5fe9fb8917e:~/quakecw_workflow/RunFolder/Pohang$ $QUAKECW/run_gmsim.sh /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/gmsim_docker.yaml
+sim_root_dir: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang
 workflow: /opt/gmsim/Environments/qkorea/workflow
 n_max_retries: 2
-python /opt/gmsim/Environments/qkorea/workflow/workflow/automation/execution_scripts/run_cybershake.py /home/quakekorea/QuakeData/RunFolder/Pohang_20220422 /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/task_config.yaml --n_max_retries 2
-2022-04-26 15:19:42,926 - MainThread - Logger file added
-2022-04-26 15:19:42,927 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.clean_up: 11>]
-2022-04-26 15:19:42,927 - MainThread - Created queue_monitor thread
-2022-04-26 15:19:42,927 - MainThread - Created main auto_submit thread
-2022-04-26 15:19:42,928 - MainThread - Started main auto_submit thread
-2022-04-26 15:19:42,932 - main auto submit - Loaded root params file: /home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Runs/root_params.yaml
-2022-04-26 15:19:42,932 - queue monitor - Running queue-monitor, exit with Ctrl-C.
-2022-04-26 15:19:42,932 - MainThread - Started queue_monitor thread
-2022-04-26 15:19:42,934 - queue monitor - No entries in the mgmt db queue.
-2022-04-26 15:19:42,935 - main auto submit - Number of runnable tasks: 2
-2022-04-26 15:19:42,935 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D
-script_location:/home/quakekorea/QuakeData/RunFolder/Pohang_20220422/Runs/Pohang/Pohang/run_emod3d_Pohang_20220426_151942.sh
-target_machine:local
+python /opt/gmsim/Environments/qkorea/workflow/workflow/automation/execution_scripts/run_cybershake.py /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/task_config.yaml --n_max_retries 2
+2022-05-08 18:21:26,167 - MainThread - Logger file added
+2022-05-08 18:21:26,169 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.clean_up: 11>]
+2022-05-08 18:21:26,169 - MainThread - Created queue_monitor thread
+2022-05-08 18:21:26,169 - MainThread - Created main auto_submit thread
+2022-05-08 18:21:26,169 - MainThread - Started main auto_submit thread
+2022-05-08 18:21:26,175 - queue monitor - Running queue-monitor, exit with Ctrl-C.
+2022-05-08 18:21:26,177 - main auto submit - Loaded root params file: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Runs/root_params.yaml
+2022-05-08 18:21:26,177 - MainThread - Started queue_monitor thread
+2022-05-08 18:21:26,182 - main auto submit - Number of runnable tasks: 2
+2022-05-08 18:21:26,182 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D
+2022-05-08 18:21:31,188 - queue monitor - Updating 1 mgmt db tasks.
+2022-05-08 18:21:31,188 - queue monitor - Acquiring db connection.
+2022-05-08 18:21:31,188 - queue monitor - Received entry SchedulerTask(run_name='Pohang', proc_type=1, status=3, job_id=None, error=None), status is more than created but the job_id is not set.
+2022-05-08 18:21:36,208 - queue monitor - Task 'EMOD3D' on 'Pohang' not found on ps or in the management db folder; resetting the status to 'created' for resubmission
+start_time not in proc_Data.keys(),value 0
+
+end_time not in proc_Data.keys(),value 0
+
+run_time not in proc_Data.keys(),value 0
+
+cores not in proc_Data.keys(),value 1
+
+status not in proc_Data.keys(),value RUNNING
+
+2022-05-08 18:21:36,210 - queue monitor - Updating 1 mgmt db tasks.
+2022-05-08 18:21:36,210 - queue monitor - Received entry SchedulerTask(run_name='Pohang', proc_type=1, status=7, job_id=None, error='Disappeared from ps. Creating a new task.'), status is more than created but the job_id is not set.
+2022-05-08 18:27:47,120 - queue monitor - Received entry SchedulerTask(run_name='Pohang', proc_type=4, status=7, job_id=None, error='/home/quakekorea/QuakeData/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc/HF.bin /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h1.0.ll The waveform for station 005D49 contains all zeros, please investigate.'), status is more than created but the job_id is not set.
 ...
 
 
 ```
+
+시뮬레이션이 모두 수행되면 최종적으로 Runs/Pohang/Pohang/{LF,HF,BB,IM_calc,verification} 디렉토리에 결과물들이 위치하게 된다.
 
 
 # 도커 컨테이너 업데이트
