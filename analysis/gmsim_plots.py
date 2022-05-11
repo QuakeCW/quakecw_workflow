@@ -10,7 +10,7 @@ STATION_LIST="station.list"
 def load_args():
     parser=argparse.ArgumentParser()
     parser.add_argument(
-        "--gmsim_yaml", help="Path to gmsim.yaml file", type=Path, action="append")
+        "--gmsim_yaml", help="Path to gmsim.yaml file", type=Path, action="append", required=True,)
 
     parser.add_argument(
         "--obs", help="Path to Obs data, must include Obs_Acc,Obs_Vel and Obs_IM directories", type=Path,)
