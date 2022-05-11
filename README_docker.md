@@ -57,7 +57,7 @@ docker run -it --user 1000:1000 -v C:\Users\GloryKim\QuakeData\:/home/quakekorea
 ![화면 캡처 2022-05-09 162106](https://user-images.githubusercontent.com/466989/167359983-2527c154-c999-4e95-a58c-ab14b8561ee7.png)
 
 
-QuakeData를 처음 다운받아 설정할때, 파일들의 Owner가 root로 되어 있을 가능성이 있다. chown 명령어로 Onwer를 바꿔주자. (sudo를 쓸때 패스워드는 유저id와 같다.)
+QuakeData를 처음 다운받아 설정할때, 파일들의 Owner가 root로 되어 있을 가능성이 있다. chown 명령어로 Owner를 바꿔주자. (sudo를 쓸때 패스워드는 유저id와 같다.)
 ```
 (python3_local) quakekorea@96b125bcac4c:~/QuakeData$ ls -ltr
 total 0
