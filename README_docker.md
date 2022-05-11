@@ -127,7 +127,7 @@ Fast-forward
  create mode 100644 qcore/uncertainties/magnitude_scaling/allen_2017.py
  create mode 100644 qcore/uncertainties/magnitude_scaling/strasser_2010.py
 ```
-그리고 workflow를 업데이트. 현재 도커 컨테이너 상에서 작동되는 workflow코드는 glory_kim_local 브랜치에서 개발중이다. 이 브랜치에 재대로 연결이 되어있도록 확인하자
+그리고 workflow를 업데이트. 현재 도커 컨테이너 상에서 작동되는 workflow코드는 glory_kim_local 브랜치에서 개발중이다. 이 브랜치에 제대로 연결이 되어있도록 확인하자
 
 ```
 (python3_local) quakekorea@96b125bcac4c:~$ cd $gmsim/workflow
