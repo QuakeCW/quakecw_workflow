@@ -903,20 +903,19 @@ Calculations are output to Obs_IM
 
 ## 관측 데이터와 시뮬레이션 결과값의 비교 (업데이트 필요)
 ```
-mkdir Pohang_waveforms8
-cp //scratch/x2319a02/gmsim/quakecw_workflow/analysis/* Pohang_waveforms8
-cd Pohang_waveforms8
-ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM
-ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc
-ln -s /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Vel
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis> python gmsim_plots.py --gmsim_yaml /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml --obs /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/
+##### Observation data: /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang
+##### Sim BB (Acc) 1: ('Pohang', '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin')
+##### IM CSV 1: ('Pohang', '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv')
+##### IM Plots 1: ('Pohang', '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/verification/IM_plot/geom/non_uniform_im')
+##### Stations extracted from Observation data
+##### Station list: ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB
+python /home01/x2319a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc Obs --waveforms /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis/plots/waveforms_acc_Pohang
 
-cat RELS.txt (<- edit this)
-Pohang_20220422_sdrop20
-Pohang_20220422_sdrop50
 
-FAULT=Pohang REL=Pohang ./run_waveforms.sh
-FAULT=Pohang REL=Pohang ./run_psa_comparison.sh
-FAULT=Pohang REL=Pohang ./collect_im_plots.sh
+python /home01/x2319a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Vel Obs --waveforms /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis/plots/waveforms_vel_Pohang
+
+
 ```
 
 
