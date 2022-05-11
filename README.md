@@ -166,7 +166,6 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 ```
 위와 같은 내용이 출력되었다면 성공적으로 단층 모델이 만들어졌다. 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cd Source
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Source> tree
 .
  |-__pycache__
@@ -198,14 +197,15 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치는  
 
 ```
-/home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) (To do: github 에서 maintain)
+/home01/x2319a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) 
 ```
+이며, 첨부한 make_vm.template에 이 바이너리를 사용하도록 지정되어 있다.
 
+우선 $QUAKE/VM/vm_params.yaml 의 내용을 보도록 하자 [1]
 
-$QUAKE/VM/vm_params.yaml 을 적절히 수정해서 사용 [1]
 
 ```
-python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat $QUAKECW/VM/vm_params.yaml
+python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> cat  $QUAKECW/VM/vm_params.yaml
 mag: 5.5
 centroidDepth: 4.05399
 MODEL_LAT: 35.5755
@@ -261,6 +261,7 @@ Submitted: qsub -V /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/P
 ```
 
 ncores은 노드 전체의 경우 68, wallclock 은 남한 대부분을 커버하는 100m 모델의 경우 15시간 정도 세팅이 적당하여 디폴트값으로 정해져 있으나 작은 사이즈의 예시로 사용하기 위해 옵션의 사용법을 제시하였다. 
+위의 출력값 제일 마지막 줄 10082371.pbs 은 제출한 Job ID를 가리킨다.
 
 
 
@@ -279,6 +280,15 @@ vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트이 위치�
 현재 진행 상활을 체크해 보도록 한다.
 ```
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> qstat -u $USER
+```
+
+혹은
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/VM> qstat 10082371.pbs
+```
+명령어로 특정 Job을 지정해서 볼수도 있다. 보통 `-u $USER`를 쓰는 것을 권장한다.
+
+```
 
 pbs:
                                                                  Req'd  Req'd   Elap
@@ -340,6 +350,7 @@ Generating velocity model
 
 ```
 (python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
+
 created temp dir VM/tmp4x3shtd5
 input .ll file: Stations/Busan_2km.ll
 output .v30 file: Stations/Busan_2km.vs30
@@ -401,7 +412,7 @@ gmsim_template: /home01/x2319a02/gmsim/Environments/v211213/workflow/workflow/ca
 stat_file: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
-특별히 `vm_data`에 유의할 것. 우리가 위에서 생성한 속도모델은 hh=1.0로 지나치게 단순하여, 기존 시뮬레이션에서 주로 사용하는 hh=0.1 속도모델을 사용하기로 한다. 
+특별히 `vm_data`에 유의할 것. 우리가 위에서 생성한 속도모델은 hh=1.0로 지나치게 단순하여, 기존 시뮬레이션에서 주로 사용하는 hh=0.1 속도모델을 사용하기로 한다. *위의 vm_data 내용을 수정하지 말고 그대로 사용하자.*
 
 각각의 변수들을 설명하자면
 1. workflow: slurm_gm_workflow가 인스톨되어 있는 위치
@@ -415,30 +426,6 @@ n_max_retries: 2
 9. stat_file: 관측소 리스트
 10. n_max_retries: 계산 실패시 재시도 회수 최대값
 
-
-우선 누리온의 로그인 노드가 접속 중 활동이 없으면 네트워크 연결을 끊어버리는 경우가 많아 타임아웃 무제한으로 만들고 screen 세션안에서 실행하는 것을 권장한다.
-다음 명령어를 실행하셔 screen 안으로 들어간다.
-
-```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> export TMOUT=
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> screen
-```
-
-가상 환경을 활성화 해준다. (screen 세션이 시작될 때 기존에 있었던 가상 환경이 리셋됨)
-```
-x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> act_env
-```
-
-아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
-
-```
-x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> activate_env /home01/x2319a02/gmsim/Environments/v211213/
-cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
-cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
-cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   
-
-'craype-x86-skylake' dependent modulefiles were removed
-```
 
 
 스크립트를 실행시켜 시뮬레이션을 설치
@@ -620,10 +607,33 @@ VM extents not contained within NZVM DEM: 130.306569, 33.771972
 
 Cybershake 워크플로우를 인스톨하면 자동화 스케쥴러를 사용할 수 있다. 이 스케쥴러는 로그인 노드에서 상주하며 실행 중인 job을 모니터하고, 의존 관계에 있는 job들이 성공적으로 완료되면 그 다음 단계의 job을 자동으로 submit하는 기능이 있다.
 
-quakecw_workflow 디렉토리 안으로 들어가거나, path를 적절히 보태어서 아래 명령을 실행한다.
+우선 누리온의 로그인 노드가 접속 중 활동이 없으면 네트워크 연결을 끊어버리는 경우가 많아 타임아웃 무제한으로 만들고 screen 세션안에서 실행하는 것을 권장한다.
+다음 명령어를 실행하셔 screen 안으로 들어간다.
 
 ```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> $QUAKECW/run_gmsim.sh /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> export TMOUT=
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> screen
+```
+
+가상 환경을 활성화 해준다. (screen 세션이 시작될 때 기존에 있었던 가상 환경이 리셋됨)
+```
+x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> act_env
+```
+
+아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
+
+```
+x2319a02@login04:/scratch/x2319a02/gmsim/RunFolder/Busan20211214> activate_env /home01/x2319a02/gmsim/Environments/v211213/
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
+cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   
+
+'craype-x86-skylake' dependent modulefiles were removed
+```
+아래 명령을 실행시키자. 혹은 install_gmsim.py의 출력값 제일 아래줄의 명령어를 복사/붙여넣기해도 된다.
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> $QUAKECW/run_gmsim.sh $QUAKECW/RunFolder/Pohang/gmsim_Pohang.yaml
 ```
 
 스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.

@@ -149,5 +149,25 @@ Resolving deltas: 100% (126/126), done.
 x2319a02@login02:/scratch/x2319a02/users/x2319a02>
 ```
 
+한국 부산 분지를 포함한 NZVM 패키지를 복사, 압축을 풀어준다.
+
+```
+cp /scratch/x2319a02/users/x2319a02/VM_KVM.tar $MYSCRATCH
+cd $MYSCRATCH
+tar xvf VM_KVM.tar
+cd ~/
+ln -s $MYSCRATCH/VM_KVM
+```
+
+`ls -al`해서 아래와 같은 라인이 보이면 잘되었음을 의미한다.
+```
+lrwxrwxrwx    1 x2319a02 rd0624     35 Mar 15 02:07 VM_KVM -> /scratch/x2319a02/users/x2319a02/VM_KVM
+```
+
+끝으로 global_vs30.tif를 다음 명령어를 사용해 복사해준다.
+
+```
+cp /scratch/x2319a02/users/x2319a02/quakecw_workflow/Stations/global_vs30.tif $QUAKECW/Stations/
+```
 ### 참고: gmsim 패키지에서 문제가 생겼을 경우
 gmsim 패키지를 만드는 과정에서 사용자 로그인 아이디 x2319a02가 하드코딩되어 퍼미션 관련한 문제가 생겨날 수 있는데, 이같은 경우 문의바람.
