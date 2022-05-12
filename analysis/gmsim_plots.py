@@ -37,11 +37,10 @@ def load_args():
 
     args = parser.parse_args()
 
-    if args.outdir.exists():
+    if args.outdir.exists(): #if specified outdir already exists, rename the existing one to XXX_timestamp
         print(f"WARNING: {args.outdir} already exists")
         dt=datetime.datetime.fromtimestamp(args.outdir.stat().st_ctime)
         timestamp=dt.strftime("%Y%m%d_%H%M%S")
-        print(timestamp)
         outdir_moveto=args.outdir.parent / f"{args.outdir.name}_{timestamp}"
         print(f"Relocated to {outdir_moveto}")
         shutil.copytree(args.outdir,outdir_moveto)
@@ -134,7 +133,7 @@ if __name__ == '__main__':
 
 #    print(args)
 
-
+    print("\n\n\n##### Start Plotting")
     #waveforms
     if not args.skip_waveforms:
 
@@ -144,6 +143,8 @@ if __name__ == '__main__':
                 out,err=exe(cmd)
                 print(out)
                 print(err)
+                    
+                
 
 
                 cmd = f"python {args.gmsim_env}/visualization/waveform/waveforms.py --waveforms {args.obs/'Obs_Vel'} Obs --waveforms {bb} Sim -t {args.time} --no-amp-normalize --stations {args.station_list_str} --out {args.outdir}/waveforms_vel_{sim_root_name}" 
@@ -161,7 +162,6 @@ if __name__ == '__main__':
                 out,err=exe(cmd)
                 print(out)
                 print(err)
-
 
     # psa_comparisons
     if not args.skip_psa_comparisons:
@@ -182,7 +182,8 @@ if __name__ == '__main__':
                 out,err=exe(cmd)
                 print(out)
                 print(err)
-
+    else:
+        print("##### Skipped psa_comparisons")
 
     # psa_bias
     if not args.skip_psa_bias:
@@ -203,7 +204,8 @@ if __name__ == '__main__':
                 out,err=exe(cmd)
                 print(out)
                 print(err)   
-
+    else:
+        print("##### Skipped psa_bias")
 
     # collect im plots
     if not args.skip_implots:
@@ -214,4 +216,8 @@ if __name__ == '__main__':
                 shutil.rmtree(outdir)
             listdir=shutil.copytree(im,outdir)
             print(listdir)
-         
+    else:
+        print("##### Skipped implots")
+    
+
+    print(f"\n\n##### All complete: Check {args.outdir}")
