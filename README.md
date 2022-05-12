@@ -798,6 +798,101 @@ total 6226180
 
 누리온 로긴 노드에서 직접 다양한 지도들을 생성할 수 있다.
 
+## 관측 데이터의 시각화
+
+시뮬레이션이 다 완료되었다고 가정하자. 시뮬레이션을 실행할때 썼던 gmsim.yaml의 위치를 파악한다.
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> find . -name "gmsim*.yaml"
+./Pohang/gmsim_Pohang.yaml
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder> realpath ./Pohang/gmsim_Pohang.yaml
+/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml
+```
+
+이 이벤트의 경우에는 관측값이 존재한다 (관측데이터를 마련하는 방법은 이 문서 아래쪽을 참조)
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> ls /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang/
+Obs_Acc  Obs_IM  Obs_Vel
+```
+관측한 가속도(Acc), IM(intensity measures), 속도(Vel)들이 이 곳에 저장되어 있다.
+
+RunFolder/Pohang으로 돌아가 시각화를 해보자.
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/analysis/gmsim_plots.py --gmsim_yaml /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml --obs /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang
+WARNING: /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/plots already exists
+Relocated to /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/plots_20220512_162547
+##### Observation data: /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang
+##### Sim BB (Acc) 1: ('Pohang', '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin')
+##### IM CSV 1: ('Pohang', '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv')
+##### IM Plots 1: ('Pohang', '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/verification/IM_plot/geom/non_uniform_im')
+##### Stations extracted from Observation data
+##### Station list: ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB
+
+
+
+##### Start Plotting
+python /home01/x2319a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Acc Obs --waveforms /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/plots/waveforms_acc_Pohang
+
+
+python /home01/x2319a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Vel Obs --waveforms /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/plots/waveforms_vel_Pohang
+
+
+['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
+python /home01/x2319a02/gmsim/Environments/v211213/visualization/im/psa_comparisons.py --run-name Pohang --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -d /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/plots/psa_comparisons_Pohang
+b"['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']\n"
+['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
+['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']
+
+
+['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
+python /home01/x2319a02/gmsim/Environments/v211213/visualization/im/psa_bias.py --run_name Pohang --imcsv /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -o /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/plots/psa_bias_Pohang
+
+
+/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/plots/im_plots_Pohang
+
+
+##### All complete: Check /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/plots
+```
+
+로컬 컴퓨터에서 다운받기 위해서는 아래와 같은 명령어를 사용하면 된다. 우선 적당한 디렉토리르 들어가서
+```
+(!596) $ scp -r nurion2:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/plots .
+
+pSAWithPeriod_comp_geom_Pohang.png                                                   100%   59KB 129.3KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_JINA.png                                              100%   45KB 273.0KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_JSB.png                                               100%   43KB 281.5KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_EUSB.png                                              100%   46KB 652.6KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_ADO2.png                                              100%   47KB 506.9KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_KRN.png                                               100%   47KB 800.3KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_SACA.png                                              100%   46KB 170.1KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_TOY2.png                                              100%   45KB 503.2KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_WSN.png                                               100%   46KB 653.9KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_KUJA.png                                              100%   44KB 817.6KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_PHA2.png                                              100%   47KB 762.7KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_MKL.png                                               100%   45KB 532.5KB/s   00:00
+pSA_comp_geom_vs_Period_Pohang_NPR.png                                               100%   44KB 566.0KB/s   00:00
+...
+
+```
+![pSAWithPeriod_comp_geom_Pohang](https://user-images.githubusercontent.com/466989/168017745-bf8c9a83-0352-4fc2-aed4-75b6d6ddd5a3.png)
+![CGD](https://user-images.githubusercontent.com/466989/168017776-0b5fe370-1d7b-4868-be5e-1144e841d76d.png)
+![plot_items_0](https://user-images.githubusercontent.com/466989/168017862-f11bca94-c6ff-4de1-8e83-c9d3d2efebd6.png)
+
+하나의 이벤트에 대해 복수의 시뮬레이션 결과가 있는 경우, gmsim_plot.py에 한번 이상의 --gmsim_yaml을 추가하면 된다.
+예를 살펴보도록 하겠다.
+
+아래의 `Busan_Data/Sample_runs`라는 디렉토리에 경주와 포항 지진을 각각 sdrop을 바꿔가며 두 번씩 계산한 시뮬레이션 결과 데이터가 저장되어 있다.
+
+```
+(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang> ls /scratch/x2319a02/gmsim/Busan_Data/Sample_runs/
+
+Gyeongju_20220422_sdrop100  Gyeongju_20220422_sdrop50  Pohang_20220422_sdrop20  Pohang_20220422_sdrop50
+```
+
+
+
+
+
 ### IM_plot (업데이트 필요)
 
 IM_Calculation단계를 거쳐야 함.시뮬레이션 디렉토리에서 IM_calc디렉토리에 \*.csv파일이 존재하는 지 확인할 것.
@@ -901,126 +996,6 @@ Reading waveforms in: g
 Calculations are output to Obs_IM
 ```
 
-## 관측 데이터와 시뮬레이션 결과값의 비교 (업데이트 필요)
-```
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis> python gmsim_plots.py --gmsim_yaml /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml --obs /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/
-##### Observation data: /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang
-##### Sim BB (Acc) 1: ('Pohang', '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin')
-##### IM CSV 1: ('Pohang', '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv')
-##### IM Plots 1: ('Pohang', '/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/verification/IM_plot/geom/non_uniform_im')
-##### Stations extracted from Observation data
-##### Station list: ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB
-python /home01/x2319a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Acc Obs --waveforms /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis/plots/waveforms_acc_Pohang
-
-
-python /home01/x2319a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_Vel Obs --waveforms /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis/plots/waveforms_vel_Pohang
-
-
-['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv']
-python /home01/x2319a02/gmsim/Environments/v211213/visualization/im/psa_comparisons.py --run-name Pohang --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv Obs -d /scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis/plots/psa_comparisons_Pohang
-b"['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']\n"
-['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-0 ['/scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-1 ['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv', 'Obs']
-
-
-['/scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv']
-python /home01/x2319a02/gmsim/Environments/v211213/visualization/im/psa_bias.py --run_name Pohang --imcsv /scratch/x2319a02/users/x2319a02/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2319a02/gmsim/Busan_Data/Data/Obs/combined/Pohang/Obs_IM/Pohang.csv Obs -o /scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis/plots/psa_bias_Pohang
-
-
-/scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis/plots/im_plots_Pohang
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis> ls -ltr
-total 20
--rw-rw-r-- 1 x2319a02 rd0624  245 May 11 20:30 station.list
--rw-rw-r-- 1 x2319a02 rd0624 8868 May 12 01:40 gmsim_plots.py
-drwxrwxr-x 7 x2319a02 rd0624 4096 May 12 01:46 plots
-(python3_nurion) x2319a02@login02:/scratch/x2319a02/users/x2319a02/quakecw_workflow/analysis> cd plots
-```
 
 
 # 참고 문헌:
