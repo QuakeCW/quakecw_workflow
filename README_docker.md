@@ -35,6 +35,7 @@ QuakeData 압축 파일을 다운 받아 압축을 풀어준다. `C:\Users\Glory
 
 다운로드 링크: https://1drv.ms/u/s!As4Rczo4lNsOh7V1zlzOEX7FkySpmA?e=H7asYg
 
+속도모델 (포항. 400m $QUAKECW/VM 에서 압축풀기) https://1drv.ms/u/s!As4Rczo4lNsOh7YFsHdJDkzJsmCdLQ?e=u2IyDv
 
 BB 다운로드 링크:https://1drv.ms/u/s!As4Rczo4lNsOh7V3ZkNVXjk5a1zglQ?e=to3OOP (포항 20220422_sdrop50 버전)
 
@@ -297,9 +298,10 @@ gmsim_template: /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0
 stat_file: /home/quakekorea/QuakeData/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
+참고로, `gmsim_docker.yaml`에 예시로 설정되어 있는 gm_templates은 `Pohang_sdrop50_h1.0` 으로 그 내용은 아래와 같다.
 
 이 예에서 hh=1.0을 사용하는 관계로 시뮬레이션에서 LF와 HF의 경계가 되는 주파수 flo가 0.1이 되어야 함 (flo = 0.1/hh). 
-참고로, `gmsim_docker.yaml`에 예시로 설정되어 있는 gm_templates은 `Pohang_sdrop50_h1.0` 으로 그 내용은 아래와 같다.
+만약 hh=0.4버전을 사용한다면, flo= 0.25
 
 ```
 (python3_local) quakekorea@23b6d4e0f021:~/quakecw_workflow$ cat /home/quakekorea/QuakeData/gmsim_templates/Pohang_sdrop50_h1.0/root_defaults.yaml
@@ -325,6 +327,7 @@ flo: 0.1
 dt: 0.005
 v_1d_mod: kr_gb_kim2011_modified.1d
 ```
+
 
 모두 준비되었다면 아래 명령어를 실행시켜 시뮬레이션을 인스톨하도록 하자. 
 
