@@ -1,9 +1,14 @@
 # quakecw_workflow
 CWNU Earthquake Research Group's Adaptation of QuakeCoRE NZ workflow
 
-Korean Ground Motion Simulation @ Nurion
+Korean Ground Motion Simulation 
 
 배성은(University of Canterbury, QuakeCoRE 소프트웨어 팀장 / 창원대학교 BP Fellow)
+
+# 소개
+
+본 문서는 한국연구재단의 해외우수과학자유치사업(Brain Pool) 지원을 받아 수행된 "한반도 지진 디지털 트윈 구현을 위한 물리기반 지반운동 시뮬레이션 플랫폼" 연구 (연구개발과제번호: 2021H1D3A2A01096514)로 제작된 소프트웨어를 한국과학기술정보연구원 (KISTI) 슈퍼컴퓨터 5호기 누리온에서 작동하는 법을 기술하였다. 슈퍼컴퓨터 사용이 불가한 사용자들은 컨테이너 솔루션에 기반한 도커(Docker) 이미지를 고려해보기 바란다. [도커 기반 워크플로우 사용법](README_docker.md)
+
 
 # 시뮬레이션
 
