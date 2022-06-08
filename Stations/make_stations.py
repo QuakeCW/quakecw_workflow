@@ -3,7 +3,8 @@ import pandas as pd
 
 from pathlib import Path
 import yaml
-import tempfile
+#from tempfile import mkdtemp
+from tempfile import TemporaryDirectory
 from qcore.shared import exe
 from VM.gen_coords import gen_coords
 
@@ -20,6 +21,10 @@ def load_args():
     )
     parser.add_argument(
         "--real_stats",type=str,help="Real station file to append to virtual stations. (lon lan name) format each line", default=None)
+
+    parser.add_argument(
+        "--grid_size",type=float,help="Grid size. Distance between two neighbouring stations", default=2.0)
+
 
     args = parser.parse_args()
 
@@ -44,30 +49,35 @@ if __name__ == '__main__':
     #print(args.params)
     params = args.params
     original_hh = params['hh']
-    params['hh']=2.0
-    params['flo']=0.05
-    params['nx']=int(params['nx']*original_hh/params['hh'])
-    params['ny']=int(params['ny']*original_hh/params['hh'])
-    params['nz']=int(params['nz']*original_hh/params['hh'])
-    params['sufx']="_rt01-h2.000"
-    params['GRIDFILE'] = params['GRIDFILE'].replace("0.100","2.000")
-    params['GRIDOUT'] = params['GRIDOUT'].replace("0.100","2.000")
-    params['MODEL_BOUNDS'] = params['MODEL_BOUNDS'].replace("0.100","2.000")
-    params['MODEL_COORDS'] = params['MODEL_COORDS'].replace("0.100","2.000")
-    params['MODEL_PARAMS'] = params['MODEL_PARAMS'].replace("0.100","2.000")
+    new_hh = args.grid_size
+    params['hh']=new_hh
+    params['flo']=1./new_hh
+    params['nx']=int(params['nx']*original_hh/new_hh)
+    params['ny']=int(params['ny']*original_hh/new_hh)
+    params['nz']=int(params['nz']*original_hh/new_hh)
+    params['sufx']=f"_rt01-h{new_hh:.3f}"
+    params['GRIDFILE'] =f"./gridfile{params['sufx']}"
+    params['GRIDOUT'] = f"./gridout{params['sufx']}"
+    params['MODEL_BOUNDS'] = f"./model_bounds{params['sufx']}"
+    params['MODEL_COORDS'] = f"./model_coords{params['sufx']}"
+    params['MODEL_PARAMS'] = f"./model_params{params['sufx']}"
 
+    with TemporaryDirectory(dir=args.vm_params_yaml.parent) as tmpdir:
 
-    with tempfile.TemporaryDirectory(dir=args.vm_params_yaml.parent) as tmpdir:
+#    tmpdir = mkdtemp(dir=args.vm_params_yaml.parent) # use this instead of above for debug
+#    tmpdir=Path(tmpdir)
+
         print('created temp dir', tmpdir)
         new_vm_params_yaml=Path(tmpdir)/"vm_params.yaml"
         with open(new_vm_params_yaml,"w") as file:
             documents = yaml.dump(params, file)
         gen_coords(tmpdir)
-        stats=pd.read_csv(Path(tmpdir)/"model_coords_rt01-h2.000",delimiter=" ",index_col=None,usecols=[3,8],names=['lon','lat'])
+        csv_file=Path(tmpdir)/f"model_coords{params['sufx']}"
+        stats=pd.read_csv(csv_file,delimiter=" ",index_col=None,usecols=[3,8],names=['lon','lat'], engine='python')
         stats['name']=["{:06X}".format(x) for x in range(len(stats))]
        
         if args.real_stats is not None:
-            real_stats=pd.read_csv(args.real_stats,sep=' ',index_col=None, names=['lon','lat','name'])
+            real_stats=pd.read_csv(args.real_stats,sep=' ',index_col=None, names=['lon','lat','name'], engine='python')
         else:
             real_stats=None
 
