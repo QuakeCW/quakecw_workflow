@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # quakecw_workflow
-CWNU Earthquake Research Group's Adaptation of QuakeCoRE NZ workflow
+CWNU Earthquake Engineering Research Group's Adaptation of QuakeCoRE NZ workflow
 
 Korean Ground Motion Simulation 
 
