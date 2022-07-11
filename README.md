@@ -1,9 +1,11 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # quakecw_workflow
-CWNU Earthquake Research Group's Adaptation of QuakeCoRE NZ workflow
+CWNU Earthquake Engineering Research Group's Adaptation of QuakeCoRE NZ workflow
 
 Korean Ground Motion Simulation 
 
-배성은(University of Canterbury, QuakeCoRE 소프트웨어 팀장 / 창원대학교 BP Fellow)
+배성은(University of Canterbury, QuakeCoRE 소프트웨어 팀장 / 창원대학교 BP Fellow) 
+
 
 # 소개
 
@@ -1121,16 +1123,18 @@ New_id=x2319a02
 라고 가정
 
 Busan\* 이라는 디렉토리 내의 모든 망가진 심볼릭 링크를 찾아서 고치기를 원한다면, 아래 명령어를 적절히 수정하여 실행하면 됨.
-
+```
 find Busan\* -type l|xargs -I{} ls -al {} |grep**x2319a02** |awk '{print $9" "$11}' >links.txt
 
 cat links.txt | while read line; do word=( $line ); dest=${word\[0]}; old_link=${word\[1]}; new_link=${word\[1]}; new_link=${new_link/**hpc11a02**/**x2319a02**}; echo $new_link; rm done
 
+```
+
   
 ### [참고] 특정 text를 포함하는 모든 파일들을 찾아 그 속의 text를 새로운 것으로 바꾸는 법
-
+```
 (python3_nurion) x2319a02@login01:~/gmsim/Environments/v211213> grep -r hpc11a02 \* |grep -v pyc |grep -v Binary |cut -d: -f1 |xargs -I {} sed -i 's/hpc11a02/x2319a02/g' {}
-
+```
   
   
   
