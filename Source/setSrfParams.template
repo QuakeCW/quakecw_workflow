@@ -67,8 +67,9 @@ SEED_INC = 1
 # HanksBakun2002
 # BerrymanEtAl2002
 # VillamorEtAl2001
-MWSR = 'BerrymanEtAl2002'
-
+# Leonard2014
+# Leonard2014_SCR
+MWSR = 'Leonard2014_SCR'
 ###
 ### RELATING TO TYPE 3 (ffd to finite fault)
 ###

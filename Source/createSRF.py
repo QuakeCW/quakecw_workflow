@@ -354,6 +354,14 @@ def MwScalingRelation(
         else:
             A = 10 ** (Mw - leonard_ss)
 
+    elif MwScalingRel == "Leonard2014_SCR":
+        if round(rake % 360 / 90.0) % 2:
+            # SCR dip slip
+            A = 10 ** (Mw - 4.19) 
+        else:
+            # SCR strike slip
+            A = 10 ** (Mw - 4.18) 
+
     else:
         raise ValueError("Invalid MwScalingRel: {}. Exiting.".format(MwScalingRel))
 
