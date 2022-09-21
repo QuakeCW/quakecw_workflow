@@ -93,13 +93,24 @@ x2319a02@login02:~> source ~/.bashrc
 ```
 
 ### 프로그램 패키지 인스톨
-배성은 (x2319a02)이 2022/05/02 제작한 패키지를 복사해온다.
+
+자기 홈 디렉토리로 간다.
 
 ```
-cd $HOME
-tar xvf /scratch/x2319a02/users/x2319a02/gmsim20220502.tar
-````
-35기가 정도되는 파일로, 시간이 상당히 소요될 수 있다.
+cd ~/
+```
+만약 예전에 사용하던 `gmsim` 디렉토리가 있다면 백업하도록 한다. (테스트 후에 삭제해도 됨)
+
+```
+mv gmsim gmsim.backup
+```
+
+배성은 (x2319a02)이 2022/05/02 제작한 셋업을 공유해 사용하기로 한다. 
+
+```
+ln -s /scratch/x2319a02/gmsim_home gmsim
+```
+
 
 제대로 로딩되었는지 확인하려면 `act_env` 명령어를 실행해본다. Activate Environment라는 의미를 가진 단축키 (alias)로 `~/.bashrc` 제일 아래에 지정한 내용이다.
 
