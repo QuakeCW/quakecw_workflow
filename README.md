@@ -1133,7 +1133,7 @@ cat links.txt | while read line; do word=( $line ); dest=${word\[0]}; old_link=$
   
 ### [참고] 특정 text를 포함하는 모든 파일들을 찾아 그 속의 text를 새로운 것으로 바꾸는 법
 ```
-(python3_nurion) x2319a02@login01:~/gmsim/Environments/v211213> grep -r hpc11a02 \* |grep -v pyc |grep -v Binary |cut -d: -f1 |xargs -I {} sed -i 's/hpc11a02/x2319a02/g' {}
+(python3_nurion) x2319a02@login01:~/gmsim/Environments/v211213> grep -I -r hpc11a02 \* |grep -v pyc |grep -v Binary |cut -d: -f1 |xargs -I {} sed -i 's/hpc11a02/x2319a02/g' {}
 ```
   
   
