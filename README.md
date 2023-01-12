@@ -83,29 +83,32 @@ $QUAKECW 디렉토리로 옮겨간다.
 
 이 예제에서 포항지진을 시뮬레이션해보도록 한다.
 
-$QUAKECW 디렉토리 아래에 RunFolder 디렉토리, 그리고 그 아래에 Pohang 디렉토리를 하나 만들자.
+$MYSCRATCH 디렉토리 아래에 RunFolder 디렉토리, 그리고 그 아래에 Pohang 디렉토리를 하나 만들자.
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow> mkdir RunFolder
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow> cd RunFolder
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder> mkdir Pohang
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder> cd Pohang
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang>
+(python3_nurion) x2568a02@login01:~> cd $MYSCRATCH
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02> mkdir RunFolder
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02> cd RunFolder/
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder> mkdir Pohang
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder> cd Pohang
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> 
+
 ```
 
 
 ## 단층 모델 만들기
-Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
+$QUAKECW/Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> cp $QUAKECW/Source/source.yaml ./source_Pohang.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> cp $QUAKECW/Source/source.yaml ./source_Pohang.yaml
+
 
 ```
 이 파일을 열어보면 단층의 특성에 관련된 내용들이 있다.
 
 ```
 
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> cat source_Pohang.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> cat source_Pohang.yaml 
 TYPE: 2
 FAULT: Pohang
 # latitude (float)
@@ -124,22 +127,27 @@ DIP: 69
 RAK: 152
 # rupture timestep
 DT: 0.01
-VELOCITY_MODEL: "$QUAKECW/Source/kr_gb_kim2011_modified.1d" <====== 수정 필요
-SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source" <====== 수정 필요
+VELOCITY_MODEL: "/scratch/x2568a02/CWNU/quakecw_workflow/Source/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "$MYSCRATCH/RunFolder/Pohang/Source" <====== 수정 필요          
 ```
 
-.yaml파일내의 $QUAKECW와 같은 변수를 인식하지 못하기 때문에, 실제 경로를 집어넣어줘야 한다. 각 사용자마다 $QUAKECW값이 다르므로, 아래 명령어를 사용해서 출력된 값을 복사/붙여넣기하도록 하겠다.
+.yaml파일내의 $MYSCRATCH 같은 변수를 인식하지 못하기 때문에, 실제 경로를 집어넣어줘야 한다. 각 사용자마다 $MYSCRATCH값이 다르므로, 아래 명령어를 사용해서 출력된 값을 복사/붙여넣기하도록 하겠다. 
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> echo $QUAKECW
-/scratch/x2568a02/CWNU/quakecw_workflow
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> echo $MYSCRATCH
+/scratch/x2568a02/users/x2568a02
 ```
-nano를 사용해 source_Pohang.yaml 제일 아래 두줄의 $QUAKECW 부분을 붙여넣기로 수정해준 다음 저장.
+x2568a03유저라면, 위 결과값이
+```
+/scratch/x2568a02/users/x2568a03
+```
+으로 찍혀나왔을 것이다.
+
+nano를 사용해 source_Pohang.yaml 제일 아래 줄의 $MYSCRATCH 부분을 붙여넣기로 수정해준 다음 저장.
 
 수정 후 
 ```
-VELOCITY_MODEL: "/scratch/x2568a02/CWNU/quakecw_workflow/Source/kr_gb_kim2011_modified.1d"
-SOURCE_DATA_DIR: "/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Source"
+SOURCE_DATA_DIR: "/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Source"
 ```
 
 아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
@@ -148,7 +156,8 @@ SOURCE_DATA_DIR: "/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Sourc
 (python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/Source> python $QUAKECW/Source/make_source.py source_Pohang.yaml
 
 Executing createSRF.py
-2022-05-04 20:12:15,905 - Creating SRF with command: /home01/x2568a02/gmsim/opt/nurion/hybrid_sim_tools/current/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/scratch/x2568a02/CWNU/quakecw_workflow/VM/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
+2023-01-13 07:56:11,982 - Creating SRF with command: /home01/x2568a02/gmsim/opt/nurion/hybrid_sim_tools/current/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/scratch/x2568a02/CWNU/quakecw_workflow/Source/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
+before basemap call -Jz1
 Plotting SRF as square plot...
 Plotting SRF as map plot...
 
@@ -170,10 +179,12 @@ ndip= 41 ny= 2 nydiv= 2 nysum= 41
   source = iter(source)
 WARNING:root:maximum allowed iterations reached while optimizing the alpha parameter
 
+
 ```
 위와 같은 내용이 출력되었다면 성공적으로 단층 모델이 만들어졌다. 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Source> tree
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> cd Source
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Source> tree
 .
  |-__pycache__
  | |-srf_config.cpython-37.pyc
