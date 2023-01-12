@@ -1114,6 +1114,17 @@ Calculations are output to Obs_IM
   
  
 
+
+  
+### [참고] 누리온 새 계정으로 이전 후 환경 재설정
+누리온은 매해 새로운 계정으로 이전하도록 정책이 되어있다. 새로운 계정으로 이전하고 나면 기존의 실행환경 디렉토리로 가서 파일 속에 하드코딩되어 있는 디렉토리 경로를 바꾸어주어야 한다. 다음의 명령어를 사용하면 이를 손쉽게 할 수 있다. 
+```
+(python3_nurion) x2568a02@login01:~/gmsim/Environments/v211213> grep -I -r hpc11a02 \* |cut -d: -f1 |sort|uniq|xargs -I {} sed -i 's/hpc11a02/x2568a02/g' {}
+```
+문제가 생겼을 경우, 아래의 사항들을 체크해보도록 한다.
+1. qcore, Velocity-Model등 로컬 패키지들이 제대로 작동하기 위해서는 .egg-link파일에 이들의 새로운 경로가 업데이트되어 있어야 한다. 위 명령어 실행 후에 .egg-link파일이 제대로 업데이트 되었는지 확인할 것. 
+2. 실행환경 디렉토리에 pyvenv.cfg 파일의 `include-system-site-packages` 필드도 `True`로 설정되어 있는지 확인할 것.
+
 ### [참고] 데이터 이전 이후 망가진 심볼릭 링크 고치는 법
 
 Old_id=hpc11a02
@@ -1128,14 +1139,6 @@ find Busan\* -type l|xargs -I{} ls -al {} |grep**x2568a02** |awk '{print $9" "$1
 
 cat links.txt | while read line; do word=( $line ); dest=${word\[0]}; old_link=${word\[1]}; new_link=${word\[1]}; new_link=${new_link/**hpc11a02**/**x2568a02**}; echo $new_link; rm done
 
-```
-
-  
-### [참고] 특정 text를 포함하는 모든 파일들을 찾아 그 속의 text를 새로운 것으로 바꾸는 법
-```
-(python3_nurion) x2568a02@login01:~/gmsim/Environments/v211213> grep -I -r hpc11a02 \* |cut -d: -f1 |sort|uniq|xargs -I {} sed -i 's/hpc11a02/x2568a02/g' {}
-```
-  
-  
+```  
   
   
