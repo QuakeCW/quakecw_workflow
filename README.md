@@ -397,36 +397,40 @@ KISTI 누리온 5호기에서 x2568a02계정으로 실행할 것임.
 $QUAKECW의 gmsim.yaml을 복사해서 수정해 사용하자.
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> cp $QUAKECW/gmsim.yaml gmsim_Pohang.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> cp $QUAKECW/gmsim.yaml gmsim_Pohang.yaml
 ```
 
 gmsim_Pohang.yaml에 $HOME, $QUAKECW 변수들을 echo 명령어로 실제 경로를 파악하여 수정, 저장한다.
 
 ```
-workflow: $HOME/gmsim/Environments/v211213/workflow
-sim_root_dir: $QUAKECW/RunFolder/Pohang
+workflow: /home01/x2568a02/gmsim/Environments/v211213/workflow
+sim_root_dir: $MYSCRATCH/RunFolder/Pohang
 fault_name: Pohang
-source_data: $QUAKECW/RunFolder/Pohang/Source
+source_data: $MYSCRATCH/RunFolder/Pohang/Source
 copy_source_data: False
-vm_data: $QUAKECW/RunFolder/Pohang/VM
+vm_data: $MYSCRATCH/RunFolder/Pohang/VM
 copy_vm_data: False
-gmsim_template: $HOME/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
-stat_file: $QUAKECW/RunFolder/Pohang/Stations/Busan_2km.ll
+gmsim_template: /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
+stat_file: $MYSCRATCH/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
-
-로그인 어카운트가 x2568a02인 사용자의 경우 아래와 같이 저장한다. 
+$MYSCRATCH라고 되어 있는 부분을 수정해준다.
+```
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> echo $MYSCRATCH
+/scratch/x2568a02/users/x2568a02
+```
+로그인 어카운트가 x2568a03인 사용자의 경우 아래와 같이 저장한다. 
 
 ```
 workflow: /home01/x2568a02/gmsim/Environments/v211213/workflow
-sim_root_dir: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang
+sim_root_dir: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang
 fault_name: Pohang
-source_data: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Source
+source_data: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang/Source
 copy_source_data: False
-vm_data: /scratch/x2568a02/CWNU/Busan_Data/Data/VMs/Busan_20220324 <-----
+vm_data: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang/VM
 copy_vm_data: False
 gmsim_template: /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
-stat_file: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
+stat_file: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
 특별히 `vm_data`에 유의할 것. 우리가 위에서 생성한 속도모델은 hh=1.0로 지나치게 단순하여, 기존 시뮬레이션에서 주로 사용하는 hh=0.1 속도모델을 사용하기로 한다. *위의 vm_data 내용을 수정하지 말고 그대로 사용하자.*
