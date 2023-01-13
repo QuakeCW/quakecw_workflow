@@ -356,9 +356,13 @@ Generating velocity model
 관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
+```
 
-created temp dir VM/tmp4x3shtd5
+아래와 같은 아웃풋이 출력된다.
+
+```
+created temp dir VM/tmpxphy8_1u
 input .ll file: Stations/Busan_2km.ll
 output .v30 file: Stations/Busan_2km.vs30
 ```
@@ -375,6 +379,12 @@ output .v30 file: Stations/Busan_2km.vs30
 128.0402 35.1642 JINA
 ...
 (총 121)
+
+```
+제대로 생성되었다면, 아래와 같은 2개의 파일을 확인할 수 있다.
+```
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Stations> ls
+Busan_2km.ll  Busan_2km.vs30
 
 ```
 
