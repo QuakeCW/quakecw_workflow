@@ -243,7 +243,7 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 ### 실행  
 
-간단한 예를 보여주기 위해 제공된 vm_params_1000.yaml을 이용하도록 하겠다. 이 속도 모델을 Busan1000이라 부르기로 함. 
+간단한 예를 보여주기 위해 제공된 vm_params_1000.yaml을 이용하도록 하겠다. 여기서 해상도를 나타내는 그리드 간격은 1000m 즉 hh: 1.0이다. hh가 0.1로 낮을 경우, 속도모델을 생성하는데 지나치게 시간이 오래 걸리기 때문에 1.0을 예시로서 사용하도록 한다. 이 속도 모델을 Busan1000이라 부르기로 함.  
 
 make_vm.py는 2개의 인풋이 의무적으로 필요하다. vm_params YAML파일과, 속도모델의 이름이 그것이며, 추가로 아웃풋이 저장될 위치, CPU코어의 갯수, 계산을 위해 요청할 wallclock을 지정할 수 있다.
 
@@ -427,13 +427,14 @@ sim_root_dir: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang
 fault_name: Pohang
 source_data: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang/Source
 copy_source_data: False
-vm_data: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang/VM
+vm_data: /scratch/x2568a02/CWNU/Busan_Data/Data/VMs/Busan_20220324  <================ (주의!!!)
 copy_vm_data: False
 gmsim_template: /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
 stat_file: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
-특별히 `vm_data`에 유의할 것. 우리가 위에서 생성한 속도모델은 hh=1.0로 지나치게 단순하여, 기존 시뮬레이션에서 주로 사용하는 hh=0.1 속도모델을 사용하기로 한다. *위의 vm_data 내용을 수정하지 말고 그대로 사용하자.*
+특별히 `vm_data`에 유의할 것. 
+우리가 위에서 생성한 속도모델은  hh=1.0로 지나치게 해상도가 낮아 좋은 시뮬레이션 결과를 얻기 어려우므로 기존 시뮬레이션에서 주로 사용하는 hh=0.1 속도모델을 사용하기로 한다. *위의 vm_data 내용을 수정하지 말고 그대로 사용하자.*
 
 각각의 변수들을 설명하자면
 1. workflow: slurm_gm_workflow가 인스톨되어 있는 위치
@@ -449,38 +450,33 @@ n_max_retries: 2
 
 
 
-스크립트를 실행시켜 시뮬레이션을 설치
+스크립트를 실행시켜 시뮬레이션을 설치한다. 단 하나의 인풋만 필요하다.
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/
-install_gmsim.py gmsim_Pohang.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> python $QUAKECW/install_gmsim.py gmsim_Pohang.yaml
 ```
-
 
 실행 장면
 
-
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/install_gmsim.py gmsim_Pohang.yaml
 Pohang 1r
 
-python /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/automation/install_scripts/install_cybershake.py /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/fault_list.txt /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3 --stat_file_path /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll --keep_dup_station
-Version path: /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
-2022-05-05 01:55:39,880 - Installing /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/Srf/Pohang.srf
+python /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/automation/install_scripts/install_cybershake.py /scratch/x2568a02/users/x2568a02/RunFolder/Pohang /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/fault_list.txt /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3 --stat_file_path /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Stations/Busan_2km.ll --keep_dup_station
+2023-01-13 11:10:21,101 - Installing /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Data/Sources/Pohang/Srf/Pohang.srf
 ****************************************************************************************************
-2022-05-05 01:55:39,895 - installing bb
+2023-01-13 11:10:21,170 - installing bb
 ****************************************************************************************************
-2022-05-05 01:55:39,896 -                                      EMOD3D HF/BB Preparation Ver.slurm
+2023-01-13 11:10:21,170 -                                      EMOD3D HF/BB Preparation Ver.slurm
 ****************************************************************************************************
-2022-05-05 01:55:39,896 - installing bb finished
-2022-05-05 01:55:40,095 - /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll
-2022-05-05 01:55:40,095 - From: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Stations/Busan_2km.ll. To: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.ll
+2023-01-13 11:10:21,170 - installing bb finished
+2023-01-13 11:10:21,590 - /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Stations/Busan_2km.ll
+2023-01-13 11:10:21,591 - From: /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Stations/Busan_2km.ll. To: /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.ll
 
 
 ================================
              Source
 ================================
-/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py
+/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py
 LAT: 36.109
 LON: 129.366
 DEPTH: 7
@@ -492,20 +488,20 @@ DT: 0.01
 ================================
              VM
 ================================
-/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Data/VMs/Pohang/vm_params.yaml
+/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Data/VMs/Pohang/vm_params.yaml
 {'GRIDFILE': './gridfile_rt01-h0.100',
  'GRIDOUT': './gridout_rt01-h0.100',
  'MODEL_BOUNDS': './model_bounds_rt01-h0.100',
  'MODEL_COORDS': './model_coords_rt01-h0.100',
- 'MODEL_LAT': 35.753,
- 'MODEL_LON': 128.4038,
+ 'MODEL_LAT': 35.5755,
+ 'MODEL_LON': 128.9569,
  'MODEL_PARAMS': './model_params_rt01-h0.100',
  'MODEL_ROT': 0.0,
  'centroidDepth': 4.05399,
  'code': 'rt',
- 'extent_x': 325,
- 'extent_y': 360,
- 'extent_zmax': 68,
+ 'extent_x': 250,
+ 'extent_y': 400,
+ 'extent_zmax': 40,
  'extent_zmin': 0.0,
  'extracted_slice_parameters_directory': 'SliceParametersNZ/SliceParametersExtracted.txt',
  'flo': 1.0,
@@ -513,11 +509,11 @@ DT: 0.01
  'mag': 5.5,
  'min_vs': 0.2,
  'model_version': 'KVM_21p6',
- 'nx': 3250,
- 'ny': 3600,
- 'nz': 680,
+ 'nx': 2500,
+ 'ny': 4000,
+ 'nz': 400,
  'output_directory': 'output',
- 'sim_duration': 90,
+ 'sim_duration': 60,
  'sufx': '_rt01-h0.100',
  'topo_type': 'BULLDOZED'}
 ================================
@@ -568,8 +564,8 @@ DT: 0.01
                          7.5,
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
-Simulation installed at /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang
-Run with : $QUAKECW/run_gmsim.sh /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml
+Simulation installed at /scratch/x2568a02/users/x2568a02/RunFolder/Pohang
+Run with : $QUAKECW/run_gmsim.sh /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/gmsim_Pohang.yaml
  
 ```
 
@@ -632,13 +628,12 @@ Cybershake 워크플로우를 인스톨하면 자동화 스케쥴러를 사용�
 다음 명령어를 실행하셔 screen 안으로 들어간다.
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> export TMOUT=
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> screen
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang>  screen
 ```
 
 가상 환경을 활성화 해준다. (screen 세션이 시작될 때 기존에 있었던 가상 환경이 리셋됨)
 ```
-x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> act_env
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang>  act_env
 ```
 
 아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
@@ -651,10 +646,15 @@ cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[
 
 'craype-x86-skylake' dependent modulefiles were removed
 ```
+KISTI 정책상 로그인 노드에서 20분이상 프로그램이 작동되면 자동으로 종료하도록 되어있다. 아래 명령을 실행시키면 조금 더 안정적으로 가동되도록 할 수 있다.
+```
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang>  export TMOUT=
+```
+
 아래 명령을 실행시키자. 혹은 install_gmsim.py의 출력값 제일 아래줄의 명령어를 복사/붙여넣기해도 된다.
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> $QUAKECW/run_gmsim.sh $QUAKECW/RunFolder/Pohang/gmsim_Pohang.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> $QUAKECW/run_gmsim.sh $QUAKECW/RunFolder/Pohang/gmsim_Pohang.yaml
 ```
 
 스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
