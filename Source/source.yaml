@@ -16,5 +16,5 @@ DIP: 69
 RAK: 152
 # # rupture timestep
 DT: 0.01
-VELOCITY_MODEL: "$QUAKECW/Source/kr_gb_kim2011_modified.1d"
-SOURCE_DATA_DIR: "$QUAKCW/RunFolder/Pohang/Source" 
+VELOCITY_MODEL: "/scratch/x2568a02/CWNU/quakecw_workflow/Source/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "$MYSCRATCH/RunFolder/Pohang/Source" 
