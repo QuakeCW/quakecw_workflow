@@ -245,13 +245,16 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 간단한 예를 보여주기 위해 제공된 vm_params_1000.yaml을 이용하도록 하겠다. 이 속도 모델을 Busan1000이라 부르기로 함. 
 
-make_vm.py는 2개의 인풋이 의무적으로 필요하다. vm_params YAML파일과, 속도모델의 이름이 그것이며, 추가로 아웃풋이 저장될 위치, CPU코어의 갯수, 계산을 위해 요청할 wallclock을 지적할 수 있다.
+make_vm.py는 2개의 인풋이 의무적으로 필요하다. vm_params YAML파일과, 속도모델의 이름이 그것이며, 추가로 아웃풋이 저장될 위치, CPU코어의 갯수, 계산을 위해 요청할 wallclock을 지정할 수 있다.
 
 ```
 (python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang> python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
+
 ```
 
+정상적으로 진행되고 있아래와 같은 내용이 출력된다.
 
+```
 Created: /scratch/x2568a02/users/baes/RunFolder/Pohang/VM
 Loaded: /scratch/x2568a02/CWNU/quakecw_workflow/VM/vm_params_1000.yaml
 Copied vm_params_1000.yaml to /scratch/x2568a02/users/baes/RunFolder/Pohang/VM
