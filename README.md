@@ -132,7 +132,9 @@ SOURCE_DATA_DIR: "/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Source"
 
 ```
 (python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/Source> python $QUAKECW/Source/make_source.py source_Pohang.yaml
+```
 
+```
 Executing createSRF.py
 2023-01-13 07:56:11,982 - Creating SRF with command: /home01/x2568a02/gmsim/opt/nurion/hybrid_sim_tools/current/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/scratch/x2568a02/CWNU/quakecw_workflow/Source/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
 before basemap call -Jz1
@@ -243,9 +245,13 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 간단한 예를 보여주기 위해 제공된 vm_params_1000.yaml을 이용하도록 하겠다. 이 속도 모델을 Busan1000이라 부르기로 함. 
 
+make_vm.py는 2개의 인풋이 의무적으로 필요하다. vm_params YAML파일과, 속도모델의 이름이 그것이며, 추가로 아웃풋이 저장될 위치, CPU코어의 갯수, 계산을 위해 요청할 wallclock을 지적할 수 있다.
 
 ```
 (python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang> python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
+```
+
+
 Created: /scratch/x2568a02/users/baes/RunFolder/Pohang/VM
 Loaded: /scratch/x2568a02/CWNU/quakecw_workflow/VM/vm_params_1000.yaml
 Copied vm_params_1000.yaml to /scratch/x2568a02/users/baes/RunFolder/Pohang/VM
