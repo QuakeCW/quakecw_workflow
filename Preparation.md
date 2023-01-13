@@ -180,5 +180,6 @@ lrwxrwxrwx    1 x2568a02 rd0624     35 Mar 15 02:07 VM_KVM -> /scratch/x2568a02/
 ```
 cp /scratch/x2568a02/CWNU/quakecw_workflow/Stations/global_vs30.tif $QUAKECW/Stations/
 ```
+
 ### 참고: gmsim 패키지에서 문제가 생겼을 경우
 gmsim 패키지를 만드는 과정에서 사용자 로그인 아이디 x2568a02가 하드코딩되어 퍼미션 관련한 문제가 생겨날 수 있는데, 이같은 경우 문의바람.
