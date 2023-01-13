@@ -190,18 +190,18 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 
 ### 준비
 
-NZVM code에서 부산 분지 모델이 추가된 버전의 바이너리 위치는  
+NZVM code에 부산 분지 모델이 추가된 버전의 바이너리 위치는  
 
 ```
 /home01/x2568a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) 
 ```
-이며, 첨부한 make_vm.template에 이 바이너리를 사용하도록 지정되어 있다.
+이며, $QUAKECW/VM/make_vm.template에 이 바이너리를 사용하도록 지정되어 있다.
 
 우선 $QUAKE/VM/vm_params.yaml 의 내용을 보도록 하자 [1]
 
 
 ```
-python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> cat  $QUAKECW/VM/vm_params.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> cat $QUAKECW/VM/vm_params.yaml
 mag: 5.5
 centroidDepth: 4.05399
 MODEL_LAT: 35.5755
@@ -245,44 +245,44 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
-
-Created: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang> python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
+Created: /scratch/x2568a02/users/baes/RunFolder/Pohang/VM
 Loaded: /scratch/x2568a02/CWNU/quakecw_workflow/VM/vm_params_1000.yaml
-Copied vm_params_1000.yaml to /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM
-/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/tmpduik7ld_.template
-Generated: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM/make_vm.pbs
-Submitted: qsub -V /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM/make_vm.pbs
-10082371.pbs 
+Copied vm_params_1000.yaml to /scratch/x2568a02/users/baes/RunFolder/Pohang/VM
+/scratch/x2568a02/users/baes/RunFolder/Pohang/tmpyezd2l_m.template
+Generated: /scratch/x2568a02/users/baes/RunFolder/Pohang/VM/make_vm.pbs
+Submitted: qsub -V /scratch/x2568a02/users/baes/RunFolder/Pohang/VM/make_vm.pbs
+12470701.pbs
+
 ```
 
 ncores은 노드 전체의 경우 68, wallclock 은 남한 대부분을 커버하는 100m 모델의 경우 15시간 정도 세팅이 적당하여 디폴트값으로 정해져 있으나 작은 사이즈의 예시로 사용하기 위해 옵션의 사용법을 제시하였다. 
-위의 출력값 제일 마지막 줄 10082371.pbs 은 제출한 Job ID를 가리킨다.
+위의 출력값 제일 마지막 줄 12470701.pbs 은 제출한 Job ID를 가리킨다.
 
 
 
 ### 진행상황 체크
 
-속도 모델 생성 명령어를 실행할 때 `outdir`로 현재 디렉토리의 `VM`을 설정하였다.
+속도 모델 생성 명령어를 실행할 때 `outdir`로 현재 디렉토리의 `VM`을 설정하였다. `VM`으로 들어가본다.
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> cd VM
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM> ls
-make_vm.pbs  vm_params.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> cd VM
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM> ls
+make_vm.pbs  _tmp_Busan1000_24pv5gov  vm_params2vm_Busan1000_log.txt  vm_params2vm_log.txt  vm_params.yaml
 ```
 
-vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트이 위치해있다. 속도 모델이 생성되면 또한 이 곳에 위치하게 될 것이다.
+vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트인 make_vm.pbs와 진행상황을 알려줄 로그파일들,속도모델이 생성되는 동안 임시 데이터 저장을 위한 `_tmp_Busan1000_...`로 시작하는 이름의 디렉토리를 볼 수 있다. (참고: 임시 디렉토리는 작업큐를 통해 작업이 시작된 후에 볼 수 있다.) 속도 모델이 생성되면 임시 디렉토리가 사라지고 최종적으로 생성된 파일들이 이 곳에 위치하게 될 것이다.
 
 
 현재 진행 상활을 체크해 보도록 한다.
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM> qstat -u $USER
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM> qstat -u $USER
 ```
 
 혹은
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM> qstat 10082371.pbs
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM> qstat 12470701.pbs  
 ```
-명령어로 특정 Job을 지정해서 볼수도 있다. 보통 `-u $USER`를 쓰는 것을 권장한다.
+명령어로 특정 Job을 지정해서 볼수도 있다. 작업 ID를 일일이 사용하는 것이 귀찮기 때문에, 보통 `-u $USER`를 쓰는 것을 권장한다.
 
 ```
 
@@ -290,14 +290,14 @@ pbs:
                                                                  Req'd  Req'd   Elap
 Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 -------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
-10082371.pbs         x2568a02 normal   make_vm       --    1  68    --  02:00 Q   --
+12470701.pbs         x2568a02 normal   make_vm       --    1  68    --  02:00 Q   --
 
 ```
 현재 이 job은 제출되어 대기중인 상태로 (Queued) 정상적으로 진행되면 Q->R (running) -> E (ending) 순으로 진행되는 과정을 볼수 있다. 총 2시간을 요청하였으며, 전체 코어가 68개인 노드에서 계산 될 예정이다 (다만 요청은 위에서 ncores =16으로 하였음) 
 
 `R`로 진행되고 나면 Job ID를 참고하여, 현재 $HOME 디렉토리에서 임시로 쓰여지고 있는 아웃풋 파일의 업데이트 상황을 모니터할 수 있다
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM> tail -f $HOME/pbs.10082371.pbs.x8z/10082371.pbs.OU
+(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM> tail -f $HOME/pbs.12470701.pbs.x8z/12470701.pbs.OU
 ```
 아래와 같은 내용을 볼 수 있을 것이다.
 ```
@@ -314,29 +314,31 @@ Generating velocity model
 3% complete.
 ```
 
+이 파일들은 작업이 끝나면 자동으로 지워지므로 작업 진행 중에만 열람해 볼 수 있다. 
 ### 생성파일 체크
 
 위에서 서브밋한 pbs스크립트는 16코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 아래와 같은 파일들이 최종적으로 디렉토리에 상주하게 됨
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/VM> tree
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang/VM> tree
 .
  |-nzvm.cfg
  |-vm_params2vm_log.txt
- |-vs3dfile.s
+ |-vs3dfile.s  <========
  |-VeloModCorners.txt
- |-rho3dfile.d
+ |-rho3dfile.d <========
  |-vm_params2vm_Busan1000_log.txt
  |-model_params_rt01-h1.0
+ |-make_vm.e12470701
+ |-make_vm.o12470701
  |-gridfile_rt01-h1.0
- |-vp3dfile.p
- |-make_vm.e10083011
- |-make_vm.o10083011
+ |-vp3dfile.p  <========
  |-vm_params.yaml
  |-model_coords_rt01-h1.0
  |-gridout_rt01-h1.0
  |-model_bounds_rt01-h1.0
  |-make_vm.pbs
+
 
 ```
 
