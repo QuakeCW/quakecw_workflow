@@ -639,14 +639,13 @@ Cybershake 워크플로우를 인스톨하면 자동화 스케쥴러를 사용�
 아래와 같은 에러가 자주 목격되는데, 무시해도 무방함.
 
 ```
-x2568a02@login04:/scratch/x2568a02/CWNU/RunFolder/Busan20211214> activate_env /home01/x2568a02/gmsim/Environments/v211213/
 cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
 cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]
 cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[ glob -tails -directory ${VERSION_PREFIX}/${Compiler} -type d \* ]   
 
 'craype-x86-skylake' dependent modulefiles were removed
 ```
-KISTI 정책상 로그인 노드에서 20분이상 프로그램이 작동되면 자동으로 종료하도록 되어있다. 아래 명령을 실행시키면 조금 더 안정적으로 가동되도록 할 수 있다.
+아래 명령을 실행시키면 실행도중 터미널 상에서 활동이 없더라도 네트워크 연결이 조금 더 안정적으로 유지되도록 할 수 있다.
 ```
 (python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang>  export TMOUT=
 ```
@@ -659,47 +658,48 @@ KISTI 정책상 로그인 노드에서 20분이상 프로그램이 작동되면 
 
 스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
 ```
-sim_root_dir: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang
+sim_root_dir: /scratch/x2568a02/users/x2568a02/RunFolder/Pohang
 workflow: /home01/x2568a02/gmsim/Environments/v211213/workflow
 n_max_retries: 2
-python /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang x2568a02 /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/task_config.yaml --n_max_retries 2
-2022-05-05 01:56:24,909 - MainThread - Logger file added
-2022-05-05 01:56:24,919 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.merge_ts: 2>, <ProcessType.plot_ts: 3>, <ProcessType.IM_plot: 7>]
-2022-05-05 01:56:24,923 - MainThread - Created queue_monitor thread
-2022-05-05 01:56:24,923 - MainThread - Created main auto_submit thread
-2022-05-05 01:56:24,924 - MainThread - Started main auto_submit thread
-2022-05-05 01:56:24,924 - queue monitor - Running queue-monitor, exit with Ctrl-C.
-2022-05-05 01:56:24,925 - MainThread - Started queue_monitor thread
-2022-05-05 01:56:24,941 - main auto submit - Loaded root params file: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/root_params.yaml
-2022-05-05 01:56:25,878 - main auto submit - Number of runnable tasks: 2
-2022-05-05 01:56:25,879 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D, Pohang-HF
-2022-05-05 01:56:26,147 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-05-05 01:56:26,151 - queue monitor - No entries in the mgmt db queue.
-submit_time not in proc_Data.keys(),value 2022-05-05_01:56:25
+python /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py /scratch/x2568a02/users/x2568a02/RunFolder/Pohang x2568a02 /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/task_config.yaml --n_max_retries 2 --sleep_time 1500
+2023-01-13 11:23:38,123 - MainThread - Logger file added
+2023-01-13 11:23:38,134 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.merge_ts: 2>, <ProcessType.plot_ts: 3>, <ProcessType.IM_plot: 7>]
+2023-01-13 11:23:38,168 - MainThread - Created queue_monitor thread
+2023-01-13 11:23:38,168 - MainThread - Created main auto_submit thread
+2023-01-13 11:23:38,169 - MainThread - Started main auto_submit thread
+2023-01-13 11:23:38,170 - queue monitor - Running queue-monitor, exit with Ctrl-C.
+2023-01-13 11:23:38,170 - MainThread - Started queue_monitor thread
+2023-01-13 11:23:38,186 - main auto submit - Loaded root params file: /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Runs/root_params.yaml
+2023-01-13 11:23:38,392 - main auto submit - Number of runnable tasks: 2
+2023-01-13 11:23:38,393 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D, Pohang-HF
+2023-01-13 11:23:38,901 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2023-01-13 11:23:38,907 - queue monitor - No entries in the mgmt db queue.
+submit_time not in proc_Data.keys(),value 2023-01-13_11:23:38
 
-submit_time not in proc_Data.keys(),value 2022-05-05_01:56:28
+submit_time not in proc_Data.keys(),value 2023-01-13_11:23:40
+...
 
-2022-05-05 01:56:31,917 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-05-05 01:56:31,922 - queue monitor - Updating 2 mgmt db tasks.
-2022-05-05 01:56:31,923 - queue monitor - Acquiring db connection.
-2022-05-05 01:56:37,527 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-05-05 01:56:37,529 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
-2022-05-05 01:56:37,531 - queue monitor - No entries in the mgmt db queue.
-2022-05-05 01:56:42,848 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-05-05 01:56:42,850 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
-2022-05-05 01:56:42,852 - queue monitor - No entries in the mgmt db queue.
-2022-05-05 01:56:48,334 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-05-05 01:56:48,336 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
-2022-05-05 01:56:48,338 - queue monitor - No entries in the mgmt db queue.
-2022-05-05 01:56:53,695 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-05-05 01:56:53,696 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
-2022-05-05 01:56:53,698 - queue monitor - No entries in the mgmt db queue.
-2022-05-05 01:56:59,031 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
-2022-05-05 01:56:59,033 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
-2022-05-05 01:56:59,035 - queue monitor - No entries in the mgmt db queue.
+2023-01-13 11:28:31,917 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2023-01-13 11:28:31,922 - queue monitor - Updating 2 mgmt db tasks.
+2023-01-13 11:28:31,923 - queue monitor - Acquiring db connection.
+2023-01-13 11:28:37,527 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2023-01-13 11:28:37,529 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2023-01-13 11:28:37,531 - queue monitor - No entries in the mgmt db queue.
+2023-01-13 11:28:42,848 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2023-01-13 11:28:42,850 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2023-01-13 11:28:42,852 - queue monitor - No entries in the mgmt db queue.
+2023-01-13 11:28:48,334 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2023-01-13 11:28:48,336 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2023-01-13 11:28:48,338 - queue monitor - No entries in the mgmt db queue.
+2023-01-13 11:28:53,695 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2023-01-13 11:28:53,696 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2023-01-13 11:28:53,698 - queue monitor - No entries in the mgmt db queue.
+2023-01-13 11:28:59,031 - queue monitor - Over 200 tasks were found in the queue. Check the log for an exact listing of them
+2023-01-13 11:28:59,033 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-queued, Pohang-HF-10170380-queued
+2023-01-13 11:28:59,035 - queue monitor - No entries in the mgmt db queue.
 ....
-2022-05-05 02:33:37,033 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-running, Pohang-HF-10170380-running
-2022-05-05 02:33:37,035 - queue monitor - No entries in the mgmt db queue.
+2023-01-13 14:33:37,033 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-10170379-running, Pohang-HF-10170380-running
+2023-01-13 14:33:37,035 - queue monitor - No entries in the mgmt db queue.
 ...
 
 ```
@@ -709,7 +709,7 @@ submit_time not in proc_Data.keys(),value 2022-05-05_01:56:28
 
 Ctrl+a d로 스크린을 detach한뒤 (혹은 새로 ssh 연결한 다음) qstat으로 현재 상태를 알아볼 수 있다.
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/RunFolder/Pohang_20220417> qstat -u $USER
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang  qstat -u $USER
 
 pbs:
                                                                  Req'd  Req'd   Elap
@@ -744,21 +744,22 @@ job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자�
 
 #### 전체 상황
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/Runs/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
                  run_name |         process |     status |   job-id |        last_modified
 _________________________________________________________________________________________________
-                   Pohang |        merge_ts |    created |     None |  2022-04-17 09:27:24
-                   Pohang |         plot_ts |    created |     None |  2022-04-17 09:27:24
-                   Pohang |              BB |    created |     None |  2022-04-17 09:27:24
-                   Pohang |  IM_calculation |    created |     None |  2022-04-17 09:27:24
-                   Pohang |         IM_plot |    created |     None |  2022-04-17 09:27:24
-                   Pohang |          EMOD3D |     queued | 10067167 |  2022-04-18 08:13:52
-                   Pohang |              HF |  completed | 10067168 |  2022-04-18 08:25:26
+                   Pohang |        merge_ts |    created |     None |  2023-01-13 02:10:21
+                   Pohang |         plot_ts |    created |     None |  2023-01-13 02:10:21
+                   Pohang |              BB |    created |     None |  2023-01-13 02:10:21
+                   Pohang |  IM_calculation |    created |     None |  2023-01-13 02:10:21
+                   Pohang |         IM_plot |    created |     None |  2023-01-13 02:10:21
+                   Pohang |          EMOD3D |    running | 12471036 |  2023-01-13 02:28:27
+                   Pohang |              HF |    running | 12471037 |  2023-01-13 02:28:27
+
 ```
 모두 완전하게 끝났다면 아래와 같은 출력물을 볼 수 있다
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/Runs/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
                  run_name |         process |     status |   job-id |        last_modified
 _________________________________________________________________________________________________
                    Pohang |          EMOD3D |  completed | 10067167 |  2022-04-18 17:38:53
@@ -779,7 +780,7 @@ ________________________________________________________________________________
 LF/Rlog디렉토리에 \*.rlog파일이 업데이트 되는 과정을 관찰하면 됨
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/LF/Rlog/tail -f Pohang-00000.rlog
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang/Runs/Pohang/Pohang/LF/Rlog> tail -f Pohang-00000.rlog 
 
 ...
     17300     28.43  2578.12   1.00      88.78   0.98         13692.   0.99
@@ -803,11 +804,12 @@ PROGRAM emod3d-mpi IS FINISHED
 HF/Acc에 HF.bin, HF.log 파일 사이즈가 증가하는 것이 관찰되면 정상적으로 작동하고 있다고 짐작할 수 있음
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
-total 6226180
--rw-rw-r-- 1 x2568a02 rd0862          8 Mar 28 09:17 SEED
--rw-rw-r-- 1 x2568a02 rd0862 6358882976 Mar 28 09:27 HF.bin
--rw-rw-r-- 1 x2568a02 rd0862   16652983 Mar 29 12:54 HF.log
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
+total 3275708
+-rw-rw-r-- 1 x2568a02 rd0862          8 Jan 13 11:24 SEED
+-rw-rw-r-- 1 x2568a02 rd0862   13199491 Jan 13 11:31 HF.log
+-rw-rw-r-- 1 x2568a02 rd0862 3431258672 Jan 13 11:31 HF.bin
+
 ```
 
 계산이 모두 끝나면 LF와 HF 모두 결과값이 원하는 포맷과 일치하는지 간단한 검증 과정을 거친다. 통과하면 Complete로 마크되고 그 다음 단계에 계산할 job이 있다면 (이 경우 BB) submit하게 된다.
