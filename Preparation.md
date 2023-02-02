@@ -76,15 +76,26 @@ nano ~/.bashrc
 아래 내용을 제일 밑바닥에 추가하도록 하자.
 
 ```
-source /home01/x2568a02/gmsim/share/bashrc.uceq
-export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w> '
-export PATH=$PATH:$HOME/gmsim/Environments/nurion/ROOT/bin
-export CWSCRATCH=/scratch/x2568a02/users
-export MYSCRATCH=/scratch/x2568a02/users/$USER
-export QUAKECW=$MYSCRATCH/quakecw_workflow 
+# User specific aliases and functions
+export PS1='${debian_chroot:+($debian_chroot)}\u@\h: \w> '
+shopt -u progcomp
+
 alias bash="/bin/bash"
+export ADMIN=x2568a02
+export MMBATCH=b1
+export CWSCRATCH=/scratch/$ADMIN/users
+export MYSCRATCH=/scratch/$ADMIN/users/$USER
+
+export ENV=$HOME/gmsim/Environments/v211213/
 alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
-alias act_env='activate_env $HOME/gmsim/Environments/v211213/'
+alias act_env='activate_env $ENV'
+
+export SCRATCH=/scratch/$ADMIN
+source $SCRATCH/gmsim_home/share/bashrc.uceq
+
+export PATH=$PATH:$SCRATCH/gmsim_home/Environments/nurion/virt_envs/python3_nurion/bin
+#export PATH=$PATH:$SCRATCH/gmsim_home/gmsim/Environments/nurion/ROOT/local/gnu/bin:$SCRATCH/gmsim_home/pkg/tar/ffmpeg-4.2.2-amd64-static
+QUAKECW=$SCRATCH/CWNU/quakecw_workflow
 ```
 
 저장하고 `source`명령어를 실행하면 고친 내용이 로딩된다. (다음번 누리온에 로그인하면 자동으로 로딩됨)
