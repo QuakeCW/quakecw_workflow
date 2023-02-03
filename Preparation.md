@@ -145,10 +145,10 @@ x2568a02@login02:~> act_env
 
 터미널의 프롬프트가 `(python3_nurion) x2568a02@login02:~>` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
 
-마지막으로 `CWSCRATCH` 디렉토리 (`/scratch/x2568a02/users`)에 `MYSCRATCH` 디렉토리를 만들어주자.
+마지막으로 `CWSCRATCH` 디렉토리 (`/scratch/x2568a02/users`)에 `$MYSCRATCH` 디렉토리를 만들어주자.
 
 ```
-x2568a02@login02:/scratch/x2568a02/users> mkdir $MYSCRATCH
+x2568a02@login02:/scratch/x2568a02/users> mkdir $USER
 ```
 
 $MYSCRATCH로 이동해간다.
