@@ -157,6 +157,9 @@ x2568a02@login02:/scratch/x2568a02/users> cd $MYSCRATCH
 x2568a02@login02:/scratch/x2568a02/users/x2568a02>
 ```
 
+이 곳을 대부분의 작업을 하는 장소로 사용하도록 할 것.
+
+
 ```
 cd ~/
 ln -sf /scratch/x2568a02/users/baes/Velocity-Model
