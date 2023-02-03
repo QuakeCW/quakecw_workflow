@@ -157,40 +157,20 @@ x2568a02@login02:/scratch/x2568a02/users> cd $MYSCRATCH
 x2568a02@login02:/scratch/x2568a02/users/x2568a02>
 ```
 
-`git clone` 명령어로 이 GITHUB 저장소로부터 파일들을 내려받음.
-
 ```
-x2568a02@login02:/scratch/x2568a02/users/x2568a02> git clone https://github.com/QuakeCW/quakecw_workflow.git
-Cloning into 'quakecw_workflow'...
-remote: Enumerating objects: 268, done.
-remote: Counting objects: 100% (54/54), done.
-remote: Compressing objects: 100% (31/31), done.
-remote: Total 268 (delta 38), reused 23 (delta 23), pack-reused 214
-Receiving objects: 100% (268/268), 33.29 MiB | 9.04 MiB/s, done.
-Resolving deltas: 100% (126/126), done.
-x2568a02@login02:/scratch/x2568a02/users/x2568a02>
-```
-
-한국 부산 분지를 포함한 NZVM 패키지를 복사, 압축을 풀어준다.
-
-```
-cp /scratch/x2568a02/users/x2568a02/VM_KVM.tar $MYSCRATCH
-cd $MYSCRATCH
-tar xvf VM_KVM.tar
 cd ~/
-ln -s $MYSCRATCH/VM_KVM
+ln -sf /scratch/x2568a02/users/baes/Velocity-Model
+ln -sf /scratch/x2568a02/users/baes/VM_KVM
+
 ```
 
 `ls -al`해서 아래와 같은 라인이 보이면 잘되었음을 의미한다.
 ```
-lrwxrwxrwx    1 x2568a02 rd0624     35 Mar 15 02:07 VM_KVM -> /scratch/x2568a02/users/x2568a02/VM_KVM
-```
-
-끝으로 global_vs30.tif를 다음 명령어를 사용해 복사해준다.
+lrwxrwxrwx    1 x2568a02 rd0862       43 Jan 10 12:34 Velocity-Model -> /scratch/x2568a02/users/baes/Velocity-Model
+lrwxrwxrwx    1 x2568a02 rd0862       35 Jan 10 12:35 VM_KVM -> /scratch/x2568a02/users/baes/VM_KVM
 
 ```
-cp /scratch/x2568a02/CWNU/quakecw_workflow/Stations/global_vs30.tif $QUAKECW/Stations/
-```
+
 
 ### 참고: gmsim 패키지에서 문제가 생겼을 경우
 gmsim 패키지를 만드는 과정에서 사용자 로그인 아이디 x2568a02가 하드코딩되어 퍼미션 관련한 문제가 생겨날 수 있는데, 이같은 경우 문의바람.
