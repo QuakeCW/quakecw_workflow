@@ -119,7 +119,7 @@ mv gmsim gmsim.backup
 배성은 (x2568a02)이 2022/05/02 제작한 셋업을 공유해 사용하기로 한다. 
 
 ```
-ln -s /scratch/x2568a02/gmsim_home gmsim
+ln -sf /scratch/x2568a02/gmsim_home gmsim
 ```
 
 
