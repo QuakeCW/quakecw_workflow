@@ -1135,7 +1135,7 @@ Calculations are output to Obs_IM
 ### [참고] 누리온 새 계정으로 이전 후 환경 재설정
 누리온은 매해 새로운 계정으로 이전하도록 정책이 되어있다. 새로운 계정으로 이전하고 나면 기존의 실행환경 디렉토리로 가서 파일 속에 하드코딩되어 있는 디렉토리 경로를 바꾸어주어야 한다. 다음의 명령어를 사용하면 이를 손쉽게 할 수 있다. 
 ```
-(python3_nurion) x2568a02@login01:~/gmsim/Environments/v211213> grep -I -r hpc11a02 \* |cut -d: -f1 |sort|uniq|xargs -I {} sed -i 's/hpc11a02/x2568a02/g' {}
+(python3_nurion) x2568a02@login01:~/gmsim/Environments/v211213> grep -I -r hpc11a02 * |cut -d: -f1 |sort|uniq|xargs -I {} sed -i 's/hpc11a02/x2568a02/g' {}
 ```
 문제가 생겼을 경우, 아래의 사항들을 체크해보도록 한다.
 1. qcore, Velocity-Model등 로컬 패키지들이 제대로 작동하기 위해서는 .egg-link파일에 이들의 새로운 경로가 업데이트되어 있어야 한다. 위 명령어 실행 후에 .egg-link파일이 제대로 업데이트 되었는지 확인할 것. 
