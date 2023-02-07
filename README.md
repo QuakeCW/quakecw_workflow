@@ -1143,6 +1143,7 @@ Calculations are output to Obs_IM
 3. 실행환경 디렉토리에 pyvenv.cfg 파일의 `include-system-site-packages` 필드도 `True`로 설정되어 있는지 확인할 것.
 4. act_env에서 qcore를 제대로 못찾는 등의 문제가 지속될시, `/scratch/x2568a02/gmsim_home/Environments/v211213` 디렉토리로 가, `pip install -e ./qcore`를 실행해 보도록 한다.
 5. site-packages의 easy-install.pth 안에 qcore를 비롯한 패키지들의 경로가 제대로 되어있는지 확인해본다.
+6. qcore의 configs 디렉토리에 위치한 machine_nurion.json에 toos_dir 경로가 제대로 되어있는지 확인
 
 ### [참고] 데이터 이전 이후 망가진 심볼릭 링크 고치는 법
 
