@@ -1407,15 +1407,16 @@ if __name__ == "__main__":
         print("Point source plotting not yet implemented.")
         exit(0)
 
-    for script in ["plot_srf_square.py", "plot_srf_map.py"]:
+    for script in ["plot_srf_slip_rise_rake.py", "plot_srf_map.py"]:
         path_tester = Popen(["which", script], stdout=PIPE)
         script_path = path_tester.communicate()[0].rstrip()
         path_tester.wait()
+        print(f"Found scripts at {script_path}")
         if not os.path.exists(script_path):
             print("Plotting script %s is not available in PATH!" % (script))
             exit(1)
 
     print("Plotting SRF as square plot...")
-    call(["plot_srf_square.py", srf])
+    call(["plot_srf_slip_rise_rake.py", srf])
     print("Plotting SRF as map plot...")
     call(["plot_srf_map.py", srf])
