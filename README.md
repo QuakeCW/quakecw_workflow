@@ -174,7 +174,7 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
  |-setSrfParams.py
  |-Srf
  | |-Pohang.gsf
- | |-Pohang_square.png
+ | |-Pohang_slip_rise_rake.png
  | |-Pohang.srf
  | |-Pohang.info
  | |-Pohang_map.png
