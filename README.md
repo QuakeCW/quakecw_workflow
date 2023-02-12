@@ -1,4 +1,4 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # quakecw_workflow
 CWNU Earthquake Engineering Research Group's Adaptation of QuakeCoRE NZ workflow
 
@@ -136,7 +136,7 @@ SOURCE_DATA_DIR: "/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Source"
 
 ```
 Executing createSRF.py
-2023-01-13 07:56:11,982 - Creating SRF with command: /home01/x2568a02/gmsim/opt/nurion/hybrid_sim_tools/current/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/scratch/x2568a02/CWNU/quakecw_workflow/Source/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
+2023-01-13 07:56:11,982 - Creating SRF with command: /scratch/x2568a02/gmsim_home/opt/nurion/hybrid_sim_tools/current/genslip_v3.3 read_erf=0 write_srf=1 read_gsf=1 write_gsf=0 infile=Srf/Pohang.gsf mag=5.400000 nx=41 ny=41 ns=1 nh=1 seed=103245 velfile=/scratch/x2568a02/CWNU/quakecw_workflow/Source/kr_gb_kim2011_modified.1d shypo=0.000000 dhypo=2.036901 dt=0.010000 plane_header=1 srf_version=1.0 rvfrac=0.8 alpha_rough=0.01 slip_sigma=0.85
 before basemap call -Jz1
 Plotting SRF as square plot...
 Plotting SRF as map plot...
@@ -155,7 +155,7 @@ target_dy= 2.000000 actual dy= 2.035000
 seg= 0
 nstk= 41 nx= 2 nxdiv= 2 nxsum= 41
 ndip= 41 ny= 2 nydiv= 2 nysum= 41
-/home01/x2568a02/gmsim/Environments/v211213/virt_envs/python3_nurion/lib/python3.7/site-packages/shapely/ops.py:42: ShapelyDeprecationWarning: Iteration over multi-part geometries is deprecated and will be removed in Shapely 2.0. Use the `geoms` property to access the constituent parts of a multi-part geometry.
+/scratch/x2568a02/gmsim_home/Environments/v211213/virt_envs/python3_nurion/lib/python3.7/site-packages/shapely/ops.py:42: ShapelyDeprecationWarning: Iteration over multi-part geometries is deprecated and will be removed in Shapely 2.0. Use the `geoms` property to access the constituent parts of a multi-part geometry.
   source = iter(source)
 WARNING:root:maximum allowed iterations reached while optimizing the alpha parameter
 
@@ -403,14 +403,14 @@ $QUAKECW의 gmsim.yaml을 복사해서 수정해 사용하자.
 gmsim_Pohang.yaml에 $HOME, $QUAKECW 변수들을 echo 명령어로 실제 경로를 파악하여 수정, 저장한다.
 
 ```
-workflow: /home01/x2568a02/gmsim/Environments/v211213/workflow
+workflow: /scratch/x2568a02/gmsim_home/Environments/v211213/workflow
 sim_root_dir: $MYSCRATCH/RunFolder/Pohang
 fault_name: Pohang
 source_data: $MYSCRATCH/RunFolder/Pohang/Source
 copy_source_data: False
 vm_data: $MYSCRATCH/RunFolder/Pohang/VM
 copy_vm_data: False
-gmsim_template: /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
+gmsim_template: /scratch/x2568a02/gmsim_home/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
 stat_file: $MYSCRATCH/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
@@ -422,14 +422,14 @@ $MYSCRATCH라고 되어 있는 부분을 수정해준다.
 로그인 어카운트가 x2568a03인 사용자의 경우 아래와 같이 저장한다. 
 
 ```
-workflow: /home01/x2568a02/gmsim/Environments/v211213/workflow
+workflow: /scratch/x2568a02/gmsim_home/Environments/v211213/workflow
 sim_root_dir: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang
 fault_name: Pohang
 source_data: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang/Source
 copy_source_data: False
 vm_data: /scratch/x2568a02/CWNU/Busan_Data/Data/VMs/Busan_20220324  <================ (주의!!!)
 copy_vm_data: False
-gmsim_template: /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
+gmsim_template: /scratch/x2568a02/gmsim_home/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
 stat_file: /scratch/x2568a02/users/x2568a03/RunFolder/Pohang/Stations/Busan_2km.ll
 n_max_retries: 2
 ```
@@ -461,7 +461,7 @@ n_max_retries: 2
 ```
 Pohang 1r
 
-python /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/automation/install_scripts/install_cybershake.py /scratch/x2568a02/users/x2568a02/RunFolder/Pohang /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/fault_list.txt /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3 --stat_file_path /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Stations/Busan_2km.ll --keep_dup_station
+python /scratch/x2568a02/gmsim_home/Environments/v211213/workflow/workflow/automation/install_scripts/install_cybershake.py /scratch/x2568a02/users/x2568a02/RunFolder/Pohang /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/fault_list.txt /scratch/x2568a02/gmsim_home/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3 --stat_file_path /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Stations/Busan_2km.ll --keep_dup_station
 2023-01-13 11:10:21,101 - Installing /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Data/Sources/Pohang/Srf/Pohang.srf
 ****************************************************************************************************
 2023-01-13 11:10:21,170 - installing bb
@@ -519,7 +519,7 @@ DT: 0.01
 ================================
        GMSIM template
 ================================
-/home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3/root_defaults.yaml
+/scratch/x2568a02/gmsim_home/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3/root_defaults.yaml
 {'bb': {'fmidbot': 0.5, 'fmin': 0.2, 'no-lf-amp': True},
  'dt': 0.005,
  'emod3d': {'emod3d_version': '3.0.4'},
@@ -659,9 +659,9 @@ cray-impi/1.1.4(154):ERROR:102: Tcl command execution failed: set CompilerVer \[
 스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
 ```
 sim_root_dir: /scratch/x2568a02/users/x2568a02/RunFolder/Pohang
-workflow: /home01/x2568a02/gmsim/Environments/v211213/workflow
+workflow: /scratch/x2568a02/gmsim_home/Environments/v211213/workflow
 n_max_retries: 2
-python /home01/x2568a02/gmsim/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py /scratch/x2568a02/users/x2568a02/RunFolder/Pohang x2568a02 /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/task_config.yaml --n_max_retries 2 --sleep_time 1500
+python /scratch/x2568a02/gmsim_home/Environments/v211213/workflow/workflow/automation/execution_scripts/run_cybershake.py /scratch/x2568a02/users/x2568a02/RunFolder/Pohang x2568a02 /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/task_config.yaml --n_max_retries 2 --sleep_time 1500
 2023-01-13 11:23:38,123 - MainThread - Logger file added
 2023-01-13 11:23:38,134 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.merge_ts: 2>, <ProcessType.plot_ts: 3>, <ProcessType.IM_plot: 7>]
 2023-01-13 11:23:38,168 - MainThread - Created queue_monitor thread
@@ -854,21 +854,21 @@ Relocated to /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots_2022
 
 
 ##### Start Plotting
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Acc Obs --waveforms /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/waveforms_acc_Pohang
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Acc Obs --waveforms /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/waveforms_acc_Pohang
 
 
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Vel Obs --waveforms /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/waveforms_vel_Pohang
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Vel Obs --waveforms /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/waveforms_vel_Pohang
 
 
 ['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/im/psa_comparisons.py --run-name Pohang --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -d /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/psa_comparisons_Pohang
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/im/psa_comparisons.py --run-name Pohang --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -d /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/psa_comparisons_Pohang
 b"['/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']\n"
 ['/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
 ['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']
 
 
 ['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/im/psa_bias.py --run_name Pohang --imcsv /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -o /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/psa_bias_Pohang
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/im/psa_bias.py --run_name Pohang --imcsv /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -o /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/psa_bias_Pohang
 
 
 /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/im_plots_Pohang
@@ -926,12 +926,12 @@ Gyeongju_20220422_sdrop100  Gyeongju_20220422_sdrop50  Pohang_20220422_sdrop20  
 
 ```
 (python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/Busan_Data/Sample_runs> cat ./Pohang_20220422_sdrop20/gmsim_Pohang_20220422_sdrop20.yaml
-workflow: /home01/x2568a02/gmsim/Environments/v211213/workflow
+workflow: /scratch/x2568a02/gmsim_home/Environments/v211213/workflow
 sim_root_dir: /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20
 fault_name: Pohang
 
 (python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/Busan_Data/Sample_runs> cat ./Pohang_20220422_sdrop50/gmsim_Pohang_20220422_sdrop50.yaml
-workflow: /home01/x2568a02/gmsim/Environments/v211213/workflow
+workflow: /scratch/x2568a02/gmsim_home/Environments/v211213/workflow
 sim_root_dir: /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50
 fault_name: Pohang
 ```
@@ -962,37 +962,37 @@ fault_name: Pohang
 
 
 ##### Start Plotting
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Acc Obs --waveforms /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out plots_Pohang_20220422/waveforms_acc_Pohang_20220422_sdrop20
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Acc Obs --waveforms /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out plots_Pohang_20220422/waveforms_acc_Pohang_20220422_sdrop20
 
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Vel Obs --waveforms /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out plots_Pohang_20220422/waveforms_vel_Pohang_20220422_sdrop20
-
-
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Acc Obs --waveforms /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out plots_Pohang_20220422/waveforms_acc_Pohang_20220422_sdrop50
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Vel Obs --waveforms /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out plots_Pohang_20220422/waveforms_vel_Pohang_20220422_sdrop20
 
 
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Vel Obs --waveforms /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out plots_Pohang_20220422/waveforms_vel_Pohang_20220422_sdrop50
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Acc Obs --waveforms /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out plots_Pohang_20220422/waveforms_acc_Pohang_20220422_sdrop50
+
+
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Vel Obs --waveforms /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out plots_Pohang_20220422/waveforms_vel_Pohang_20220422_sdrop50
 
 
 ['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/im/psa_comparisons.py --run-name Pohang_20220422_sdrop20 --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -d plots_Pohang_20220422/psa_comparisons_Pohang_20220422_sdrop20
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/im/psa_comparisons.py --run-name Pohang_20220422_sdrop20 --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -d plots_Pohang_20220422/psa_comparisons_Pohang_20220422_sdrop20
 b"['/scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']\n"
 ['/scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
 ['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']
 
 
 ['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/im/psa_comparisons.py --run-name Pohang_20220422_sdrop50 --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -d plots_Pohang_20220422/psa_comparisons_Pohang_20220422_sdrop50
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/im/psa_comparisons.py --run-name Pohang_20220422_sdrop50 --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -d plots_Pohang_20220422/psa_comparisons_Pohang_20220422_sdrop50
 b"['/scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']\n"
 ['/scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
 ['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']
 
 
 ['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/im/psa_bias.py --run_name Pohang_20220422_sdrop20 --imcsv /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -o plots_Pohang_20220422/psa_bias_Pohang_20220422_sdrop20
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/im/psa_bias.py --run_name Pohang_20220422_sdrop20 --imcsv /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop20/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -o plots_Pohang_20220422/psa_bias_Pohang_20220422_sdrop20
 
 
 ['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
-python /home01/x2568a02/gmsim/Environments/v211213/visualization/im/psa_bias.py --run_name Pohang_20220422_sdrop50 --imcsv /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -o plots_Pohang_20220422/psa_bias_Pohang_20220422_sdrop50
+python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/im/psa_bias.py --run_name Pohang_20220422_sdrop50 --imcsv /scratch/x2568a02/CWNU/Busan_Data/Sample_runs/Pohang_20220422_sdrop50/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -o plots_Pohang_20220422/psa_bias_Pohang_20220422_sdrop50
 
 
 plots_Pohang_20220422/im_plots_Pohang_20220422_sdrop20
