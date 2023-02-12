@@ -248,19 +248,19 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 make_vm.py는 2개의 인풋이 의무적으로 필요하다. vm_params YAML파일과, 속도모델의 이름이 그것이며, 추가로 아웃풋이 저장될 위치, CPU코어의 갯수, 계산을 위해 요청할 wallclock을 지정할 수 있다.
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang> python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
 
 ```
 
 정상적으로 진행되고 있아래와 같은 내용이 출력된다.
 
 ```
-Created: /scratch/x2568a02/users/baes/RunFolder/Pohang/VM
+Created: /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM
 Loaded: /scratch/x2568a02/CWNU/quakecw_workflow/VM/vm_params_1000.yaml
-Copied vm_params_1000.yaml to /scratch/x2568a02/users/baes/RunFolder/Pohang/VM
-/scratch/x2568a02/users/baes/RunFolder/Pohang/tmpyezd2l_m.template
-Generated: /scratch/x2568a02/users/baes/RunFolder/Pohang/VM/make_vm.pbs
-Submitted: qsub -V /scratch/x2568a02/users/baes/RunFolder/Pohang/VM/make_vm.pbs
+Copied vm_params_1000.yaml to /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM
+/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/tmpyezd2l_m.template
+Generated: /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM/make_vm.pbs
+Submitted: qsub -V /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM/make_vm.pbs
 12470701.pbs
 
 ```
@@ -329,7 +329,7 @@ Generating velocity model
 위에서 서브밋한 pbs스크립트는 16코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 아래와 같은 파일들이 최종적으로 디렉토리에 상주하게 됨
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang/VM> tree
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM> tree
 .
  |-nzvm.cfg
  |-vm_params2vm_log.txt
@@ -744,7 +744,7 @@ job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자�
 
 #### 전체 상황
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
                  run_name |         process |     status |   job-id |        last_modified
 _________________________________________________________________________________________________
                    Pohang |        merge_ts |    created |     None |  2023-01-13 02:10:21
@@ -759,7 +759,7 @@ ________________________________________________________________________________
 모두 완전하게 끝났다면 아래와 같은 출력물을 볼 수 있다
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
                  run_name |         process |     status |   job-id |        last_modified
 _________________________________________________________________________________________________
                    Pohang |          EMOD3D |  completed | 10067167 |  2022-04-18 17:38:53
@@ -780,7 +780,7 @@ ________________________________________________________________________________
 LF/Rlog디렉토리에 \*.rlog파일이 업데이트 되는 과정을 관찰하면 됨
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang/Runs/Pohang/Pohang/LF/Rlog> tail -f Pohang-00000.rlog 
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Runs/Pohang/Pohang/LF/Rlog> tail -f Pohang-00000.rlog 
 
 ...
     17300     28.43  2578.12   1.00      88.78   0.98         13692.   0.99
@@ -804,7 +804,7 @@ PROGRAM emod3d-mpi IS FINISHED
 HF/Acc에 HF.bin, HF.log 파일 사이즈가 증가하는 것이 관찰되면 정상적으로 작동하고 있다고 짐작할 수 있음
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/baes/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
+(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
 total 3275708
 -rw-rw-r-- 1 x2568a02 rd0862          8 Jan 13 11:24 SEED
 -rw-rw-r-- 1 x2568a02 rd0862   13199491 Jan 13 11:31 HF.log
