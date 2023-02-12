@@ -192,10 +192,10 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 
 ### 준비
 
-NZVM code에 부산 분지 모델이 추가된 버전의 바이너리 위치는  
+$HOME에 VM_KVM이라는 심볼릭 링크를 만들었다면, NZVM code에 부산 분지 모델이 추가된 버전의 바이너리 위치는  
 
 ```
-/home01/x2568a02/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) 
+$HOME/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) 
 ```
 이며, $QUAKECW/VM/make_vm.template에 이 바이너리를 사용하도록 지정되어 있다.
 
