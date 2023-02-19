@@ -20,7 +20,8 @@ echo "n_max_retries: $n_max_retries"
 script=$workflow/"workflow/automation/execution_scripts/run_cybershake.py"
 cd $sim_root_dir
 
-cmd="python $script `pwd` $USER `pwd`/task_config.yaml --n_max_retries $n_max_retries --sleep_time 1500"
+#cmd="python $script `pwd` $USER `pwd`/task_config.yaml --n_max_retries $n_max_retries --sleep_time 1500"
+cmd="python $script `pwd` $USER `pwd`/task_config.yaml --n_max_retries $n_max_retries --sleep_time 30"
 echo $cmd
 $cmd
 
