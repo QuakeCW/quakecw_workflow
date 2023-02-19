@@ -260,7 +260,7 @@ Loaded: /scratch/x2568a02/CWNU/quakecw_workflow/VM/vm_params_1000.yaml
 Copied vm_params_1000.yaml to /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM
 /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/tmpyezd2l_m.template
 Generated: /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM/make_vm.pbs
-Submitted: qsub -V /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM/make_vm.pbs
+Submitted: qsub -V -W umask=002 /scratch/x2568a02/users/x2568a02/RunFolder/Pohang/VM/make_vm.pbs
 12470701.pbs
 
 ```
@@ -1049,7 +1049,7 @@ python $gmsim/visualization/sources/plot_items.py -c ../../../../Data/Sources/${
 FAULT=Pohang
 REL=Pohang
 
-qsub -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=\`pwd\`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
+qsub -W umask=002 -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=\`pwd\`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
 ```
 
 # [For 지도 교수] 관측 데이터

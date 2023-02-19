@@ -108,7 +108,7 @@ def main():
             f.write(pbs)
             f.write("\n")
         
-        res=exe(f"qsub -V {sim_root_dir/INSTALL_PBS}",debug=False)
+        res=exe(f"qsub -V -W umask=002 {sim_root_dir/INSTALL_PBS}",debug=False)
         job_id=res[0].strip()
         print(job_id)
         logger.debug(f"{job_id} submitted")

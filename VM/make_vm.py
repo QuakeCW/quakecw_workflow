@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
 
     os.chdir(outdir)
-    cmd=f"qsub -V {outdir/MAKE_VM_PBS}"
+    cmd=f"qsub -V -W umask=002 {outdir/MAKE_VM_PBS}"
     print(f"Submitted: {cmd}")
     res=exe(cmd,debug=False)
     job_id=res[0].strip()
