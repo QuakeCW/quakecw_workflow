@@ -1049,7 +1049,7 @@ python $gmsim/visualization/sources/plot_items.py -c ../../../../Data/Sources/${
 FAULT=Pohang
 REL=Pohang
 
-qsub -W umask=002 -v XYTS_PATH=Runs/${FAULT}/${REL}/LF/OutBin/${REL}\_xyts.e3d,SRF_PATH=Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=\`pwd\`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
+qsub -W umask=002 -v XYTS_PATH=`pwd`/Runs/${FAULT}/${REL}/LF/OutBin/${REL}_xyts.e3d,SRF_PATH=`pwd`/Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=`pwd`/Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=`pwd`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
 ```
 
 # [For 지도 교수] 관측 데이터
