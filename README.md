@@ -1154,11 +1154,10 @@ New_id=x2568a02
 
 라고 가정
 
-Busan\* 이라는 디렉토리 내의 모든 망가진 심볼릭 링크를 찾아서 고치기를 원한다면, 아래 명령어를 적절히 수정하여 실행하면 됨.
+Busan* 이라는 디렉토리 내의 모든 망가진 심볼릭 링크를 찾아서 고치기를 원한다면, 아래 명령어를 적절히 수정하여 실행하면 됨.
 ```
-find Busan\* -type l|xargs -I{} ls -al {} |grep**x2568a02** |awk '{print $9" "$11}' >links.txt
-
-cat links.txt | while read line; do word=( $line ); dest=${word\[0]}; old_link=${word\[1]}; new_link=${word\[1]}; new_link=${new_link/**hpc11a02**/**x2568a02**}; echo $new_link; rm done
+find Busan* -type l|xargs -I{} ls -al {} |grep x2568a02 |awk '{print $9" "$11}' >links.txt
+cat links.txt |while read line; do word=( $line ); dest=${word[0]}; old_link=${word[1]};new_link=$old_link;new_link=${new_link/hpc11a02/x2568a02}; rm $dest; ln -s $new_link $dest; done; 
 
 ```  
   
