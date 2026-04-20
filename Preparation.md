@@ -107,7 +107,7 @@ alias act_cw_env="source $PROJECT/cw/python_env/bin/activate"
 
 export LD_LIBRARY_PATH=$PROJECT/fftw/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=$PROJECT/fftw/lib/pkgconfig:$PKG_CONFIG_PATH
-
+export PATH=$PROJECT/bin:$PATH
 
 ```
 
@@ -122,15 +122,21 @@ x2568a02@login02:~> source ~/.bashrc
 ##### Python
 
 ```
-$ cd $CW
-[x3336a02@login01 cw]$ curl -LsSf https://astral.sh/uv/install.sh | sh
+
+$ export UV_INSTALL_DIR=/scratch/x3336a02/project/bin
+curl -LsSf https://astral.sh/uv/install.sh | sh
 downloading uv 0.11.7 x86_64-unknown-linux-gnu
-installing to /home01/x3336a02/.local/bin
+installing to /scratch/x3336a02/project/bin
   uv
   uvx
 everything's installed!
-[x3336a02@login01 cw]$ which uv  
-~/.local/bin/uv
+  
+$ which uv  
+/scratch/x3336a02/project/bin
+
+$ cd $CW
+
+[x3336a02@login01 cw]$ curl -LsSf https://astral.sh/uv/install.sh | sh
 (python_env) [x3336a02@login01 cw]$ uv venv --python 3.12 python_env
 Using CPython 3.12.13
 Creating virtual environment at: python_env
