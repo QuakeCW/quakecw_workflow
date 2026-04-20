@@ -5,7 +5,7 @@
 
 `nano ~/.ssh/config`
 
-아래 내용을 집어넣고 User 항목에 자신의 로그인 어카운트 (예: x2568a02) 를 넣어준다.
+아래 내용을 집어넣고 User 항목에 자신의 로그인 어카운트 (예: x3336a02) 를 넣어준다.
 ```
 Host *
   ControlMaster auto
@@ -47,8 +47,8 @@ Host nurion-dm
 
 ```
 ssh nurion
-(x2568a02@150.183.150.12) Password(OTP):
-(x2568a02@150.183.150.12) Password:
+(x3336a02@150.183.150.12) Password(OTP):
+(x3336a02@150.183.150.12) Password:
 Last failed login: Mon May  2 15:29:22 KST 2022 from 1.219.251.31 on ssh:notty
 There were 10 failed login attempts since the last successful login.
 Last login: Sun May  1 20:35:13 2022 from 161.202.72.155
@@ -58,7 +58,7 @@ Last login: Sun May  1 20:35:13 2022 from 161.202.72.155
    (THE PROTECTION OF INFORMATION AND COMMUNICATIONS INFRASTRUCTURE)
 ....
 
-x2568a02@login02:~>
+x3336a02@login02:~>
 ```
 
 `ssh nurion`이라고 하면 로그인 노드 1번부터 4번 중 하나가 자동 배정되며, `ssh nurion1...4`는 로그인 노드의 하나를 특정해서 접속할 수 있다. 시뮬레이션을 돌릴 때, 특정 노드를 지정하는 것이 편리할 때가 있음.
@@ -193,10 +193,10 @@ cd ~/
 mv gmsim gmsim.backup
 ```
 
-배성은 (x2568a02)이 2022/05/02 제작한 셋업을 공유해 사용하기로 한다. 
+배성은 (x3336a02)이 2022/05/02 제작한 셋업을 공유해 사용하기로 한다. 
 
 ```
-ln -sf /scratch/x2568a02/gmsim_home gmsim
+ln -sf /scratch/x3336a02/gmsim_home gmsim
 ```
 
 
@@ -232,18 +232,18 @@ $MYSCRATCH로 이동해간다.
 
 ```
 cd ~/
-ln -sf /scratch/x2568a02/users/baes/Velocity-Model
-ln -sf /scratch/x2568a02/users/baes/VM_KVM
+ln -sf /scratch/x3336a02/users/baes/Velocity-Model
+ln -sf /scratch/x3336a02/users/baes/VM_KVM
 
 ```
 
 `ls -al`해서 아래와 같은 라인이 보이면 잘되었음을 의미한다.
 ```
-lrwxrwxrwx    1 x2568a02 rd0862       43 Jan 10 12:34 Velocity-Model -> /scratch/x2568a02/users/baes/Velocity-Model
-lrwxrwxrwx    1 x2568a02 rd0862       35 Jan 10 12:35 VM_KVM -> /scratch/x2568a02/users/baes/VM_KVM
+lrwxrwxrwx    1 x3336a02 rd0862       43 Jan 10 12:34 Velocity-Model -> /scratch/x3336a02/users/baes/Velocity-Model
+lrwxrwxrwx    1 x3336a02 rd0862       35 Jan 10 12:35 VM_KVM -> /scratch/x3336a02/users/baes/VM_KVM
 
 ```
 
 
 ### 참고: gmsim 패키지에서 문제가 생겼을 경우
-gmsim 패키지를 만드는 과정에서 사용자 로그인 아이디 x2568a02가 하드코딩되어 퍼미션 관련한 문제가 생겨날 수 있는데, 이같은 경우 문의바람.
+gmsim 패키지를 만드는 과정에서 사용자 로그인 아이디 x3336a02 하드코딩되어 퍼미션 관련한 문제가 생겨날 수 있는데, 이같은 경우 문의바람.
