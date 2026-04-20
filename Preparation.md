@@ -194,38 +194,31 @@ ln -sf /scratch/x2568a02/gmsim_home gmsim
 ```
 
 
-제대로 로딩되었는지 확인하려면 `act_env` 명령어를 실행해본다. Activate Environment라는 의미를 가진 단축키 (alias)로 `~/.bashrc` 제일 아래에 지정한 내용이다.
+제대로 로딩되었는지 확인하려면 `act_cw_env` 명령어를 실행해본다. Activate Environment라는 의미를 가진 단축키 (alias)로 `~/.bashrc` 제일 아래에 지정한 내용이다.
 
 ```
-x2568a02@login02:~> act_env
+[x3336a02@login01 project]$ act_cw_env
+(python_env) [x3336a02@login01 project]$ which python
+/scratch/x3336a02/project/cw/python_env/bin/python
 
- 	'gcc/8.3.0' supports the following modules
 
-	{MPI}
-	'mvapich2/2.3.1' 'mvapich2/2.3.6' 'openmpi/3.1.0'
+터미널의 프롬프트가 `(python_env) [x3336a02@....]$` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
 
-	{cpu_types}
-	'craype-mic-knl' 'craype-x86-skylake'
-
-	{libraries}
-	'CDO/1.8.2' 'hdf4/4.2.13' 'hdf5/1.10.2' 'lapack/3.7.0' 'libxc/4.0.0' 'libxc/4.3.4' 'NCO/4.7.4' 'NCO/4.9.2' 'ncl/6.5.0' 'ncview/2.1.7' 'netcdf/4.6.1'
-
-(python3_nurion) x2568a02@login02:~>
-```
-실행시 출력되는 내용은 무시해도 무방.
-
-터미널의 프롬프트가 `(python3_nurion) x2568a02@login02:~>` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
-
-마지막으로 `CWSCRATCH` 디렉토리 (`/scratch/x2568a02/users`)에 `$MYSCRATCH` 디렉토리를 만들어주자.
+마지막으로 $SCRATCH/users에 `$USER`이름의 디렉토리를 만들어주자.
 
 ```
-x2568a02@login02:/scratch/x2568a02/users> mkdir $USER
+(python_env) [x3336a02@login01 users]$ mkdir -p $USER
+(python_env) [x3336a02@login01 users]$ ls
+x3336a02
+
 ```
 
 $MYSCRATCH로 이동해간다.
 ```
-x2568a02@login02:/scratch/x2568a02/users> cd $MYSCRATCH
-x2568a02@login02:/scratch/x2568a02/users/x2568a02>
+(python_env) [x3336a02@login01 users]$ cd $MYSCRATCH
+(python_env) [x3336a02@login01 x3336a02]$ pwd
+/scratch/x3336a02/users/x3336a02
+
 ```
 
 이 곳을 대부분의 작업을 하는 장소로 사용하도록 할 것.
