@@ -103,7 +103,7 @@ export UC=$SCRATCH/uc
 
 module load gcc/8.3.0 openmpi/3.1.0 craype-mic-knl hdf5 lapack libxc cmake
 
-source $PROJECT/python_env/bin/activate
+alias act_cw_env="source $PROJECT/cw/python_env/bin/activate"
 
 export LD_LIBRARY_PATH=$PROJECT/fftw/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=$PROJECT/fftw/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -122,21 +122,23 @@ x2568a02@login02:~> source ~/.bashrc
 ##### Python
 
 ```
-$ cd $PROJECT
-[x3336a02@login01 project]$ curl -LsSf https://astral.sh/uv/install.sh | sh
+$ cd $CW
+[x3336a02@login01 cw]$ curl -LsSf https://astral.sh/uv/install.sh | sh
 downloading uv 0.11.7 x86_64-unknown-linux-gnu
 installing to /home01/x3336a02/.local/bin
   uv
   uvx
 everything's installed!
-[x3336a02@login01 project]$ which uv  
+[x3336a02@login01 cw]$ which uv  
 ~/.local/bin/uv
-[x3336a02@login01 project]$ uv venv --python 3.12 $PROJECT/python_env
+(python_env) [x3336a02@login01 cw]$ uv venv --python 3.12 python_env
 Using CPython 3.12.13
 Creating virtual environment at: python_env
 Activate with: source python_env/bin/activate
-[x3336a02@login01 project]$ source python_env/bin/activate
-(python_env) [x3336a02@login01 project]$ python --version
+(python_env) [x3336a02@login01 cw]$ source python_env/bin/activate
+(python_env) [x3336a02@login01 cw]$ which python
+/scratch/x3336a02/project/cw/python_env/bin/python
+(python_env) [x3336a02@login01 cw]$ python --version
 Python 3.12.13
 ```
 
