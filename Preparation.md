@@ -156,16 +156,22 @@ make install
 ls -la $PROJECT/fftw/lib/ | grep fftw3f
 ```
 
-EMOD3D를 다운받음
+EMOD3D를 다운받아 빌드
 ```
+cd $PROJECT
 git clone git@github.com:ucgmsim/EMOD3D.git
-cd  EMOD3D
+cd EMOD3D
 mkdir build
 cd build
 cmake ../ -DFFTW3F_ROOT=$PROJECT/fftw -DCMAKE_PREFIX_PATH=$PROJECT/fftw
 make -j 8
 cd ../tools/
-ls
+```
+모든 것이 순조롭게 진행되었다면 아래와 같은 파일들을 볼수 있어야 함.
+```
+$ ls $PROJECT/EMOD3D/tools
+emod3d-mpi_v3.0.13  emod3d-mpi_v3.0.8     generic_slip2srf  genslip_v5.4.2  hb_high_binmod_v5.4.5    hb_high_binmod_v6.0.3
+emod3d-mpi_v3.0.4   fault_seg2gsf_dipdir  genslip_v3.3      genslip_v5.6.2  hb_high_binmod_v5.4.5.3  srf2stoch
 ```
 
 #### 기타 사용자 계정
