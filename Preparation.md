@@ -92,27 +92,22 @@ export PS1='${debian_chroot:+($debian_chroot)}\u@\h: \w> '
 shopt -u progcomp
 
 alias bash="/bin/bash"
-export ADMIN=x2568a02
-export MMBATCH=b1
-export CWSCRATCH=/scratch/$ADMIN/users
-export MYSCRATCH=/scratch/$ADMIN/users/$USER
-
-export ENV=$HOME/gmsim/Environments/v211213/
 alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
-alias act_env='activate_env $ENV'
 
+export ADMIN=x3336a02
 export SCRATCH=/scratch/$ADMIN
-source $SCRATCH/gmsim_home/share/bashrc.uceq
-
-export PATH=$PATH:$SCRATCH/gmsim_home/Environments/nurion/virt_envs/python3_nurion/bin
-#export PATH=$PATH:$SCRATCH/gmsim_home/gmsim/Environments/nurion/ROOT/local/gnu/bin:$SCRATCH/gmsim_home/pkg/tar/ffmpeg-4.2.2-amd64-static
-CW=$SCRATCH/CWNU
-QUAKECW=$CW/quakecw_workflow
+export PROJECT=$SCRATCH/project
+export MYSCRATCH=$SCRATCH/users/$USER
+export CW=$SCRATCH/cw
+export UC=$SCRATCH/uc
 
 module load gcc/8.3.0 openmpi/3.1.0 craype-mic-knl hdf5 lapack libxc cmake
 
-export LD_LIBRARY_PATH=$HOME/fftw_local/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=$HOME/fftw_local/lib/pkgconfig:$PKG_CONFIG_PATH
+source $PROJECT/python_env/bin/activate
+
+export LD_LIBRARY_PATH=$PROJECT/fftw/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$PROJECT/fftw/lib/pkgconfig:$PKG_CONFIG_PATH
+
 
 ```
 
@@ -124,20 +119,41 @@ x2568a02@login02:~> source ~/.bashrc
 ### 프로그램 패키지 인스톨
 
 #### 실무책임자 계정
+##### Python
+
+```
+$ cd $PROJECT
+[x3336a02@login01 project]$ curl -LsSf https://astral.sh/uv/install.sh | sh
+downloading uv 0.11.7 x86_64-unknown-linux-gnu
+installing to /home01/x3336a02/.local/bin
+  uv
+  uvx
+everything's installed!
+[x3336a02@login01 project]$ which uv  
+~/.local/bin/uv
+[x3336a02@login01 project]$ uv venv --python 3.12 $PROJECT/python_env
+Using CPython 3.12.13
+Creating virtual environment at: python_env
+Activate with: source python_env/bin/activate
+[x3336a02@login01 project]$ source python_env/bin/activate
+(python_env) [x3336a02@login01 project]$ python --version
+Python 3.12.13
+```
+
 ##### EMOD3D 
 
 2026년 4월 현재, 누리온에서 제공하는 FFTW패키지 (fftw_mpi/2.1.5 fftw_mpi/3.3.7)가 EMOD3D와 호환되지 않는 것으로 판단되어 FFTW를 별도로 빌드하도록 한다.
 
 ```
-cd $CW
+cd $HOME
 wget http://www.fftw.org/fftw-3.3.10.tar.gz
 tar -xzf fftw-3.3.10.tar.gz
 cd fftw-3.3.10
-./configure --prefix=$HOME/fftw_local --enable-float --enable-shared --enable-mpi CC=mpicc MPICC=mpicc F77=mpif77
+./configure --prefix=$PROJECT/fftw --enable-float --enable-shared --enable-mpi CC=mpicc MPICC=mpicc F77=mpif77
 make -j 8
 make install
 # Verify installation
-ls -la $HOME/fftw_local/lib/ | grep fftw3f
+ls -la $PROJECT/fftw/lib/ | grep fftw3f
 ```
 
 EMOD3D를 다운받음
@@ -146,7 +162,7 @@ git clone git@github.com:ucgmsim/EMOD3D.git
 cd  EMOD3D
 mkdir build
 cd build
-cmake ../ -DFFTW3F_ROOT=$HOME/fftw_local -DCMAKE_PREFIX_PATH=$HOME/fftw_local
+cmake ../ -DFFTW3F_ROOT=$PROJECT/fftw -DCMAKE_PREFIX_PATH=$PROJECT/fftw
 make -j 8
 cd ../tools/
 ls
