@@ -64,6 +64,17 @@ x2568a02@login02:~>
 `ssh nurion`이라고 하면 로그인 노드 1번부터 4번 중 하나가 자동 배정되며, `ssh nurion1...4`는 로그인 노드의 하나를 특정해서 접속할 수 있다. 시뮬레이션을 돌릴 때, 특정 노드를 지정하는 것이 편리할 때가 있음.
 
 ## 누리온 사용환경 설정
+누리온에 최초로 접속하게 되면 ~/.ssh/config에 다음 내용을 추가해 GitHub를 SSH를 통해 사용할 수 있게 해주도록 한다.
+
+```
+Host github.com
+    HostName ssh.github.com
+    Port 443
+    User git
+```
+
+~/.ssh에 위치한 id_rsa.pub 혹은 id_ecdsa.pub 파일을 GitHub Setting에 [등록](https://github.com/settings/keys) 해두면 GitHub와 Sync할 때마다 비밀번호를 넣어야 하는 번거로움을 덜 수 있다.
+
 
 다음은 배성은 (x2568a02)가 구축해 놓은 시뮬레이션 환경을 사용하기 위한 설정이다.
 
@@ -95,7 +106,14 @@ source $SCRATCH/gmsim_home/share/bashrc.uceq
 
 export PATH=$PATH:$SCRATCH/gmsim_home/Environments/nurion/virt_envs/python3_nurion/bin
 #export PATH=$PATH:$SCRATCH/gmsim_home/gmsim/Environments/nurion/ROOT/local/gnu/bin:$SCRATCH/gmsim_home/pkg/tar/ffmpeg-4.2.2-amd64-static
-QUAKECW=$SCRATCH/CWNU/quakecw_workflow
+CW=$SCRATCH/CWNU
+QUAKECW=$CW/quakecw_workflow
+
+module load gcc/8.3.0 openmpi/3.1.0 craype-mic-knl hdf5 lapack libxc cmake
+
+export LD_LIBRARY_PATH=$HOME/fftw_local/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$HOME/fftw_local/lib/pkgconfig:$PKG_CONFIG_PATH
+
 ```
 
 저장하고 `source`명령어를 실행하면 고친 내용이 로딩된다. (다음번 누리온에 로그인하면 자동으로 로딩됨)
@@ -105,7 +123,36 @@ x2568a02@login02:~> source ~/.bashrc
 
 ### 프로그램 패키지 인스톨
 
-자기 홈 디렉토리로 간다.
+#### 실무책임자 계정
+##### EMOD3D 
+
+2026년 4월 현재, 누리온에서 제공하는 FFTW패키지 (fftw_mpi/2.1.5 fftw_mpi/3.3.7)가 EMOD3D와 호환되지 않는 것으로 판단되어 FFTW를 별도로 빌드하도록 한다.
+
+```
+cd $CW
+wget http://www.fftw.org/fftw-3.3.10.tar.gz
+tar -xzf fftw-3.3.10.tar.gz
+cd fftw-3.3.10
+./configure --prefix=$HOME/fftw_local --enable-float --enable-shared --enable-mpi CC=mpicc MPICC=mpicc F77=mpif77
+make -j 8
+make install
+# Verify installation
+ls -la $HOME/fftw_local/lib/ | grep fftw3f
+```
+
+EMOD3D를 다운받음
+```
+git clone git@github.com:ucgmsim/EMOD3D.git
+cd  EMOD3D
+mkdir build
+cd build
+cmake ../ -DFFTW3F_ROOT=$HOME/fftw_local -DCMAKE_PREFIX_PATH=$HOME/fftw_local
+make -j 8
+cd ../tools/
+ls
+```
+
+#### 기타 사용자 계정
 
 ```
 cd ~/
