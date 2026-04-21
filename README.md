@@ -192,10 +192,10 @@ WARNING:root:maximum allowed iterations reached while optimizing the alpha param
 
 ### 준비
 
-$HOME에 VM_KVM이라는 심볼릭 링크를 만들었다면, NZVM code에 부산 분지 모델이 추가된 버전의 바이너리 위치는  
+$HOME에 Velocity_Model이라는 심볼릭 링크를 만들었다면, NZVM 바이너리 위치는  
 
 ```
-$HOME/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build) 
+$HOME/Velocity-Model/NZVM (2021년 Oct 4 build) 
 ```
 이며, $QUAKECW/VM/make_vm.template에 이 바이너리를 사용하도록 지정되어 있다.
 
@@ -203,7 +203,8 @@ $HOME/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM (2021년 Oct 4 build)
 
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> cat $QUAKECW/VM/vm_params.yaml
+(python_env) [x3336a02@login04 Source]$ cat $QUAKECW/VM/make_vm.template 
+
 mag: 5.5
 centroidDepth: 4.05399
 MODEL_LAT: 35.5755
@@ -211,7 +212,7 @@ MODEL_LON: 128.9569
 MODEL_ROT: 0.0
 hh: 0.1
 min_vs: 0.2
-model_version: KVM_21p6
+model_version: KVM_20p12
 topo_type: BULLDOZED
 output_directory: output
 extracted_slice_parameters_directory: SliceParametersNZ/SliceParametersExtracted.txt
@@ -233,7 +234,7 @@ MODEL_PARAMS: ./model_params_rt01-h0.100
 MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 ```
 [1] 
-* model_version: KVM_21p6은 부산 분지 모델이 들어간 버전임을 의미함. 
+* model_version: KVM_20p12는 토모그래피 데이터만 사용, KVM_21p6은 부산 분지 모델이 들어간 버전임을 의미함. 
 * hh: 0.1은 그리드 간격이 100m를 의미함. 
 * extent_x = hh \* nx
 * extent_y = hh \* ny 
