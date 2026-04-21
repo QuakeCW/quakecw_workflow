@@ -131,7 +131,7 @@ SOURCE_DATA_DIR: "/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Source"
 아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/Source> python $QUAKECW/Source/make_source.py source_Pohang.yaml
+(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/Source> python $QUAKECW/Source/make_source.py ../source_Pohang.yaml
 ```
 
 ```
