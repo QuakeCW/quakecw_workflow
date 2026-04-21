@@ -89,25 +89,43 @@ nano ~/.bashrc
 ```
 # User specific aliases and functions
 export PS1='${debian_chroot:+($debian_chroot)}\u@\h: \w> '
-shopt -u progcomp
+# .bashrc
 
-alias bash="/bin/bash"
-alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions
+shopt -u progcomp
+shopt -s direxpand
+unset TMOUT # disable auto-timeout
 
 export ADMIN=x3336a02
 export SCRATCH=/scratch/$ADMIN
 export PROJECT=$SCRATCH/project
 export MYSCRATCH=$SCRATCH/users/$USER
-export CW=$SCRATCH/cw
-export UC=$SCRATCH/uc
+export CW=$PROJECT/cw
+export UC=$PROJECT/uc
+export QUAKECW=$CW/quakecw_workflow
+export gmsim=$CW
 
-module load gcc/8.3.0 openmpi/3.1.0 craype-mic-knl hdf5 lapack libxc cmake
+export GMT_DIR=$PROJECT/local/gmt
+export GMT_DATADIR=$GMT_DIR/share
+export HDF5_DIR=$PROJECT/local/hdf5
+export LD_LIBRARY_PATH=$PROJECT/local/fftw/lib:$PROJECT/local/OpenBLAS/lib:$HDF5_DIR/lib:$PROJECT/local/spatialindex/lib:$GMT_DIR/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$PROJECT/local/fftw/lib/pkgconfig:$PROJECT/local/OpenBlas/lib/pkgconfig:$PKG_CONFIG_PATH
+export UV_CACHE_DIR=$SCRATCH/.cache/uv
 
-alias act_cw_env="source $PROJECT/cw/python_env/bin/activate"
+module load gcc/10.2.0 openmpi/3.1.0 craype-mic-knl libxc cmake netcdf
 
-export LD_LIBRARY_PATH=$PROJECT/fftw/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=$PROJECT/fftw/lib/pkgconfig:$PKG_CONFIG_PATH
-export PATH=$PROJECT/bin:$PATH
+alias act_cw_env="source $CW/python_env/bin/activate"
+act_cw_env
+
+export PATH=$PROJECT/bin:$PROJECT/EMOD3D/tools:$GMT_DIR/bin:$PATH
 
 ```
 
