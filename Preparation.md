@@ -206,7 +206,7 @@ ln -sf /scratch/x3336a02/gmsim_home gmsim
 [x3336a02@login01 project]$ act_cw_env
 (python_env) [x3336a02@login01 project]$ which python
 /scratch/x3336a02/project/cw/python_env/bin/python
-
+```
 
 터미널의 프롬프트가 `(python_env) [x3336a02@....]$` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
 
@@ -227,20 +227,18 @@ $MYSCRATCH로 이동해간다.
 
 ```
 
-이 곳을 대부분의 작업을 하는 장소로 사용하도록 할 것.
+이 곳을 대부분의 작업을 하는 장소로 사용하도록 할 것. 끝으로 `Velocity-Model` 심볼릭 링크를 홈디렉토리에 만들어주자.
 
 
 ```
 cd ~/
-ln -sf /scratch/x3336a02/users/baes/Velocity-Model
-ln -sf /scratch/x3336a02/users/baes/VM_KVM
+ln -sf /scratch/x3336a02/project/cw/Velocity-Model
 
 ```
 
 `ls -al`해서 아래와 같은 라인이 보이면 잘되었음을 의미한다.
 ```
-lrwxrwxrwx    1 x3336a02 rd0862       43 Jan 10 12:34 Velocity-Model -> /scratch/x3336a02/users/baes/Velocity-Model
-lrwxrwxrwx    1 x3336a02 rd0862       35 Jan 10 12:35 VM_KVM -> /scratch/x3336a02/users/baes/VM_KVM
+lrwxrwxrwx    1 x3336a02 rd0862       43 Jan 10 12:34 Velocity-Model -> /scratch/x3336a02/project/cw/Velocity-Model
 
 ```
 
