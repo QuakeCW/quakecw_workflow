@@ -125,7 +125,9 @@ module load gcc/10.2.0 openmpi/3.1.0 craype-mic-knl libxc cmake netcdf
 alias act_cw_env="source $CW/python_env/bin/activate"
 act_cw_env
 
+export PATexport PYTHONPATH=$gmsim/Pre-processing:$PYTHONPATH
 export PATH=$PROJECT/bin:$PROJECT/EMOD3D/tools:$GMT_DIR/bin:$PATH
+
 alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
 
 
