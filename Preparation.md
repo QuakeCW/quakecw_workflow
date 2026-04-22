@@ -126,6 +126,8 @@ alias act_cw_env="source $CW/python_env/bin/activate"
 act_cw_env
 
 export PATH=$PROJECT/bin:$PROJECT/EMOD3D/tools:$GMT_DIR/bin:$PATH
+alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
+
 
 ```
 
