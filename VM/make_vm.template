@@ -10,7 +10,7 @@
 cd $PBS_O_WORKDIR
  
 #just edit vm_paramsl.yaml and run this
-NZVM_path=$HOME/VM_KVM/Velocity-Model-Viz/Velocity-Model/NZVM #busan basin added
+NZVM_path=$HOME/Velocity-Model/NZVM 
 NZVM_dir=`dirname $NZVM_path`
 cur_dir=`pwd`
 

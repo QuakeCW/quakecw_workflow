@@ -5,7 +5,7 @@ MODEL_LON: 128.9569
 MODEL_ROT: 0.0
 hh: 1.0
 min_vs: 0.2
-model_version: KVM_21p6
+model_version: KVM_20p12
 topo_type: BULLDOZED
 output_directory: output
 extracted_slice_parameters_directory: SliceParametersNZ/SliceParametersExtracted.txt
