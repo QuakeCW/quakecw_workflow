@@ -5,7 +5,7 @@
 
 `nano ~/.ssh/config`
 
-아래 내용을 집어넣고 User 항목에 자신의 로그인 어카운트 (예: x2568a02) 를 넣어준다.
+아래 내용을 집어넣고 User 항목에 자신의 로그인 어카운트 (예: x3336a02) 를 넣어준다.
 ```
 Host *
   ControlMaster auto
@@ -47,8 +47,8 @@ Host nurion-dm
 
 ```
 ssh nurion
-(x2568a02@150.183.150.12) Password(OTP):
-(x2568a02@150.183.150.12) Password:
+(x3336a02@150.183.150.12) Password(OTP):
+(x3336a02@150.183.150.12) Password:
 Last failed login: Mon May  2 15:29:22 KST 2022 from 1.219.251.31 on ssh:notty
 There were 10 failed login attempts since the last successful login.
 Last login: Sun May  1 20:35:13 2022 from 161.202.72.155
@@ -58,12 +58,23 @@ Last login: Sun May  1 20:35:13 2022 from 161.202.72.155
    (THE PROTECTION OF INFORMATION AND COMMUNICATIONS INFRASTRUCTURE)
 ....
 
-x2568a02@login02:~>
+x3336a02@login02:~>
 ```
 
 `ssh nurion`이라고 하면 로그인 노드 1번부터 4번 중 하나가 자동 배정되며, `ssh nurion1...4`는 로그인 노드의 하나를 특정해서 접속할 수 있다. 시뮬레이션을 돌릴 때, 특정 노드를 지정하는 것이 편리할 때가 있음.
 
 ## 누리온 사용환경 설정
+누리온에 최초로 접속하게 되면 ~/.ssh/config에 다음 내용을 추가해 GitHub를 SSH를 통해 사용할 수 있게 해주도록 한다.
+
+```
+Host github.com
+    HostName ssh.github.com
+    Port 443
+    User git
+```
+
+~/.ssh에 위치한 id_rsa.pub 혹은 id_ecdsa.pub 파일을 GitHub Setting에 [등록](https://github.com/settings/keys) 해두면 GitHub와 Sync할 때마다 비밀번호를 넣어야 하는 번거로움을 덜 수 있다.
+
 
 다음은 배성은 (x2568a02)가 구축해 놓은 시뮬레이션 환경을 사용하기 위한 설정이다.
 
@@ -78,24 +89,48 @@ nano ~/.bashrc
 ```
 # User specific aliases and functions
 export PS1='${debian_chroot:+($debian_chroot)}\u@\h: \w> '
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions
 shopt -u progcomp
+shopt -s direxpand
+unset TMOUT # disable auto-timeout
 
-alias bash="/bin/bash"
-export ADMIN=x2568a02
-export MMBATCH=b1
-export CWSCRATCH=/scratch/$ADMIN/users
-export MYSCRATCH=/scratch/$ADMIN/users/$USER
-
-export ENV=$HOME/gmsim/Environments/v211213/
-alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
-alias act_env='activate_env $ENV'
-
+export ADMIN=x3336a02
 export SCRATCH=/scratch/$ADMIN
-source $SCRATCH/gmsim_home/share/bashrc.uceq
+export PROJECT=$SCRATCH/project
+export MYSCRATCH=$SCRATCH/users/$USER
+export CW=$PROJECT/cw
+export UC=$PROJECT/uc
+export QUAKECW=$CW/quakecw_workflow
+export gmsim=$CW
 
-export PATH=$PATH:$SCRATCH/gmsim_home/Environments/nurion/virt_envs/python3_nurion/bin
-#export PATH=$PATH:$SCRATCH/gmsim_home/gmsim/Environments/nurion/ROOT/local/gnu/bin:$SCRATCH/gmsim_home/pkg/tar/ffmpeg-4.2.2-amd64-static
-QUAKECW=$SCRATCH/CWNU/quakecw_workflow
+export GMT_DIR=$PROJECT/local/gmt
+export GMT_DATADIR=$GMT_DIR/share
+export HDF5_DIR=$PROJECT/local/hdf5
+export LD_LIBRARY_PATH=$PROJECT/local/fftw/lib:$PROJECT/local/OpenBLAS/lib:$HDF5_DIR/lib:$PROJECT/local/spatialindex/lib:$GMT_DIR/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$PROJECT/local/fftw/lib/pkgconfig:$PROJECT/local/OpenBlas/lib/pkgconfig:$PKG_CONFIG_PATH
+export UV_CACHE_DIR=$SCRATCH/.cache/uv
+
+module load gcc/10.2.0 openmpi/3.1.0 craype-mic-knl libxc cmake netcdf
+
+alias act_cw_env="source $CW/python_env/bin/activate"
+act_cw_env
+
+export PATexport PYTHONPATH=$gmsim/Pre-processing:$PYTHONPATH
+export PATH=$PROJECT/bin:$PROJECT/EMOD3D/tools:$GMT_DIR/bin:$PATH
+
+alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
+
+
 ```
 
 저장하고 `source`명령어를 실행하면 고친 내용이 로딩된다. (다음번 누리온에 로그인하면 자동으로 로딩됨)
@@ -105,7 +140,71 @@ x2568a02@login02:~> source ~/.bashrc
 
 ### 프로그램 패키지 인스톨
 
-자기 홈 디렉토리로 간다.
+#### 실무책임자 계정
+##### Python
+
+```
+
+$ export UV_INSTALL_DIR=/scratch/x3336a02/project/bin
+curl -LsSf https://astral.sh/uv/install.sh | sh
+downloading uv 0.11.7 x86_64-unknown-linux-gnu
+installing to /scratch/x3336a02/project/bin
+  uv
+  uvx
+everything's installed!
+  
+$ which uv  
+/scratch/x3336a02/project/bin
+
+$ cd $CW
+
+[x3336a02@login01 cw]$ curl -LsSf https://astral.sh/uv/install.sh | sh
+(python_env) [x3336a02@login01 cw]$ uv venv --python 3.12 python_env
+Using CPython 3.12.13
+Creating virtual environment at: python_env
+Activate with: source python_env/bin/activate
+(python_env) [x3336a02@login01 cw]$ source python_env/bin/activate
+(python_env) [x3336a02@login01 cw]$ which python
+/scratch/x3336a02/project/cw/python_env/bin/python
+(python_env) [x3336a02@login01 cw]$ python --version
+Python 3.12.13
+```
+
+##### EMOD3D 
+
+2026년 4월 현재, 누리온에서 제공하는 FFTW패키지 (fftw_mpi/2.1.5 fftw_mpi/3.3.7)가 EMOD3D와 호환되지 않는 것으로 판단되어 FFTW를 별도로 빌드하도록 한다.
+
+```
+cd $HOME
+wget http://www.fftw.org/fftw-3.3.10.tar.gz
+tar -xzf fftw-3.3.10.tar.gz
+cd fftw-3.3.10
+./configure --prefix=$PROJECT/fftw --enable-float --enable-shared --enable-mpi CC=mpicc MPICC=mpicc F77=mpif77
+make -j 8
+make install
+# Verify installation
+ls -la $PROJECT/fftw/lib/ | grep fftw3f
+```
+
+EMOD3D를 다운받아 빌드
+```
+cd $PROJECT
+git clone git@github.com:ucgmsim/EMOD3D.git
+cd EMOD3D
+mkdir build
+cd build
+cmake ../ -DFFTW3F_ROOT=$PROJECT/fftw -DCMAKE_PREFIX_PATH=$PROJECT/fftw
+make -j 8
+cd ../tools/
+```
+모든 것이 순조롭게 진행되었다면 아래와 같은 파일들을 볼수 있어야 함.
+```
+$ ls $PROJECT/EMOD3D/tools
+emod3d-mpi_v3.0.13  emod3d-mpi_v3.0.8     generic_slip2srf  genslip_v5.4.2  hb_high_binmod_v5.4.5    hb_high_binmod_v6.0.3
+emod3d-mpi_v3.0.4   fault_seg2gsf_dipdir  genslip_v3.3      genslip_v5.6.2  hb_high_binmod_v5.4.5.3  srf2stoch
+```
+
+#### 기타 사용자 계정
 
 ```
 cd ~/
@@ -116,64 +215,55 @@ cd ~/
 mv gmsim gmsim.backup
 ```
 
-배성은 (x2568a02)이 2022/05/02 제작한 셋업을 공유해 사용하기로 한다. 
+배성은 (x3336a02)이 2022/05/02 제작한 셋업을 공유해 사용하기로 한다. 
 
 ```
-ln -sf /scratch/x2568a02/gmsim_home gmsim
+ln -sf /scratch/x3336a02/gmsim_home gmsim
 ```
 
 
-제대로 로딩되었는지 확인하려면 `act_env` 명령어를 실행해본다. Activate Environment라는 의미를 가진 단축키 (alias)로 `~/.bashrc` 제일 아래에 지정한 내용이다.
+제대로 로딩되었는지 확인하려면 `act_cw_env` 명령어를 실행해본다. Activate Environment라는 의미를 가진 단축키 (alias)로 `~/.bashrc` 제일 아래에 지정한 내용이다.
 
 ```
-x2568a02@login02:~> act_env
-
- 	'gcc/8.3.0' supports the following modules
-
-	{MPI}
-	'mvapich2/2.3.1' 'mvapich2/2.3.6' 'openmpi/3.1.0'
-
-	{cpu_types}
-	'craype-mic-knl' 'craype-x86-skylake'
-
-	{libraries}
-	'CDO/1.8.2' 'hdf4/4.2.13' 'hdf5/1.10.2' 'lapack/3.7.0' 'libxc/4.0.0' 'libxc/4.3.4' 'NCO/4.7.4' 'NCO/4.9.2' 'ncl/6.5.0' 'ncview/2.1.7' 'netcdf/4.6.1'
-
-(python3_nurion) x2568a02@login02:~>
+[x3336a02@login01 project]$ act_cw_env
+(python_env) [x3336a02@login01 project]$ which python
+/scratch/x3336a02/project/cw/python_env/bin/python
 ```
-실행시 출력되는 내용은 무시해도 무방.
 
-터미널의 프롬프트가 `(python3_nurion) x2568a02@login02:~>` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
+터미널의 프롬프트가 `(python_env) [x3336a02@....]$` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
 
-마지막으로 `CWSCRATCH` 디렉토리 (`/scratch/x2568a02/users`)에 `$MYSCRATCH` 디렉토리를 만들어주자.
+마지막으로 $SCRATCH/users에 `$USER`이름의 디렉토리를 만들어주자.
 
 ```
-x2568a02@login02:/scratch/x2568a02/users> mkdir $USER
+(python_env) [x3336a02@login01 users]$ mkdir -p $USER
+(python_env) [x3336a02@login01 users]$ ls
+x3336a02
+
 ```
 
 $MYSCRATCH로 이동해간다.
 ```
-x2568a02@login02:/scratch/x2568a02/users> cd $MYSCRATCH
-x2568a02@login02:/scratch/x2568a02/users/x2568a02>
+(python_env) [x3336a02@login01 users]$ cd $MYSCRATCH
+(python_env) [x3336a02@login01 x3336a02]$ pwd
+/scratch/x3336a02/users/x3336a02
+
 ```
 
-이 곳을 대부분의 작업을 하는 장소로 사용하도록 할 것.
+이 곳을 대부분의 작업을 하는 장소로 사용하도록 할 것. 끝으로 `Velocity-Model` 심볼릭 링크를 홈디렉토리에 만들어주자.
 
 
 ```
 cd ~/
-ln -sf /scratch/x2568a02/users/baes/Velocity-Model
-ln -sf /scratch/x2568a02/users/baes/VM_KVM
+ln -sf /scratch/x3336a02/project/cw/Velocity-Model
 
 ```
 
 `ls -al`해서 아래와 같은 라인이 보이면 잘되었음을 의미한다.
 ```
-lrwxrwxrwx    1 x2568a02 rd0862       43 Jan 10 12:34 Velocity-Model -> /scratch/x2568a02/users/baes/Velocity-Model
-lrwxrwxrwx    1 x2568a02 rd0862       35 Jan 10 12:35 VM_KVM -> /scratch/x2568a02/users/baes/VM_KVM
+lrwxrwxrwx    1 x3336a02 rd0862       43 Jan 10 12:34 Velocity-Model -> /scratch/x3336a02/project/cw/Velocity-Model
 
 ```
 
 
 ### 참고: gmsim 패키지에서 문제가 생겼을 경우
-gmsim 패키지를 만드는 과정에서 사용자 로그인 아이디 x2568a02가 하드코딩되어 퍼미션 관련한 문제가 생겨날 수 있는데, 이같은 경우 문의바람.
+gmsim 패키지를 만드는 과정에서 사용자 로그인 아이디 x3336a02 하드코딩되어 퍼미션 관련한 문제가 생겨날 수 있는데, 이같은 경우 문의바람.
