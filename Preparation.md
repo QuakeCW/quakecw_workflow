@@ -141,6 +141,12 @@ x2568a02@login02:~> source ~/.bashrc
 ### 프로그램 패키지 인스톨
 
 #### 실무책임자 계정
+
+##### 전체 환경 다운로드 
+2022년 현재 사용중인 소프트웨어와 세팅들을 하나의 패키지로 만들어 드롭박스를 통해 제공하고 있음: https://www.dropbox.com/scl/fo/dnmdtln3n5vyz9h9czmau/h?rlkey=rj1eeh0952g6qyozcmt19xeja&st=h0s6z7rs&dl=0
+
+아래 내용은 새롭게 시스템을 구성할 경우에 참고할 것.
+
 ##### Python
 
 ```
@@ -215,7 +221,7 @@ cd ~/
 mv gmsim gmsim.backup
 ```
 
-배성은 (x3336a02)이 2022/05/02 제작한 셋업을 공유해 사용하기로 한다. 
+배성은 (x3336a02)이 2022/05/02 제작한 셋업[https://www.dropbox.com/scl/fo/dnmdtln3n5vyz9h9czmau/h?rlkey=rj1eeh0952g6qyozcmt19xeja&st=h0s6z7rs&dl=0] 을 공유해 사용하기로 한다. 
 
 ```
 ln -sf /scratch/x3336a02/gmsim_home gmsim
