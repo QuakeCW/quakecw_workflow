@@ -1,0 +1,64 @@
+affine==2.4.0
+alphashape==1.3.1
+attrs==26.1.0
+beniget==0.4.2.post1
+certifi==2026.2.25
+charset-normalizer==3.4.7
+click==8.3.2
+click-log==0.4.0
+cligj==0.7.2
+contourpy==1.3.3
+cycler==0.12.1
+cython==3.2.4
+dataclasses==0.8
+decorator==5.2.1
+filelock==3.29.0
+fonttools==4.62.1
+gast==0.6.0
+greenlet==3.4.0
+h5py==3.16.0
+idna==3.11
+-e file:///scratch/x3336a02/project/cw/IM_calculation
+jinja2==3.1.6
+kiwisolver==1.5.0
+llvmlite==0.47.0
+lxml==6.1.0
+markupsafe==3.0.3
+matplotlib==3.10.8
+meson==1.11.0
+meson-python==0.19.0
+mpi4py==4.1.1
+networkx==3.6.1
+ninja==1.13.0
+numba==0.65.0
+numpy==2.4.4
+obspy==1.5.0
+packaging==26.1
+pandas==3.0.2
+pillow==12.2.0
+ply==3.11
+pybind11==3.0.4
+pyfftw==0.15.1
+pyparsing==3.3.2
+pyproject-metadata==0.11.0
+python-dateutil==2.9.0.post0
+pythran==0.18.1
+pyyaml==6.0.3
+-e file:///scratch/x3336a02/project/cw/qcore
+rasterio==1.5.0
+requests==2.33.1
+rtree==1.4.1
+scipy==1.17.1
+setuptools==69.5.1
+shapely==2.1.2
+six==1.17.0
+sqlalchemy==2.0.49
+-e file:///scratch/x3336a02/project/cw/Pre-processing
+trimesh==4.11.5
+typing-extensions==4.15.0
+urllib3==2.6.3
+-e file:///scratch/x3336a02/project/cw/visualisation
+-e file:///scratch/x3336a02/project/cw/Pre-processing/VM
+wheel==0.46.3
+-e file:///scratch/x3336a02/project/cw/slurm_gm_workflow
+xarray==2026.4.0
