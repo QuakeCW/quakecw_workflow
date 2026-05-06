@@ -30,7 +30,6 @@ export CW="\${PROJECT}/cw"
 export QUAKECW="\${CW}/quakecw_workflow"
 export gmsim="\${CW}"
 
-export EMOD3D_BIN="\${SCRATCH}/project/EMOD3D/tools/emod3d-mpi_v3.0.4"
 export BIN_DIR="\${SCRATCH}/project/EMOD3D/tools"
 export VELOCITY_MODEL_DIR="\${CW}/VelocityModel"
 EOF

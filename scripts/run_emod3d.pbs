@@ -1,0 +1,167 @@
+#!/bin/bash
+# LF calculation - submit from run directory with: qsub -V run_emod3d.pbs
+#PBS -N LF
+#PBS -V
+#PBS -q normal
+#PBS -A inhouse
+#PBS -l select=16:ncpus=64:mpiprocs=64:ompthreads=1
+#PBS -l walltime=06:00:00
+#PBS -W sandbox=PRIVATE
+
+set +u
+
+# Source the config
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+QUAKECW_DIR="$(dirname "$SCRIPTS_DIR")"
+CONFIG_FILE="${QUAKECW_DIR}/quakecw_config.sh"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "ERROR: quakecw_config.sh not found at $CONFIG_FILE"
+    echo "Run admin_install.sh first to generate it."
+    exit 1
+fi
+
+source "$CONFIG_FILE"
+
+
+# === Derive everything from submission directory ===
+SUBMIT_DIR="${PBS_O_WORKDIR:-$PWD}"
+
+REL_DIR="$SUBMIT_DIR"
+
+# Load params from sim_params.yaml
+get_param() {
+    python -c "
+from qcore.utils import load_sim_params
+p = load_sim_params('${REL_DIR}/sim_params.yaml')
+keys = '$1'.split('.')
+for k in keys:
+    p = p[k]
+print(p)
+"
+}
+
+
+RUN_NAME=$(get_param run_name)
+# Job naming
+JOBNAME="LF.${RUN_NAME}"
+
+## Rename the job (works after the job starts)
+# qalter -N "$JOBNAME" "$PBS_JOBID" 2>/dev/null || true
+
+JOB_ID_RAW=${PBS_JOBID%%.*}
+CLEAN_ID=$(echo "$JOB_ID_RAW" | sed 's/\[/_/g; s/\]//g')
+LOG_FILE="${REL_DIR}/${JOBNAME}.${CLEAN_ID}.log"
+
+
+echo "Redirecting output to live log: $LOG_FILE"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "REL_DIR: $REL_DIR"
+
+# === Paths ===
+MAXMEM=${MAXMEM:-2500}
+EMOD3D_VERSION=$(get_param emod3d.emod3d_version)
+EMOD3D_BIN="${BIN_DIR}/emod3d-mpi_v${EMOD3D_VERSION}"
+CREATE_E3D_SCRIPT="${QUAKECW}/scripts/create_e3d.py"
+TEST_LF_SEIS="${QUAKECW}/test/test_lf_seis.py"
+
+echo "EMOD3D_BIN: $EMOD3D_BIN"
+echo "CREATE_E3D_SCRIPT: $CREATE_E3D_SCRIPT"
+
+# Resources
+PBS_NODES=0
+[[ -f "${PBS_NODEFILE}" ]] && PBS_NODES=$(uniq "$PBS_NODEFILE" | wc -l)
+PBS_RANKS=0
+[[ -f "${PBS_NODEFILE}" ]] && PBS_RANKS=$(wc -l < "$PBS_NODEFILE")
+
+echo "Nodes: $PBS_NODES  Total MPI ranks: $PBS_RANKS"
+echo "Using MAXMEM: $MAXMEM MB"
+
+# === Generate e3d.par ===
+mkdir -p "$REL_DIR/LF"
+OUTPUT_PAR="$REL_DIR/LF/e3d.par"
+
+echo "e3d.par generating..."
+if [[ -f "$CREATE_E3D_SCRIPT" ]]; then
+    python "$CREATE_E3D_SCRIPT" "$REL_DIR"
+else
+    echo "Error: Create script not found at $CREATE_E3D_SCRIPT"
+    exit 1
+fi
+
+sed -i "s/^maxmem=.*/maxmem=$MAXMEM/" "$OUTPUT_PAR"
+
+# === Run EMOD3D ===
+START_TIMESTAMP=$(date +%s)
+echo "Starting MPI Run at $(date)"
+
+mpirun -np "$PBS_RANKS" "$EMOD3D_BIN" -args "par=$OUTPUT_PAR"
+EXIT_CODE=$?
+END_TIMESTAMP=$(date +%s)
+
+ln -sf "$REL_DIR/LF/e3d.par" "$REL_DIR/LF/OutBin/e3d.par" || true
+
+# === Verification ===
+VERIFICATION_FAILED=0
+
+# Check 1: Verify completion in rlog file
+if [ $EXIT_CODE -eq 0 ]; then
+    RLOG_DIR="$REL_DIR/LF/Rlog"
+    if [[ -d "$RLOG_DIR" ]]; then
+        # Find the first .rlog file
+        RLOG_FILE=$(ls "$RLOG_DIR"/*.rlog 2>/dev/null | head -1)
+        if [[ -n "$RLOG_FILE" && -f "$RLOG_FILE" ]]; then
+            if tail -1 "$RLOG_FILE" | grep -q "IS FINISHED"; then
+                echo "Verification 1 PASSED: Rlog contains 'IS FINISHED'"
+            else
+                echo "Verification 1 FAILED: Rlog does not contain 'IS FINISHED'"
+                VERIFICATION_FAILED=1
+            fi
+        else
+            echo "Verification 1 FAILED: No .rlog file found in $RLOG_DIR"
+            VERIFICATION_FAILED=1
+        fi
+    else
+        echo "Verification 1 FAILED: Rlog directory not found: $RLOG_DIR"
+        VERIFICATION_FAILED=1
+    fi
+else
+    echo "EMOD3D exited with non-zero code: $EXIT_CODE"
+    VERIFICATION_FAILED=1
+fi
+
+# Check 2: Verify LF seis file integrity
+if [[ -f "$TEST_LF_SEIS" ]]; then
+    python "$TEST_LF_SEIS" "$REL_DIR/LF/OutBin"
+    seisIntegrity=$?
+    if [[ $seisIntegrity == 0 ]]; then
+        echo "Verification 2 PASSED: Every seis file loaded without an issue"
+    else
+        echo "Verification 2 FAILED: LFSeis loading has an issue"
+        VERIFICATION_FAILED=1
+    fi
+else
+    echo "Verification 2 SKIPPED: test_lf_seis.py not found at $TEST_LF_SEIS"
+fi
+
+# === Final result ===
+DURATION=$((END_TIMESTAMP - START_TIMESTAMP))
+STATS=$(awk -v dur="$DURATION" -v ranks="$PBS_RANKS" 'BEGIN {
+    hours = dur / 3600;
+    core_hours = hours * ranks;
+    printf "Elapsed Time: %d seconds (%.2f hours)\n  Core Hours:   %.2f", dur, hours, core_hours
+}')
+
+echo "=========================================="
+echo "Run Statistics:"
+echo "  $STATS"
+echo "=========================================="
+
+if [[ $VERIFICATION_FAILED == 0 ]]; then
+    echo "SUCCESS: EMOD3D completed and verified"
+    exit 0
+else
+    echo "FAIL: EMOD3D verification failed"
+    exit 1
+fi

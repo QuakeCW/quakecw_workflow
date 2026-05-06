@@ -1,0 +1,40 @@
+H_soil: 0.0  # Depth to bottom of soil column
+dampS_base: 0.0  # Vs damping ratio of layer to which you deconvolve
+
+numLayers: 0  # number of soil layers (not counting layer 0 which is bedrock)
+waterTable: 0.0  # if water not present set waterTable anywhere below depth of model
+
+# allow excess pore pressure generation? Yes or No
+# If No, permeability is automatically set very high for dynamic analysis
+allowPWP: False
+
+gammaPeak: 0.0  # peak shear strain
+
+# flags for water table and Vs inversion
+# set VsInvTopLayer to "Yes" if there is a velocity inversion immediately below upper layer (else "No")
+# set waterTopLayer to "Yes" if water table within upper most layer and layer was split in two (else "No")
+# if waterTopLayer == "Yes", should set refDepth(numLayers) = 1.0 and refDepth(numLayers-1) = 0.0
+VsInvTopLayer: False
+waterTopLayer: False
+
+layerThick: [0.0, 1.0, 2.0]  # layer thicknesses
+
+# reference pressure
+# computed as mean confining pressure at refDepth for each layer (0 is ToL, 1 is BoL)
+refDepth: [0.0, 1.0, 2.0]
+
+rho: [0.0, 1.0, 2.0]  # soil mass density (Mg/m^3)
+Vs: [0.0, 1.0, 2.0]  # soil shear wave velocity for each layer(m/s)
+phi: [0.0, 1.0, 2.0]  # soil friction angle
+pressCoeff: [0.0, 1.0, 2.0]  # pressure dependency coefficient
+voidR: [0.0, 1.0, 2.0]  # void ratio (need it for layer 0 for element definition)
+
+phaseAng: [0.0, 1.0, 2.0]  # phase transformation angle (not for layer 0)
+
+# contraction (not for layer 0)
+contract1: [0.0, 1.0, 2.0]
+contract3: [0.0, 1.0, 2.0]
+
+# dilation coefficients (not for layer 0)
+dilate1: [0.0, 1.0, 2.0]
+dilate3: [0.0, 1.0, 2.0]

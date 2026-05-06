@@ -1,0 +1,142 @@
+#!/bin/bash
+# HF calculation - submit from run directory with: qsub -V run_hf.pbs
+#PBS -N HF
+#PBS -V
+#PBS -q normal
+#PBS -A inhouse
+#PBS -l select=1:ncpus=64:mpiprocs=64:ompthreads=1
+#PBS -l walltime=01:30:00
+#PBS -W sandbox=PRIVATE
+
+set +u
+
+# Source the config
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+QUAKECW_DIR="$(dirname "$SCRIPTS_DIR")"
+CONFIG_FILE="${QUAKECW_DIR}/quakecw_config.sh"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "ERROR: quakecw_config.sh not found at $CONFIG_FILE"
+    echo "Run admin_install.sh first to generate it."
+    exit 1
+fi
+
+source "$CONFIG_FILE"
+
+# === Derive everything from submission directory ===
+SUBMIT_DIR="${PBS_O_WORKDIR:-$PWD}"
+REL_DIR="$SUBMIT_DIR"
+
+# Helper: load any param from the nested yaml config
+get_param() {
+    python -c "
+from qcore.utils import load_sim_params
+p = load_sim_params('${REL_DIR}/sim_params.yaml')
+keys = '$1'.split('.')
+for k in keys:
+    p = p[k]
+print(p)
+"
+}
+
+RUN_NAME=$(get_param run_name)
+FD_STATLIST=$(get_param FD_STATLIST)
+
+# Load all HF params at once
+HF_VERSION=$(get_param "hf.version")
+HF_DT=$(get_param "hf.dt")
+HF_RVFAC=$(get_param "hf.rvfac")
+HF_SDROP=$(get_param "hf.sdrop")
+HF_PATH_DUR=$(get_param "hf.path_dur")
+HF_KAPPA=$(get_param "hf.kappa")
+HF_SEED=$(get_param "hf.seed")
+HF_VEL_MOD_1D=$(get_param "hf.hf_vel_mod_1d")
+HF_SLIP=$(get_param "hf.slip")
+# Duration can come from HF section or top-level sim_duration
+SIM_DURATION=$(get_param sim_duration)
+HF_DURATION="${SIM_DURATION:-60}"
+
+# Job naming
+JOBNAME="HF.${RUN_NAME}"
+
+## Rename the job (works after the job starts)
+# qalter -N "$JOBNAME" "$PBS_JOBID" 2>/dev/null || true
+
+JOB_ID_RAW=${PBS_JOBID%%.*}
+CLEAN_ID=$(echo "$JOB_ID_RAW" | sed 's/\[/_/g; s/\]//g')
+LOG_FILE="${REL_DIR}/${JOBNAME}.${CLEAN_ID}.log"
+
+
+echo "Redirecting output to live log: $LOG_FILE"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "REL_DIR: $REL_DIR"
+
+
+# Paths
+HF_SIM_BIN="${BIN_DIR}/hb_high_binmod_v${HF_VERSION}"
+HF_SIM_SCRIPT="${QUAKECW}/scripts/hf_sim.py"
+TEST_HF_SCRIPT="${QUAKECW}/test/test_hf.sh"
+
+export SLURM_JOB_ID="${PBS_JOBID/.pbs/}"
+export SLURM_NTASKS=$(qstat $SLURM_JOB_ID -f | grep "used.ncpus" | cut -d"=" -f2 | bc)
+export SLURM_NNODES=$(qstat $SLURM_JOB_ID -f | grep "List.nodect" | cut -d"=" -f2 | bc)a
+
+
+
+start_time=$(date "+%Y-%m-%d_%H:%M:%S")
+echo "Start: $start_time"
+echo "REL_DIR: $REL_DIR"
+echo "Run name: $RUN_NAME"
+echo "HF version: $HF_VERSION"
+echo "HF sim bin: $HF_SIM_BIN"
+
+mkdir -p "$REL_DIR/HF/Acc"
+
+echo mpirun python "$HF_SIM_SCRIPT" \
+echo     "$FD_STATLIST" \
+echo     "$REL_DIR/HF/Acc/HF.bin" \
+echo     --duration "$HF_DURATION" \
+echo     --dt "$HF_DT" \
+echo     --sim_bin "$HF_SIM_BIN" \
+echo     --version "$HF_VERSION" \
+echo     --rvfac "$HF_RVFAC" \
+echo     --sdrop "$HF_SDROP" \
+echo     --path_dur "$HF_PATH_DUR" \
+echo     --kappa "$HF_KAPPA" \
+echo     --seed "$HF_SEED" \
+echo     --hf_vel_mod_1d "$HF_VEL_MOD_1D" \
+echo     --slip "$HF_SLIP"
+
+mpirun python "$HF_SIM_SCRIPT" \
+    "$FD_STATLIST" \
+    "$REL_DIR/HF/Acc/HF.bin" \
+    --duration "$HF_DURATION" \
+    --dt "$HF_DT" \
+    --sim_bin "$HF_SIM_BIN" \
+    --version "$HF_VERSION" \
+    --rvfac "$HF_RVFAC" \
+    --sdrop "$HF_SDROP" \
+    --path_dur "$HF_PATH_DUR" \
+    --kappa "$HF_KAPPA" \
+    --seed "$HF_SEED" \
+    --hf_vel_mod_1d "$HF_VEL_MOD_1D" \
+    --slip "$HF_SLIP"
+
+EXIT_CODE=$?
+end_time=$(date "+%Y-%m-%d_%H:%M:%S")
+echo "End: $end_time"
+
+# Verification
+if [[ -f "$TEST_HF_SCRIPT" ]]; then
+    res=$("$TEST_HF_SCRIPT" "$REL_DIR" 2>&1)
+    if [[ $? == 0 ]]; then
+        echo "SUCCESS: HF completed"
+    else
+        res=$(echo "$res" | tr -d '\n')
+        echo "FAIL: HF failed: $res"
+        exit 1
+    fi
+else
+    echo "WARNING: test_hf.sh not found, skipping verification"
+fi

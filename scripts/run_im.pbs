@@ -1,0 +1,149 @@
+#!/bin/bash
+# IM calculation - submit from run directory with: qsub -V run_im.pbs
+#PBS -N IM
+#PBS -V
+#PBS -q normal
+#PBS -A inhouse
+#PBS -l select=1:ncpus=64:mpiprocs=64:ompthreads=1
+#PBS -l walltime=03:00:00
+#PBS -W sandbox=PRIVATE
+
+set +u
+
+# Source the config
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+QUAKECW_DIR="$(dirname "$SCRIPTS_DIR")"
+CONFIG_FILE="${QUAKECW_DIR}/quakecw_config.sh"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "ERROR: quakecw_config.sh not found at $CONFIG_FILE"
+    echo "Run admin_install.sh first to generate it."
+    exit 1
+fi
+
+source "$CONFIG_FILE"
+
+# === Derive everything from submission directory ===
+SUBMIT_DIR="${PBS_O_WORKDIR:-$PWD}"
+REL_DIR="$SUBMIT_DIR"
+
+get_param() {
+    python -c "
+from qcore.utils import load_sim_params
+p = load_sim_params('${REL_DIR}/sim_params.yaml')
+keys = '$1'.split('.')
+for k in keys:
+    p = p[k]
+print(p)
+"
+}
+
+# For IM components (comma-separated)
+get_im_components() {
+    python -c "
+from qcore.utils import load_sim_params
+p = load_sim_params('${REL_DIR}/sim_params.yaml')
+print(' '.join(p['ims']['component']))
+"
+}
+
+# For IM periods (space-separated)
+get_im_periods() {
+    python -c "
+from qcore.utils import load_sim_params
+p = load_sim_params('${REL_DIR}/sim_params.yaml')
+print(' '.join(str(x) for x in p['ims']['pSA_periods']))
+"
+}
+
+
+RUN_NAME=$(get_param run_name)
+FAULT_DIR=$(dirname "$REL_DIR")
+FAULT_NAME=$(basename "$FAULT_DIR")
+
+# IM params
+IM_EXTENDED=$(get_param "ims.extended_period")
+# Components as comma-separated list
+IM_COMPONENTS=$(get_im_components)
+# Periods as space-separated list
+IM_PERIODS=$(get_im_periods)
+
+
+
+b naming
+JOBNAME="IM.${RUN_NAME}"
+
+## Rename the job (works after the job starts)
+# qalter -N "$JOBNAME" "$PBS_JOBID" 2>/dev/null || true
+
+JOB_ID_RAW=${PBS_JOBID%%.*}
+CLEAN_ID=$(echo "$JOB_ID_RAW" | sed 's/\[/_/g; s/\]//g')
+LOG_FILE="${REL_DIR}/${JOBNAME}.${CLEAN_ID}.log"
+
+
+echo "Redirecting output to live log: $LOG_FILE"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "REL_DIR: $REL_DIR"
+
+# Paths
+IMPATH="${QUAKECW}/IM_calculation/IM_calculation/scripts"
+PYTHONPATH="${QUAKECW}/qcore:${PYTHONPATH}:${IMPATH}"
+export PYTHONPATH
+
+export SLURM_JOB_ID="${PBS_JOBID/.pbs/}"
+export SLURM_NTASKS=$(qstat $SLURM_JOB_ID -f | grep "used.ncpus" | cut -d"=" -f2 | bc)
+export SLURM_NNODES=$(qstat $SLURM_JOB_ID -f | grep "List.nodect" | cut -d"=" -f2 | bc)
+
+start_time=$(date "+%Y-%m-%d_%H:%M:%S")
+echo "Start: $start_time"
+echo "REL_DIR: $REL_DIR"
+echo "Run name: $RUN_NAME"
+
+mkdir -p "${REL_DIR}/IM_calc"
+
+# Build flags
+EXTENDED_FLAG=""
+if [[ "$IM_EXTENDED" == "True" || "$IM_EXTENDED" == "true" ]]; then
+    EXTENDED_FLAG="-e"
+fi
+
+echo "Running IM calculation:"
+echo "  python $IMPATH/calculate_ims.py \\"
+echo "    ${REL_DIR}/BB/Acc/BB.bin b \\"
+echo "    -o ${REL_DIR}/IM_calc/ \\"
+echo "    -np 64 \\"
+echo "    -i $RUN_NAME \\"
+echo "    -r $FAULT_NAME \\"
+echo "    -t s \\"
+echo "    -c $IM_COMPONENTS \\"
+[[ -n "$EXTENDED_FLAG" ]] && echo "    $EXTENDED_FLAG \\"
+echo "    -s \\"
+echo "    -p $IM_PERIODS"
+
+time python "$IMPATH/calculate_ims.py" \
+    "${REL_DIR}/BB/Acc/BB.bin" b \
+    -o "${REL_DIR}/IM_calc/" \
+    -np 64 \
+    -i "$RUN_NAME" \
+    -r "$FAULT_NAME" \
+    -t s \
+    -c $IM_COMPONENTS \
+    $EXTENDED_FLAG \
+    -s \
+    -p $IM_PERIODS
+
+EXIT_CODE=$?
+end_time=$(date "+%Y-%m-%d_%H:%M:%S")
+echo "End: $end_time"
+
+# Verify output
+if [[ -f "${REL_DIR}/IM_calc/${RUN_NAME}.csv" ]] && [[ -f "${REL_DIR}/IM_calc/${RUN_NAME}_imcalc.info" ]]; then
+    fd_name=$(get_param FD_STATLIST)
+    fd_count=$(cat "$fd_name" | wc -l)
+    pSA_count=$(head -n 1 "${REL_DIR}/IM_calc/${RUN_NAME}.csv" | grep -o pSA | wc -l)
+    echo "SUCCESS: IM completed fd_count=$fd_count pSA_count=$pSA_count"
+else
+    echo "FAIL: IM failed, result files do not exist"
+    exit 1
+fi
