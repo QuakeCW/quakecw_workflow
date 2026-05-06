@@ -1,0 +1,22 @@
+hf:
+  version: 5.4.5.2
+  dt: 0.005
+  rvfac: 0.8
+  sdrop: 50
+  path_dur: 11
+  kappa: 0.045
+bb:
+  fmin: 0.5
+  fmidbot: 1.0
+  no-lf-amp: True
+  site_response_dir: False
+emod3d:
+   emod3d_version: 3.0.4
+ims:
+  extended_period: False
+  component:
+    - geom
+  pSA_periods: [0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0]
+flo: 1.0
+dt: 0.005
+v_1d_mod: Cant1D_v3-midQ_OneRay.1d

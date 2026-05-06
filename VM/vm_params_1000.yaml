@@ -14,7 +14,7 @@ extent_x: 250
 extent_y: 400
 extent_zmax: 40
 extent_zmin: 0.0
-sim_duration: 60
+sim_duration: 150
 flo: 0.1
 nx: 250
 ny: 400

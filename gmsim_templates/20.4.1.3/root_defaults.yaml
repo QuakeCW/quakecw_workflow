@@ -1,0 +1,37 @@
+hf:
+  version: 5.4.5.4
+  dt: 0.01
+  rvfac: 0.8
+  sdrop: 50
+  path_dur: 11
+  kappa: 0.045
+  rayset: 1
+bb:
+  fmin: 0.25
+  fmidbot: 0.5
+  no-lf-amp: True
+  dt: 0.005
+emod3d:
+   emod3d_version: 3.0.8
+ims:
+  extended_period: False
+  component:
+    - "000"
+    - "090"
+    - ver
+    - geom
+    - rotd50
+    - rotd100_50
+  pSA_periods: [0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.12, 0.15, 0.17, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.5, 10.0]
+VM:
+  hh: 0.2
+  VM_Version: 2.06
+  VM_Topo: BULLDOZED
+  PGV_Threshold: 2
+  Ds_Multiplier: 0.75
+flo: 0.5
+dt: 0.01
+v_1d_mod: Cant1D_v3-midQ_OneRay.1d
+advanced_IM:
+  models: [ATC_Steel_SCBF_3Story, SAC_Steel_MF_3Story]
+  match_obs_stations: null

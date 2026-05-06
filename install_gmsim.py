@@ -125,14 +125,13 @@ def main():
     print("================================")
 
     setSrfParams=source_fault_dir/"setSrfParams.py"
+    print(setSrfParams)
     try:
         assert(setSrfParams.exists())
-        print(setSrfParams)
-        srfParams=load_py_cfg(str(setSrfParams))
     except:
         print(f"{setSrfParams} is not present")
     else:
-
+        srfParams=load_py_cfg(str(setSrfParams))
         for p in ['LAT','LON','DEPTH','MAG','STK','DIP','RAK','DT']:
             print(f"{p}: {srfParams[p]}")
 

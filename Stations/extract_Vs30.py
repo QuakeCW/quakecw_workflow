@@ -25,7 +25,7 @@ fname_vs30=fname_ll.with_suffix('.vs30')
 print(f"output .v30 file: {fname_vs30}")
 
 #ll = np.genfromtxt(fname_ll, delimiter=' ', dtype=None)
-ll = np.genfromtxt(fname_ll, delimiter=' ', dtype=None)
+ll = np.genfromtxt(fname_ll, delimiter=' ', dtype=[('lon', float), ('lat', float), ('code', 'U10')])
 
 n_sta = len(ll)
 
@@ -50,7 +50,7 @@ for ind, sta in enumerate(ll):
 # generate vs30 input file
 vs30file = open(fname_vs30, 'w')
 for code, vs30 in zip(code_sta, vs30_sta):
-    vs30file.writelines(code.decode() + ' ' + str(vs30) + '\n')
+    vs30file.write(f"{code} {vs30}\n")
 vs30file.close()
 
 # plot vs30 scatter plot
