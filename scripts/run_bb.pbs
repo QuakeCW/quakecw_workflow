@@ -10,13 +10,11 @@
 
 set +u
 # Source the config
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-QUAKECW_DIR="$(dirname "$SCRIPTS_DIR")"
-CONFIG_FILE="${QUAKECW_DIR}/quakecw_config.sh"
+# PBS passes ADMIN via -V
+CONFIG_FILE="/scratch/${ADMIN}/project/cw/quakecw_workflow/quakecw_config.sh"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
     echo "ERROR: quakecw_config.sh not found at $CONFIG_FILE"
-    echo "Run admin_install.sh first to generate it."
     exit 1
 fi
 
@@ -53,7 +51,7 @@ JOBNAME="BB.${RUN_NAME}"
 
 JOB_ID_RAW=${PBS_JOBID%%.*}
 CLEAN_ID=$(echo "$JOB_ID_RAW" | sed 's/\[/_/g; s/\]//g')
-LOG_FILE="${REL_DIR}/${JOBNAME}.${CLEAN_ID}.log"
+LOG_FILE="${REL_DIR}/${JOBNAME}${CLEAN_ID}.log"
 
 
 echo "Redirecting output to live log: $LOG_FILE"
@@ -92,15 +90,15 @@ if [[ "$BB_NO_LF_AMP" == "True" || "$BB_NO_LF_AMP" == "true" ]]; then
 fi
 
 echo mpirun python "$BB_SIM_SCRIPT" \
-echo     "${REL_DIR}/LF/OutBin" \
-echo     "$VM_DIR" \
-echo     "${REL_DIR}/HF/Acc/HF.bin" \
-echo     "$VS30_PATH" \
-echo     "${REL_DIR}/BB/Acc/BB.bin" \
-echo     --flo "$FLO" \
-echo     --fmin "$BB_FMIN" \
-echo     --fmidbot "$BB_FMIDBOT" \
-echo     $NO_LF_AMP_FLAG
+     "${REL_DIR}/LF/OutBin" \
+     "$VM_DIR" \
+     "${REL_DIR}/HF/Acc/HF.bin" \
+     "$VS30_PATH" \
+     "${REL_DIR}/BB/Acc/BB.bin" \
+     --flo "$FLO" \
+     --fmin "$BB_FMIN" \
+     --fmidbot "$BB_FMIDBOT" \
+     $NO_LF_AMP_FLAG
 
 mpirun python "$BB_SIM_SCRIPT" \
     "${REL_DIR}/LF/OutBin" \

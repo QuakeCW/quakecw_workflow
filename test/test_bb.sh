@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Get the directory where the current script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 #get run_name from $1
 
 if [[ $# -lt 1 ]]; then
@@ -32,5 +29,7 @@ fi
 
 #check the len(fd_ll) == len(hf.stations)
 #check station names are not empty
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 python $SCRIPT_DIR/test_binary.py $bb_bin $fd_ll bb --verbose
 

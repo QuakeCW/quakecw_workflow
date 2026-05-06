@@ -11,13 +11,11 @@
 set +u
 
 # Source the config
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-QUAKECW_DIR="$(dirname "$SCRIPTS_DIR")"
-CONFIG_FILE="${QUAKECW_DIR}/quakecw_config.sh"
+# PBS passes ADMIN via -V
+CONFIG_FILE="/scratch/${ADMIN}/project/cw/quakecw_workflow/quakecw_config.sh"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
     echo "ERROR: quakecw_config.sh not found at $CONFIG_FILE"
-    echo "Run admin_install.sh first to generate it."
     exit 1
 fi
 
@@ -28,16 +26,25 @@ SUBMIT_DIR="${PBS_O_WORKDIR:-$PWD}"
 REL_DIR="$SUBMIT_DIR"
 
 # Helper: load any param from the nested yaml config
+
 get_param() {
-    python -c "
+    python << EOF
 from qcore.utils import load_sim_params
 p = load_sim_params('${REL_DIR}/sim_params.yaml')
 keys = '$1'.split('.')
 for k in keys:
     p = p[k]
 print(p)
-"
+EOF
 }
+
+echo "sim_params.yaml exists: $(test -f "${REL_DIR}/sim_params.yaml" && echo yes || echo no)"
+
+# Test get_param directly
+echo "Testing get_param run_name:"
+get_param run_name
+echo "Exit code: $?"
+
 
 RUN_NAME=$(get_param run_name)
 FD_STATLIST=$(get_param FD_STATLIST)
@@ -64,7 +71,7 @@ JOBNAME="HF.${RUN_NAME}"
 
 JOB_ID_RAW=${PBS_JOBID%%.*}
 CLEAN_ID=$(echo "$JOB_ID_RAW" | sed 's/\[/_/g; s/\]//g')
-LOG_FILE="${REL_DIR}/${JOBNAME}.${CLEAN_ID}.log"
+LOG_FILE="${REL_DIR}/${JOBNAME}${CLEAN_ID}.log"
 
 
 echo "Redirecting output to live log: $LOG_FILE"
@@ -94,19 +101,19 @@ echo "HF sim bin: $HF_SIM_BIN"
 mkdir -p "$REL_DIR/HF/Acc"
 
 echo mpirun python "$HF_SIM_SCRIPT" \
-echo     "$FD_STATLIST" \
-echo     "$REL_DIR/HF/Acc/HF.bin" \
-echo     --duration "$HF_DURATION" \
-echo     --dt "$HF_DT" \
-echo     --sim_bin "$HF_SIM_BIN" \
-echo     --version "$HF_VERSION" \
-echo     --rvfac "$HF_RVFAC" \
-echo     --sdrop "$HF_SDROP" \
-echo     --path_dur "$HF_PATH_DUR" \
-echo     --kappa "$HF_KAPPA" \
-echo     --seed "$HF_SEED" \
-echo     --hf_vel_mod_1d "$HF_VEL_MOD_1D" \
-echo     --slip "$HF_SLIP"
+     "$FD_STATLIST" \
+     "$REL_DIR/HF/Acc/HF.bin" \
+     --duration "$HF_DURATION" \
+     --dt "$HF_DT" \
+     --sim_bin "$HF_SIM_BIN" \
+     --version "$HF_VERSION" \
+     --rvfac "$HF_RVFAC" \
+     --sdrop "$HF_SDROP" \
+     --path_dur "$HF_PATH_DUR" \
+     --kappa "$HF_KAPPA" \
+     --seed "$HF_SEED" \
+     --hf_vel_mod_1d "$HF_VEL_MOD_1D" \
+     --slip "$HF_SLIP"
 
 mpirun python "$HF_SIM_SCRIPT" \
     "$FD_STATLIST" \

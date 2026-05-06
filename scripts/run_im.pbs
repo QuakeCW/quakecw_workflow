@@ -11,16 +11,13 @@
 set +u
 
 # Source the config
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-QUAKECW_DIR="$(dirname "$SCRIPTS_DIR")"
-CONFIG_FILE="${QUAKECW_DIR}/quakecw_config.sh"
+# PBS passes ADMIN via -V
+CONFIG_FILE="/scratch/${ADMIN}/project/cw/quakecw_workflow/quakecw_config.sh"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
     echo "ERROR: quakecw_config.sh not found at $CONFIG_FILE"
-    echo "Run admin_install.sh first to generate it."
     exit 1
 fi
-
 source "$CONFIG_FILE"
 
 # === Derive everything from submission directory ===
@@ -70,7 +67,7 @@ IM_PERIODS=$(get_im_periods)
 
 
 
-b naming
+# Job naming
 JOBNAME="IM.${RUN_NAME}"
 
 ## Rename the job (works after the job starts)
@@ -78,7 +75,7 @@ JOBNAME="IM.${RUN_NAME}"
 
 JOB_ID_RAW=${PBS_JOBID%%.*}
 CLEAN_ID=$(echo "$JOB_ID_RAW" | sed 's/\[/_/g; s/\]//g')
-LOG_FILE="${REL_DIR}/${JOBNAME}.${CLEAN_ID}.log"
+LOG_FILE="${REL_DIR}/${JOBNAME}${CLEAN_ID}.log"
 
 
 echo "Redirecting output to live log: $LOG_FILE"
@@ -87,8 +84,8 @@ exec > >(tee -a "$LOG_FILE") 2>&1
 echo "REL_DIR: $REL_DIR"
 
 # Paths
-IMPATH="${QUAKECW}/IM_calculation/IM_calculation/scripts"
-PYTHONPATH="${QUAKECW}/qcore:${PYTHONPATH}:${IMPATH}"
+IMPATH="${CW}/IM_calculation/IM_calculation/scripts"
+PYTHONPATH="${CW}/qcore:${PYTHONPATH}:${IMPATH}"
 export PYTHONPATH
 
 export SLURM_JOB_ID="${PBS_JOBID/.pbs/}"
