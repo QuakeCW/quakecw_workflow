@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import argparse
 from pathlib import Path
 
-fname_dataset = Path(__file__).parent / "vs30_slope.tif"
+# vs30_slope.tif is originally contained in Vs30 Raster Download package
+# obtained from https://usgs.maps.arcgis.com/apps/webappviewer/index.html?id=8ac19bc334f747e486550f32837578e1
+fname_dataset = Path(__file__).parent / "vs30_slope.tif"  # version created : Jun 25  2024
 
 
 def load_args():
