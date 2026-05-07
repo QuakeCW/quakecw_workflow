@@ -18,7 +18,6 @@ gast==0.6.0
 greenlet==3.4.0
 h5py==3.16.0
 idna==3.11
--e file:///scratch/x3336a02/project/cw/IM_calculation
 jinja2==3.1.6
 kiwisolver==1.5.0
 llvmlite==0.47.0
@@ -44,7 +43,6 @@ pyproject-metadata==0.11.0
 python-dateutil==2.9.0.post0
 pythran==0.18.1
 pyyaml==6.0.3
--e file:///scratch/x3336a02/project/cw/qcore
 rasterio==1.5.0
 requests==2.33.1
 rtree==1.4.1
@@ -53,12 +51,8 @@ setuptools==69.5.1
 shapely==2.1.2
 six==1.17.0
 sqlalchemy==2.0.49
--e file:///scratch/x3336a02/project/cw/Pre-processing
 trimesh==4.11.5
 typing-extensions==4.15.0
 urllib3==2.6.3
--e file:///scratch/x3336a02/project/cw/visualisation
--e file:///scratch/x3336a02/project/cw/Pre-processing/VM
 wheel==0.46.3
--e file:///scratch/x3336a02/project/cw/slurm_gm_workflow
 xarray==2026.4.0
