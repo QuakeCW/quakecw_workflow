@@ -156,6 +156,8 @@ Resolved 1 package in 7.21s
 Prepared 1 package in 3.39s
 Installed 1 package in 369ms
  + workflow==21.11.1 (from git+ssh://git@github.com/QuakeCW/slurm_gm_workflow.git@71c47e13cbc3f3a9de2d3c71d0666441bf1dabe3)
+...
+...
 
 Step 7: Updating .bashrc...
   Added sourcing to .bashrc
@@ -210,6 +212,8 @@ if [[ -z "$PBS_JOBID" ]]; then
 fi
 
 ```
+위에서 `TMOUT`관련한 마지막 부분은 누리온에서 터미널을 일정시간 이상 사용하지 않았을 때에 자동으로 Timeout되어 SSH 연결이 끊어지는 현상을 방지하기 위함이다.
+가장 중요한 부분은 `source /home01/x3336a02/project/cw/quakecw_workflow/quakecw_config.sh` 라인으로, 시뮬레이션에 필요한 모든 환경 변수들이 설정되어 있는 곳이다.
 
 #### 실무책임자 계정
 
