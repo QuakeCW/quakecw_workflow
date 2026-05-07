@@ -1,30 +1,21 @@
 #!/bin/bash
 # install.sh - Install QuakeCW environment for a single user
-# Must be located at $HOME/project/cw/quakecw_workflow/scripts/
+# Must be located at $HOME/project/cw/quakecw_workflow/
 # Run from that directory after git clone
 
 set -e
 
 RELEASE="kisti_nurion5_2026"
 PYTHON_VERSION="3.12.13"
-GIT_BASE="git+https://github.com/QuakeCW"
+GIT_BASE="git+ssh://git@github.com/QuakeCW"
 
-DROPBOX_BASE="https://www.dropbox.com/scl/fo/hl7gqdd6kbsqoj65q9upl/APv-urmfd9MZXyHaleXMt4c"
-DROPBOX_KEY="rlkey=jacull577fc6zkv4bsi0xnox6"
-ARCHIVES=(
-    "Velocity-Model_20260507.tar.gz"
-    "project_local_20260507.tar.gz"
-    "quakecw_data_20260507.tar.gz"
-)
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-QUAKECW_DIR="$(dirname "$SCRIPT_DIR")"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ---- Enforce correct location ----
-EXPECTED_DIR="$HOME/project/cw/quakecw_workflow/scripts"
-if [[ "$SCRIPT_DIR" != "$EXPECTED_DIR" ]]; then
+EXPECTED_DIR="$HOME/project/cw/quakecw_workflow"
+if [[ "$REPO_DIR" != "$EXPECTED_DIR" ]]; then
     echo "Error: install.sh must be located at $EXPECTED_DIR"
-    echo "Current location: $SCRIPT_DIR"
+    echo "Current location: $REPO_DIR"
     echo ""
     echo "Please move quakecw_workflow to \$HOME/project/cw/ first:"
     echo "  mv quakecw_workflow \$HOME/project/cw/"
@@ -37,24 +28,41 @@ CW_DIR="$PROJECT_DIR/cw"
 echo "=== QuakeCW Installation ==="
 echo "Home: $HOME"
 echo "Project: $PROJECT_DIR"
-echo "QuakeCW: $QUAKECW_DIR"
+echo "QuakeCW: $REPO_DIR"
 
 # ---- Step 1: Download and extract data archives ----
 echo ""
 echo "Step 1: Downloading and extracting data archives..."
 
+DROPBOX_FILES=(
+    "https://www.dropbox.com/scl/fi/nbpi4b2g5fmojlqb1ic63/Velocity-Model_20260507.tar.gz?rlkey=pl9zr5uh4dwvw0c26cpxsr56g&dl=1"
+    "https://www.dropbox.com/scl/fi/k8izl7wq9bh889exni5vr/project_local_20260507.tar.gz?rlkey=js1wgvd8e63a9yg167yx2ba1h&dl=1"
+    "https://www.dropbox.com/scl/fi/j8bobtoy1inxvh6d1r92o/quakecw_data_20260507.tar.gz?rlkey=95eknfpb7tlxmdbnav83zwoav&dl=1"
+)
 
-for archive in "${ARCHIVES[@]}"; do
-    if [[ -f "$HOME/$archive" ]]; then
-        echo "  $archive already exists, skipping download"
+declare -A EXTRACT_DIRS
+EXTRACT_DIRS["project_local_20260507.tar.gz"]="$PROJECT_DIR"
+EXTRACT_DIRS["Velocity-Model_20260507.tar.gz"]="$CW_DIR"
+EXTRACT_DIRS["quakecw_data_20260507.tar.gz"]="$CW_DIR"
+
+mkdir -p "$PROJECT_DIR" "$CW_DIR"
+
+for url in "${DROPBOX_FILES[@]}"; do
+    filename=$(basename "${url%%\?*}")
+    extract_dir="${EXTRACT_DIRS[$filename]}"
+    
+    if [[ -f "$HOME/$filename" ]]; then
+        echo "  $filename already exists, skipping download"
     else
-        echo "  Downloading $archive..."
-        curl -L -o "$HOME/$archive" \
-            "${DROPBOX_BASE}/${archive}?${DROPBOX_KEY}&dl=1"
+        echo "  Downloading $filename..."
+        wget --no-check-certificate -O "$HOME/$filename" "$url"
     fi
-    echo "  Extracting $archive..."
-    tar -xzf "$HOME/$archive" -C "$HOME/"
+    echo "  Extracting $filename to $extract_dir..."
+    tar -xzf "$HOME/$filename" -C "$extract_dir/"
 done
+
+# ---- Source paths before pip install ----
+source "$REPO_DIR/quakecw_config.sh"
 
 # ---- Step 2: Install uv and Python ----
 echo ""
@@ -75,65 +83,65 @@ VENV_DIR="$HOME/.local/quakecw_venv"
 uv venv "$VENV_DIR" --python "$PYTHON_VERSION"
 source "$VENV_DIR/bin/activate"
 
-# ---- Step 4: Install PyPI packages from requirements.txt ----
+# ---- Step 4: Install PyPI packages ----
 echo ""
 echo "Step 4: Installing PyPI packages from requirements.txt..."
 
-uv pip install -r "$SCRIPT_DIR/requirements.txt"
+uv pip install -r "$REPO_DIR/requirements.txt"
 
-# ---- Step 5: Install QuakeCW packages from GitHub releases ----
+# ---- Step 5: Check SSH access to GitHub ----
 echo ""
-echo "Step 5: Installing QuakeCW packages from GitHub releases..."
+echo "Step 5: Checking GitHub SSH access..."
 
-uv pip install "${GIT_BASE}/qcore.git@${RELEASE}"
-uv pip install "${GIT_BASE}/IM_calculation.git@${RELEASE}"
-uv pip install "${GIT_BASE}/Pre-processing.git@${RELEASE}"
-uv pip install "${GIT_BASE}/Pre-processing.git@${RELEASE}#subdirectory=VM"
-uv pip install "${GIT_BASE}/visualisation.git@${RELEASE}"
-uv pip install "${GIT_BASE}/slurm_gm_workflow.git@${RELEASE}"
+if ! ssh -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+    echo "  GitHub SSH not configured. Setting up..."
+    
+    # Check if SSH key exists
+    if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
+        echo "  Generating SSH key..."
+        ssh-keygen -t ed25519 -C "nurion5" -f "$HOME/.ssh/id_ed25519" -N ""
+        echo ""
+        echo "  =========================================="
+        echo "  Add this public key to GitHub:"
+        echo "  https://github.com/settings/keys"
+        echo ""
+        cat "$HOME/.ssh/id_ed25519.pub"
+        echo ""
+        echo "  =========================================="
+        read -p "  Press Enter after adding the key to GitHub..."
+    fi
+    
+    # Configure SSH for KISTI (port 443)
+    mkdir -p "$HOME/.ssh"
+    if ! grep -q "Host github.com" "$HOME/.ssh/config" 2>/dev/null; then
+        cat >> "$HOME/.ssh/config" << 'SSHEOF'
+Host github.com
+    HostName ssh.github.com
+    Port 443
+    User git
+SSHEOF
+        echo "  SSH config updated for KISTI."
+    fi
+fi
 
-# ---- Step 6: Generate quakecw_config.sh ----
+echo "  GitHub SSH access verified."
+
+# ---- Step 6: Install QuakeCW packages from GitHub releases ----
 echo ""
-echo "Step 6: Generating quakecw_config.sh..."
+echo "Step 6: Installing QuakeCW packages from GitHub releases..."
 
-cat > "$SCRIPT_DIR/quakecw_config.sh" << 'EOF'
-# quakecw_config.sh - Generated by install.sh
-# Sourced by PBS scripts and .bashrc
-
-export PROJECT="$HOME/project"
-export CW="$PROJECT/cw"
-export QUAKECW="$CW/quakecw_workflow"
-export gmsim="$CW"
-
-# Local binary/library paths
-export GMT_DIR="$PROJECT/local/gmt"
-export GMT_DATADIR="$GMT_DIR/share"
-export HDF5_DIR="$PROJECT/local/hdf5"
-export SQLITE_DIR="$PROJECT/local/sqlite"
-export GDAL_HOME="$PROJECT/local/gdal"
-export GDAL_DATA="$GDAL_HOME/share/gdal"
-export GDAL_CONFIG="$GDAL_HOME/bin/gdal-config"
-
-export LD_LIBRARY_PATH="$PROJECT/local/fftw/lib:$PROJECT/local/OpenBLAS/lib:$HDF5_DIR/lib:$PROJECT/local/spatialindex/lib:$GMT_DIR/lib:$SQLITE_DIR/lib:$GDAL_HOME/lib:$PROJECT/local/proj/lib:$PROJECT/local/curl/lib:$LD_LIBRARY_PATH"
-export PKG_CONFIG_PATH="$PROJECT/local/fftw/lib/pkgconfig:$PROJECT/local/OpenBlas/lib/pkgconfig:$SQLITE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
-
-export PYTHONPATH=$CW/Pre-processing:$PYTHONPATH
-export PATH=$PROJECT/local/sqlite/bin:$PROJECT/bin:$PROJECT/EMOD3D/tools:$GMT_DIR/bin:$GDAL_HOME/bin:$PATH
-
-
-# PBS job paths
-export BIN_DIR="$PROJECT/EMOD3D/tools"
-export VELOCITY_MODEL_DIR="$CW/VelocityModel"
-
-# Python virtual environment
-export VENV_DIR="$HOME/.local/quakecw_venv"
-EOF
+uv pip install "${GIT_BASE}/qcore.git@${RELEASE}.1"
+uv pip install --no-build-isolation "${GIT_BASE}/IM_calculation.git@${RELEASE}"
+uv pip install --no-build-isolation "${GIT_BASE}/Pre-processing.git@${RELEASE}"
+#uv pip install --no-build-isolation "${GIT_BASE}/Pre-processing.git@${RELEASE}#subdirectory=VM"
+uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}"
+uv pip install --no-build-isolation "${GIT_BASE}/slurm_gm_workflow.git@${RELEASE}"
 
 # ---- Step 7: Add sourcing to .bashrc ----
 echo ""
 echo "Step 7: Updating .bashrc..."
 
-CONFIG_LINE="source \"$SCRIPT_DIR/quakecw_config.sh\""
+CONFIG_LINE="source $REPO_DIR/quakecw_config.sh"
 VENV_LINE="source \"\$VENV_DIR/bin/activate\""
 
 if ! grep -q "quakecw_config.sh" "$HOME/.bashrc" 2>/dev/null; then

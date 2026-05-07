@@ -11,8 +11,8 @@
 set +u
 
 # Source the config
-# PBS passes ADMIN via -V
-CONFIG_FILE="/scratch/${ADMIN}/project/cw/quakecw_workflow/quakecw_config.sh"
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="$(dirname "$SCRIPTS_DIR")/quakecw_config.sh"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
     echo "ERROR: quakecw_config.sh not found at $CONFIG_FILE"

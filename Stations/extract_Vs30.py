@@ -6,7 +6,11 @@ from pathlib import Path
 
 # vs30_slope.tif is originally contained in Vs30 Raster Download package
 # obtained from https://usgs.maps.arcgis.com/apps/webappviewer/index.html?id=8ac19bc334f747e486550f32837578e1
-fname_dataset = Path(__file__).parent / "vs30_slope.tif"  # version created : Jun 25  2024
+# Use VELOCITY_MODEL_DIR from environment, with fallback to relative path
+if "VELOCITY_MODEL_DIR" in os.environ:
+    fname_dataset = Path(os.environ["VELOCITY_MODEL_DIR"]) / "vs30" / "vs30_slope.tif"
+else:
+    fname_dataset = Path(__file__).resolve().parents[2] / "VelocityModel" / "vs30" / "vs30_slope.tif"
 
 
 def load_args():
