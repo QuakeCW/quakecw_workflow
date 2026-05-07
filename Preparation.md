@@ -78,6 +78,102 @@ Host github.com
 
 ### 프로그램 패키지 인스톨
 
+```
+cd $HOME
+mkdir -p project/cw
+cd project/cw
+git clone git@github.com:QuakeCW/quakecw_workflow.git 
+cd project/cw/quakecw_workflow
+./install.sh
+```
+위 명령어를 실행시키면 시뮬레이션을 위한 모든 소프트웨어와 데이터가 사용자의 홈디렉토리에 인스톨된다.
+(실행 예시)
+```
+x3336a02@login04: ~/project/cw/quakecw_workflow$ ./install.sh
+=== QuakeCW Installation ===
+Home: /home01/x3336a02
+Project: /home01/x3336a02/project
+QuakeCW: /home01/x3336a02/project/cw/quakecw_workflow
+
+Step 1: Downloading and extracting data archives...
+  Velocity-Model_20260507.tar.gz already exists, skipping download
+  Extracting Velocity-Model_20260507.tar.gz to /home01/x3336a02/project/cw...
+  project_local_20260507.tar.gz already exists, skipping download
+  Extracting project_local_20260507.tar.gz to /home01/x3336a02/project...
+  quakecw_data_20260507.tar.gz already exists, skipping download
+  Extracting quakecw_data_20260507.tar.gz to /home01/x3336a02/project/cw...
+
+Step 2: Installing uv and Python 3.12.13...
+Python 3.12.13 is already installed
+
+Step 3: Creating Python virtual environment...
+Using CPython 3.12.13
+Creating virtual environment at: /home01/x3336a02/.local/quakecw_venv
+✔ A virtual environment already exists at `/home01/x3336a02/.local/quakecw_venv`. Do you want to replace it? · yes
+Activate with: source /home01/x3336a02/.local/quakecw_venv/bin/activate
+
+Step 4: Installing PyPI packages from requirements.txt...
+Using Python 3.12.13 environment at: /home01/x3336a02/.local/quakecw_venv
+Resolved 58 packages in 390ms
+Installed 58 packages in 4.36s
+ + affine==2.4.0
+ + alphashape==1.3.1
+...
++ trimesh==4.11.5
+ + typing-extensions==4.15.0
+ + urllib3==2.6.3
+ + wheel==0.46.3
+ + xarray==2026.4.0
+
+Step 5: Checking GitHub SSH access...
+  GitHub SSH not configured. Setting up...
+  GitHub SSH access verified.
+
+Step 6: Installing QuakeCW packages from GitHub releases...
+Using Python 3.12.13 environment at: /home01/x3336a02/.local/quakecw_venv
+Resolved 4 packages in 825ms
+Installed 1 package in 123ms
+ + qcore==1.2 (from git+ssh://git@github.com/QuakeCW/qcore.git@1f46730b7e0222d17a6c0387d00bd9b9cd4d4da2)
+Using Python 3.12.13 environment at: /home01/x3336a02/.local/quakecw_venv
+Resolved 29 packages in 866ms
+Installed 1 package in 106ms
+ + im-calc==19.5.1 (from git+ssh://git@github.com/QuakeCW/IM_calculation.git@eeef40cd6094138545e8c44195da992cfdbcc0d3)
+Using Python 3.12.13 environment at: /home01/x3336a02/.local/quakecw_venv
+Resolved 3 packages in 813ms
+Installed 1 package in 134ms
+ + srf-generation==19.9.1 (from git+ssh://git@github.com/QuakeCW/Pre-processing.git@e51aaeb6c4bcd687c2621dd92aeb465db4214951)
+Using Python 3.12.13 environment at: /home01/x3336a02/.local/quakecw_venv
+    Updated ssh://git@github.com/QuakeCW/visualisation.git (e83db384324030746a085046ae876e4ac30dc880)
+Resolved 2 packages in 12.65s
+      Built visualization @ git+ssh://git@github.com/QuakeCW/visualisation.git@e83db384324030746a085046ae876e4ac30dc880
+Prepared 1 package in 1.36s
+Installed 1 package in 137ms
+ + visualization==1.0.0 (from git+ssh://git@github.com/QuakeCW/visualisation.git@e83db384324030746a085046ae876e4ac30dc880)
+Using Python 3.12.13 environment at: /home01/x3336a02/.local/quakecw_venv
+    Updated ssh://git@github.com/QuakeCW/slurm_gm_workflow.git (71c47e13cbc3f3a9de2d3c71d0666441bf1dabe3)
+Resolved 1 package in 7.21s
+      Built workflow @ git+ssh://git@github.com/QuakeCW/slurm_gm_workflow.git@71c47e13cbc3f3a9de2d3c71d0666441bf1dabe3
+Prepared 1 package in 3.39s
+Installed 1 package in 369ms
+ + workflow==21.11.1 (from git+ssh://git@github.com/QuakeCW/slurm_gm_workflow.git@71c47e13cbc3f3a9de2d3c71d0666441bf1dabe3)
+
+Step 7: Updating .bashrc...
+  Added sourcing to .bashrc
+
+==============================================
+Installation complete!
+
+Please run: source ~/.bashrc
+==============================================
+```
+위와 같은 인스톨 과정은 한번만 실행해주면 된다.
+
+새로 만든 환경을 이용하려면 
+```
+source ~/.bashrc
+```
+을 실행하거나, 새로 로그인 하면 된다.
+
 #### 실무책임자 계정
 
 
@@ -146,66 +242,4 @@ emod3d-mpi_v3.0.13  emod3d-mpi_v3.0.8     generic_slip2srf  genslip_v5.4.2  hb_h
 emod3d-mpi_v3.0.4   fault_seg2gsf_dipdir  genslip_v3.3      genslip_v5.6.2  hb_high_binmod_v5.4.5.3  srf2stoch
 ```
 
-#### 기타 사용자 계정
 
-```
-cd ~/
-```
-만약 예전에 사용하던 `gmsim` 디렉토리가 있다면 백업하도록 한다. (테스트 후에 삭제해도 됨)
-
-```
-mv gmsim gmsim.backup
-```
-
-배성은 (x3336a02)이 2022/05/02 제작한 셋업[https://www.dropbox.com/scl/fo/dnmdtln3n5vyz9h9czmau/h?rlkey=rj1eeh0952g6qyozcmt19xeja&st=h0s6z7rs&dl=0] 을 공유해 사용하기로 한다. 
-
-```
-ln -sf /scratch/x3336a02/gmsim_home gmsim
-```
-
-
-제대로 로딩되었는지 확인하려면 `act_cw_env` 명령어를 실행해본다. Activate Environment라는 의미를 가진 단축키 (alias)로 `~/.bashrc` 제일 아래에 지정한 내용이다.
-
-```
-[x3336a02@login01 project]$ act_cw_env
-(python_env) [x3336a02@login01 project]$ which python
-/scratch/x3336a02/project/cw/python_env/bin/python
-```
-
-터미널의 프롬프트가 `(python_env) [x3336a02@....]$` 모양으로 바뀌었으면 설정이 잘 되었음을 의미함.
-
-마지막으로 $SCRATCH/users에 `$USER`이름의 디렉토리를 만들어주자.
-
-```
-(python_env) [x3336a02@login01 users]$ mkdir -p $USER
-(python_env) [x3336a02@login01 users]$ ls
-x3336a02
-
-```
-
-$MYSCRATCH로 이동해간다.
-```
-(python_env) [x3336a02@login01 users]$ cd $MYSCRATCH
-(python_env) [x3336a02@login01 x3336a02]$ pwd
-/scratch/x3336a02/users/x3336a02
-
-```
-
-이 곳을 대부분의 작업을 하는 장소로 사용하도록 할 것. 끝으로 `Velocity-Model` 심볼릭 링크를 홈디렉토리에 만들어주자.
-
-
-```
-cd ~/
-ln -sf /scratch/x3336a02/project/cw/Velocity-Model
-
-```
-
-`ls -al`해서 아래와 같은 라인이 보이면 잘되었음을 의미한다.
-```
-lrwxrwxrwx    1 x3336a02 rd0862       43 Jan 10 12:34 Velocity-Model -> /scratch/x3336a02/project/cw/Velocity-Model
-
-```
-
-
-### 참고: gmsim 패키지에서 문제가 생겼을 경우
-gmsim 패키지를 만드는 과정에서 사용자 로그인 아이디 x3336a02 하드코딩되어 퍼미션 관련한 문제가 생겨날 수 있는데, 이같은 경우 문의바람.
