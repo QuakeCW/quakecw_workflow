@@ -174,6 +174,43 @@ source ~/.bashrc
 ```
 을 실행하거나, 새로 로그인 하면 된다.
 
+`$HOME/.bashrc` 가 아래와 비슷한 형태로 세팅되어 있도록 하자.
+```
+(quakecw_venv) x3336a02@login04: ~/project/cw/quakecw_workflow$ cat ~/.bashrc
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions
+
+export PROMPT='${debian_chroot:+($debian_chroot)}\u@\h: \w\$ '
+
+PS1=$PROMPT
+
+shopt -u progcomp
+shopt -s direxpand
+
+module load gcc/10.2.0 openmpi/3.1.0 craype-mic-knl libxc cmake netcdf
+
+alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
+
+# QuakeCW environment
+source /home01/x3336a02/project/cw/quakecw_workflow/quakecw_config.sh
+source "$VENV_DIR/bin/activate"
+
+# Only on interactive shells, not PBS jobs
+if [[ -z "$PBS_JOBID" ]]; then
+    unset TMOUT
+fi
+
+```
+
 #### 실무책임자 계정
 
 
