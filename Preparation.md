@@ -76,74 +76,10 @@ Host github.com
 ~/.ssh에 위치한 id_rsa.pub 혹은 id_ecdsa.pub 파일을 GitHub Setting에 [등록](https://github.com/settings/keys) 해두면 GitHub와 Sync할 때마다 비밀번호를 넣어야 하는 번거로움을 덜 수 있다.
 
 
-다음은 배성은 (x2568a02)가 구축해 놓은 시뮬레이션 환경을 사용하기 위한 설정이다.
-
-누리온에 로그인해서 ~/.bashrc를 수정한다.
-
-```
-nano ~/.bashrc
-```
-
-아래 내용을 제일 밑바닥에 추가하도록 하자.
-
-```
-# User specific aliases and functions
-export PS1='${debian_chroot:+($debian_chroot)}\u@\h: \w> '
-# .bashrc
-
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
-fi
-
-# Uncomment the following line if you don't like systemctl's auto-paging feature:
-# export SYSTEMD_PAGER=
-
-# User specific aliases and functions
-shopt -u progcomp
-shopt -s direxpand
-unset TMOUT # disable auto-timeout
-
-export ADMIN=x3336a02
-export SCRATCH=/scratch/$ADMIN
-export PROJECT=$SCRATCH/project
-export MYSCRATCH=$SCRATCH/users/$USER
-export CW=$PROJECT/cw
-export UC=$PROJECT/uc
-export QUAKECW=$CW/quakecw_workflow
-export gmsim=$CW
-
-export GMT_DIR=$PROJECT/local/gmt
-export GMT_DATADIR=$GMT_DIR/share
-export HDF5_DIR=$PROJECT/local/hdf5
-export LD_LIBRARY_PATH=$PROJECT/local/fftw/lib:$PROJECT/local/OpenBLAS/lib:$HDF5_DIR/lib:$PROJECT/local/spatialindex/lib:$GMT_DIR/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=$PROJECT/local/fftw/lib/pkgconfig:$PROJECT/local/OpenBlas/lib/pkgconfig:$PKG_CONFIG_PATH
-export UV_CACHE_DIR=$SCRATCH/.cache/uv
-
-module load gcc/10.2.0 openmpi/3.1.0 craype-mic-knl libxc cmake netcdf
-
-alias act_cw_env="source $CW/python_env/bin/activate"
-act_cw_env
-
-export PATexport PYTHONPATH=$gmsim/Pre-processing:$PYTHONPATH
-export PATH=$PROJECT/bin:$PROJECT/EMOD3D/tools:$GMT_DIR/bin:$PATH
-
-alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
-
-
-```
-
-저장하고 `source`명령어를 실행하면 고친 내용이 로딩된다. (다음번 누리온에 로그인하면 자동으로 로딩됨)
-```
-x2568a02@login02:~> source ~/.bashrc
-```
-
 ### 프로그램 패키지 인스톨
 
 #### 실무책임자 계정
 
-##### 전체 환경 다운로드 
-2022년 현재 사용중인 소프트웨어와 세팅들을 하나의 패키지로 만들어 드롭박스를 통해 제공하고 있음: https://www.dropbox.com/scl/fo/dnmdtln3n5vyz9h9czmau/h?rlkey=rj1eeh0952g6qyozcmt19xeja&st=h0s6z7rs&dl=0
 
 아래 내용은 새롭게 시스템을 구성할 경우에 참고할 것.
 
