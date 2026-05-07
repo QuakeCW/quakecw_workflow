@@ -154,6 +154,17 @@ else
     echo "  .bashrc already sources quakecw_config.sh"
 fi
 
+if ! grep -q "TMOUT" "$HOME/.bashrc" 2>/dev/null; then
+    cat >> "$HOME/.bashrc" << 'EOF'
+
+# Disable timeout on login nodes only
+if [[ -z "$PBS_JOBID" ]]; then
+    unset TMOUT
+fi
+EOF
+    echo "  Added TMOUT unset to .bashrc"
+fi
+
 # ---- Done ----
 echo ""
 echo "=============================================="
