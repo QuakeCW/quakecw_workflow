@@ -605,14 +605,14 @@ def gen_meta(
             a["hlat"] = lat
             a["hdepth"] = centroid_depth
         else:
-            a["vm"] = np.string_(os.path.basename(vm))
+            a["vm"] = np.bytes_(os.path.basename(vm))
             a["hlon"] = hlon
             a["hlat"] = hlat
             a["hdepth"] = hdepth
             a["shyp0"] = shypo
             a["dhyp0"] = dhypo
         if mwsr is not None:
-            a["mwsr"] = np.string_(mwsr)
+            a["mwsr"] = np.bytes_(mwsr)
         if tect_type is not None:
             a["tect_type"] = tect_type
         # derived parameters

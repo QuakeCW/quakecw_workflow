@@ -5,9 +5,12 @@ import os
 from pathlib import Path
 import pprint
 import shutil
-
+import sys
 import yaml
 from qcore.shared import exe
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from load_envs import expand_env_vars
 
 SET_SRF_PARAMS_TEMPLATE="setSrfParams.template"
 SRF_CONFIG_TEMPLATE="srf_config.template"
@@ -25,7 +28,10 @@ def load_args():
         args.params=yaml.safe_load(file)
 
 
+    # Expand environment variables in all values
+    args.params = expand_env_vars(args.params)
     return args
+
 
 def main():
     args = load_args()
