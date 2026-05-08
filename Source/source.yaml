@@ -16,5 +16,5 @@ DIP: 69
 RAK: 152
 # # rupture timestep
 DT: 0.01
-VELOCITY_MODEL: "$VELOCITY_MODEL_DIR/Mod-1D/kr_gb_kim2011_modified.1d"
+VELOCITY_MODEL: "$VELOCITY_MODEL_DIR/1D/kr_gb_kim2011_modified.1d"
 SOURCE_DATA_DIR: "$SCRATCH/RunFolder/Pohang/Source" 
