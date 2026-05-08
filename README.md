@@ -329,6 +329,8 @@ Generating velocity model
 
 관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
 
+* 아래내용은 관측소 데이터를 기본 제공하고,별도로 생성해야하는 경우 실행하도록 문서 업데이트 필요 *
+
 ```
 (python_env) [x3336a02@login04 Pohang]$ python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
 ```
@@ -366,6 +368,8 @@ Busan_2km.ll  Busan_2km.vs30
 ```
 
 ## 시뮬레이션 인스톨
+
+* 아래내용은 전체적으로 slurm_gm_workflow를 디커플하고 다시 업데이트해야 함 *
 
 단층 모델과 속도 모델이 준비되어 있다고 가정하고 시뮬레이션 실행법에 대해 기술하겠음. 단층 모델이나 속도 모델이 준비 되지 않았다면, 위에서 서술한 단계를 따라 이들을 우선 생성하도록 할것.
 
