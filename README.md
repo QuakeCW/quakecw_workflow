@@ -16,7 +16,7 @@ Korean Ground Motion Simulation
 
 이 문서를 따르기 전, Preparation.md 페이지를 참조하고 미리 세팅을 해두도록 한다.
 
-누리온에 로그인하고, act_env 명령어로 가상환경을 실행시킨다.
+누리온에 로그인하고 
 ```
 (!522) $ ssh nurion2
 Last login: Wed Apr 22 06:51:59 2026 from 132.181.129.169
@@ -32,28 +32,22 @@ Filesystem       KBytes        Quota      Files      Quota
   /scratch       56.46T         100T    1665342    2000000
 ============================================================
 
-```
-
-$QUAKECW 디렉토리로 옮겨간다.
+(quakecw_venv) x3336a02@login04: ~$ 
 
 ```
-(python_env) [x3336a02@login04 ~]$ cd $QUAKECW
-(python_env) [x3336a02@login04 quakecw_workflow]$ 
-
-```
+정해진 세팅을 정확하게 완수했다면 `(quakecw_venv) x3336a02@login04: ~$ `와 같은 프롬프트가 뜰 것이다.
 
 
 # 인풋 모델 만들기
 
 이 예제에서 포항지진을 시뮬레이션해보도록 한다.
 
-$MYSCRATCH 디렉토리 아래에 RunFolder 디렉토리, 그리고 그 아래에 Pohang 디렉토리를 하나 만들자.
+$SCRATCH 디렉토리 아래에 RunFolder 디렉토리, 그리고 그 아래에 Pohang 디렉토리를 하나 만들자.
 
 ```
-cd $MYSCRATCH
+cd $SCRATCH
 mkdir -p RunFolder/Pohang
 cd RunFolder/Pohang
-
 ```
 
 
@@ -61,7 +55,7 @@ cd RunFolder/Pohang
 $QUAKECW/Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
 
 ```
-(python_env) [x3336a02@login04 Pohang]$ cp $QUAKECW/Source/source.yaml ./source_Pohang.yaml
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ cp $QUAKECW/Source/source.yaml ./source_Pohang.yaml
 
 
 ```
@@ -74,47 +68,31 @@ TYPE: 2
 FAULT: Pohang
 # latitude (float)
 LAT: 36.109
-# longitude (float)
+# # longitude (float)
 LON: 129.366
-# depth (float)
+# # depth (float)
 DEPTH: 7
-# magnitude (float)
+# # magnitude (float)
 MAG: 5.4
-# strike (int)
+# # strike (int)
 STK: 230
-# dip (int)
+# # dip (int)
 DIP: 69
-# rake (int)
+# # rake (int)
 RAK: 152
-# rupture timestep
+# # rupture timestep
 DT: 0.01
-VELOCITY_MODEL: "/scratch/x2568a02/CWNU/quakecw_workflow/Source/kr_gb_kim2011_modified.1d"
-SOURCE_DATA_DIR: "$MYSCRATCH/RunFolder/Pohang/Source" <====== 수정 필요          
+VELOCITY_MODEL: "$VELOCITY_MODEL_DIR/1D/kr_gb_kim2011_modified.1d"
+SOURCE_DATA_DIR: "$SCRATCH/RunFolder/Pohang/Source" 
+        
 ```
-
-.yaml파일내의 $MYSCRATCH 같은 변수를 인식하지 못하기 때문에, 실제 경로를 집어넣어줘야 한다. 각 사용자마다 $MYSCRATCH값이 다르므로, 아래 명령어를 사용해서 출력된 값을 복사/붙여넣기하도록 하겠다. 
-
-```
-(python_env) [x3336a02@login04 Pohang]$ echo $MYSCRATCH
-/scratch/x3336a02/users/x3336a02
-```
-x2568a03 유저라면, 위 결과값이
-```
-/scratch/x3336a02/users/x2568a03
-```
-으로 찍혀나왔을 것이다.
-
-nano를 사용해 source_Pohang.yaml 제일 아래 줄의 $MYSCRATCH 부분을 붙여넣기로 수정해준 다음 저장.
-
-수정 후 
-```
-SOURCE_DATA_DIR: "/scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Source"
-```
+이 예제에서는 `VELOCITY_MODEL`과 `SOURCE_DATA_DIR`은 따로 수정하지 않아도 된다.
+`$VELOCITY_MODEL_DIR`, `$SCRATCH`라는 환경 변수값 (누리온에 로그인할 때, quakecw_config.sh라는 파일이 자동 로딩되며 세팅됨.)이 자동으로 인식되기 때문이다.
 
 아래 명령어를 실행하면 단층 모델이 생성되어 `SOURCE_DATA_DIR`에 위치하게 됨
 
 ```
-(python_env) [x3336a02@login04 Source]$ python $QUAKECW/Source/make_source.py ../source_Pohang.yaml
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ python $QUAKECW/Source/make_source.py ..source_Pohang.yaml
 ```
 
 ```
@@ -156,8 +134,8 @@ mapproject [ERROR]: Cannot specify map width with 1:xxxx format in -J option
 ```
 위와 같은 내용이 출력되었다면 성공적으로 단층 모델이 만들어졌다. WARNING과 ERROR 메시지는 무시해도 됨.
 ```
-(python_env) [x3336a02@login04 Pohang]$ cd Source 
-(python_env) [x3336a02@login04 Source]$ tree 
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ cd Source
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Source$ tree
 .
  |-__pycache__
  | |-srf_config.cpython-312.pyc
@@ -165,7 +143,6 @@ mapproject [ERROR]: Cannot specify map width with 1:xxxx format in -J option
  |-Stoch
  | |-Pohang.stoch
  |-setSrfParams.py
- |-\
  |-Srf
  | |-Pohang.gsf
  | |-Pohang.srf
@@ -178,12 +155,12 @@ mapproject [ERROR]: Cannot specify map width with 1:xxxx format in -J option
  |-cnrs.txt
  |-createSRF_log.txt
 
-
 ```
 
 
 ## 속도 모델 만들기
-
+남한 전체 속도모델을 100m의 해상도로 구현한 것이 `$VELOCITY_MODEL_DIR/3D/SouthKorea100m`에 제공되어 있으므로 (본 문서 작성 현재, 데이터 패키지 제작중)
+아래 내용은 새롭게 속도모델을 생성할 경우 수행하도록 한다.
 
 ### 준비
 
@@ -198,7 +175,7 @@ $HOME/Velocity-Model/NZVM (2021년 Oct 4 build)
 
 
 ```
-(python_env) [x3336a02@login04 Source]$ cat $QUAKE/VM/vm_params.yaml
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ cat $QUAKE/VM/vm_params.yaml
 
 mag: 5.5
 centroidDepth: 4.05399
@@ -244,7 +221,7 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 make_vm.py는 2개의 인풋이 의무적으로 필요하다. vm_params YAML파일과, 속도모델의 이름이 그것이며, 추가로 아웃풋이 저장될 위치, CPU코어의 갯수, 계산을 위해 요청할 wallclock을 지정할 수 있다.
 
 ```
-(python_env) [x3336a02@login04 Pohang]$ python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM --ncores 16 --wallclock 2
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM1000 --ncores 16 --wallclock 2
 
 ```
 
@@ -271,8 +248,8 @@ ncores은 노드 전체의 경우 66 (전체 68개이나 한 두개 정도 코�
 
 속도 모델 생성 명령어를 실행할 때 `outdir`로 현재 디렉토리의 `VM`을 설정하였다. `VM`으로 들어가본다.
 ```
-(python_env) [x3336a02@login04 Pohang]$ cd VM
-(python_env) [x3336a02@login04 VM]$ ls
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ cd VM
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/VM$ ls
 make_vm.pbs  _tmp_Busan1000_24pv5gov  vm_params2vm_Busan1000_log.txt  vm_params2vm_log.txt  vm_params.yaml
 ```
 
@@ -281,12 +258,12 @@ vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트인 make_vm
 
 현재 진행 상활을 체크해 보도록 한다.
 ```
-(python_env) [x3336a02@login04 VM] qstat -u $USER
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/VM$ qstat -u $USER
 ```
 
 혹은
 ```
-(python_env) [x3336a02@login04 VM] qstat 22201322.pbs  
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/VM$ qstat 22201322.pbs  
 ```
 명령어로 특정 Job을 지정해서 볼수도 있다. 작업 ID를 일일이 사용하는 것이 귀찮기 때문에, 보통 `-u $USER`를 쓰는 것을 권장한다.
 
@@ -303,7 +280,7 @@ Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S 
 
 `R`로 진행되고 나면 Job ID를 참고하여, 현재 $HOME 디렉토리에서 임시로 쓰여지고 있는 아웃풋 파일의 업데이트 상황을 모니터할 수 있다
 ```
-(python_env) [x3336a02@login04 VM] tail -f $HOME/pbs.22201322.pbs.x8z/22201322.pbs.OU
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/VM$ tail -f $HOME/pbs.22201322.pbs.x8z/22201322.pbs.OU
 ```
 아래와 같은 내용을 볼 수 있을 것이다.
 ```
@@ -326,7 +303,7 @@ Generating velocity model
 위에서 서브밋한 pbs스크립트는 16코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 아래와 같은 파일들이 최종적으로 디렉토리에 상주하게 됨
 
 ```
-(python_env) [x3336a02@login04 VM1000]$ tree
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/VM1000$ tree
 .
  |-nzvm.cfg
  |-make_vm.e22201322
@@ -346,7 +323,6 @@ Generating velocity model
  |-make_vm.pbs
 
 
-global_tiff
 ```
 
 ## 관측소 리스트 만들기
