@@ -1,4 +1,5 @@
 export PROJECT="$HOME/project"
+export SCRATCH="/scratch/$USER"
 export CW="$PROJECT/cw"
 export QUAKECW="$CW/quakecw_workflow"
 export gmsim="$CW"
