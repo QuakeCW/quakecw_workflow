@@ -15,7 +15,7 @@ export GDAL_CONFIG="$GDAL_HOME/bin/gdal-config"
 export LD_LIBRARY_PATH="$PROJECT/local/fftw/lib:$PROJECT/local/OpenBLAS/lib:$HDF5_DIR/lib:$PROJECT/local/spatialindex/lib:$GMT_DIR/lib:$SQLITE_DIR/lib:$GDAL_HOME/lib:$PROJECT/local/proj/lib:$PROJECT/local/curl/lib:$LD_LIBRARY_PATH"
 export PKG_CONFIG_PATH="$PROJECT/local/fftw/lib/pkgconfig:$PROJECT/local/OpenBLAS/lib/pkgconfig:$SQLITE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PYTHONPATH="$CW/Pre-processing:$PYTHONPATH"
-export PATH="$PROJECT/local/sqlite/bin:$PROJECT/bin:$PROJECT/EMOD3D/tools:$GMT_DIR/bin:$GDAL_HOME/bin:$PATH"
+export PATH="$PROJECT/local/sqlite/bin:$PROJECT/bin:$PROJECT/local/rclone-v1.73.5-linux-amd64:$PROJECT/EMOD3D/tools:$GMT_DIR/bin:$GDAL_HOME/bin:$PATH"
 
 export BIN_DIR="$PROJECT/EMOD3D/tools"
 export VELOCITY_MODEL_DIR="$CW/VelocityModel"
