@@ -102,7 +102,28 @@ Step 1: Downloading and extracting data archives...
   Extracting project_local_20260507.tar.gz to /home01/x3336a02/project...
   quakecw_data_20260507.tar.gz already exists, skipping download
   Extracting quakecw_data_20260507.tar.gz to /home01/x3336a02/project/cw...
+```
+도중에 한반도 남부 속도모델을 다운 받을 것인지 묻는데, 10Gb에 달하는 큰 파일이므로 저장 용량이 충분하다면 Y를 누르도록 한다.
+이 파일들은 모두 /scratch/<사용자 ID>로 다운받도록 되어 있으므로 저장 용량에는 큰 문제가 없을 것이다.
+```
+Step 1b: Optional SouthKorea100m velocity model (9.6 GB)...
+  Download SouthKorea100m velocity model? [y/N] y
+  Downloading SouthKorea100m-20260507.tar.gz (9.6 GB) to scratch...
+--2026-05-12 07:40:23--  https://www.dropbox.com/scl/fi/7ivi2826or60jp3eu61c7/SouthKorea100m-20260507.tar.gz?rlkey=tss5x2gvqenk8k77r1x7xb1nm&dl=1
+Resolving www.dropbox.com (www.dropbox.com)... 162.125.84.18, 2620:100:6034:18::a27d:5412
+Connecting to www.dropbox.com (www.dropbox.com)|162.125.84.18|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+...
+Reusing existing connection to ucc7f5fa348d9b4087a3557360dc.dl-au.dropboxusercontent.com:443.
+HTTP request sent, awaiting response... 200 OK
+Length: 10277175296 (9.6G) [application/binary]
+Saving to: '/scratch/x3336a02/SouthKorea100m-20260507.tar.gz'
 
+45% [==================================>                                           ] 4,674,214,973 12.1MB/s  eta 6m 58s
+```
+
+다운로드가 끝나면 압축을 풀어 정해진 곳에 설치를 하는 과정이 모두 자동으로 수행된다.
+```
 Step 2: Installing uv and Python 3.12.13...
 Python 3.12.13 is already installed
 
