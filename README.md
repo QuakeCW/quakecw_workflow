@@ -34,7 +34,7 @@ Filesystem       KBytes        Quota      Files      Quota
 
 (quakecw_venv) x3336a02@login04: ~$ 
 
-```
+```/scratch/x3336a02/project/cw/VelocityModel/3D
 정해진 세팅을 정확하게 완수했다면 `(quakecw_venv) x3336a02@login04: ~$ `와 같은 프롬프트가 뜰 것이다.
 
 
@@ -159,23 +159,23 @@ mapproject [ERROR]: Cannot specify map width with 1:xxxx format in -J option
 
 
 ## 속도 모델 만들기
-남한 전체 속도모델을 100m의 해상도로 구현한 것이 `$VELOCITY_MODEL_DIR/3D/SouthKorea100m`에 제공되어 있으므로 (본 문서 작성 현재, 데이터 패키지 제작중)
-아래 내용은 새롭게 속도모델을 생성할 경우 수행하도록 한다.
+남한 전체 속도모델을 100m의 해상도로 구현한 것이 `$VELOCITY_MODEL_DIR/3D/SouthKoreaVM100m`에 제공되어 있어 대부분의 경우 이 모델을 사용하는 것을 권장한다.
+아래 내용은 *새롭게 속도모델을 생성할 경우* 수행하도록 한다.
 
 ### 준비
 
-$HOME에 Velocity_Model이라는 심볼릭 링크를 만들었다면, NZVM 바이너리 위치는  
+NZVM 바이너리 위치는 $CW/Velocity-Model/NZVM
 
 ```
-$HOME/Velocity-Model/NZVM (2021년 Oct 4 build) 
+$CW/Velocity-Model/NZVM (2021년 Oct 4 build) 
 ```
 이며, $QUAKECW/VM/make_vm.template에 이 바이너리를 사용하도록 지정되어 있다.
 
-우선 $QUAKE/VM/vm_params.yaml 의 내용을 보도록 하자 [1]
+우선 $QUAKECW/VM/vm_params.yaml 의 내용을 보도록 하자 [1]
 
 
 ```
-(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ cat $QUAKE/VM/vm_params.yaml
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ cat $QUAKECW/VM/vm_params.yaml
 
 mag: 5.5
 centroidDepth: 4.05399
@@ -216,31 +216,29 @@ MODEL_BOUNDS: ./model_bounds_rt01-h0.100
 
 ### 실행  
 
-간단한 예를 보여주기 위해 제공된 vm_params_1000.yaml을 이용하도록 하겠다. 여기서 해상도를 나타내는 그리드 간격은 1000m 즉 hh: 1.0이다. hh가 0.1로 낮을 경우, 속도모델을 생성하는데 지나치게 시간이 오래 걸리기 때문에 1.0을 예시로서 사용하도록 한다. 이 속도 모델을 Busan1000이라 부르기로 함.  
 
-make_vm.py는 2개의 인풋이 의무적으로 필요하다. vm_params YAML파일과, 속도모델의 이름이 그것이며, 추가로 아웃풋이 저장될 위치, CPU코어의 갯수, 계산을 위해 요청할 wallclock을 지정할 수 있다.
 
 ```
-(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params_1000.yaml Busan1000 --outdir ./VM1000 --ncores 16 --wallclock 2
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ python $QUAKECW/VM/make_vm.py $QUAKECW/VM/vm_params.yaml SouthKorea100m --outdir ./VM1000 --ncores 66 --wallclock 6
 
 ```
 
 정상적으로 진행되고 있다면 아래와 같은 내용이 출력된다.
 
 ```
-Created: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/VM1000
-Loaded: /scratch/x3336a02/project/cw/quakecw_workflow/VM/vm_params_1000.yaml
-Copied vm_params_1000.yaml to /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/VM1000
-/scratch/x3336a02/users/x3336a02/RunFolder/Pohang/tmp9_7cwkcs.template
-Generated: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/VM1000/make_vm.pbs
-Submitted: qsub -V -W umask=002 /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/VM1000/make_vm.pbs
+Created: /scratch/x3336a02/RunFolder/Pohang/SouthKorea100m
+Loaded: /home01/x3336a02/project/cw/quakecw_workflow/VM/vm_params.yaml
+Copied vm_params.yaml to /scratch/x3336a02/RunFolder/Pohang/SouthKorea100m
+/scratch/x3336a02/RunFolder/Pohang/tmp9_7cwkcs.template
+Generated: /scratch/x3336a02/RunFolder/Pohang/SouthKorea100m/make_vm.pbs
+Submitted: qsub -V -W umask=002 /scratch/x3336a02/RunFolder/Pohang/SouthKorea100m/make_vm.pbs
 22201322.pbs
 
 
 ```
 
 ncores은 노드 전체의 경우 66 (전체 68개이나 한 두개 정도 코어를 제외하여 IO를 담당하도록 함), wallclock 은 남한 대부분을 커버하는 100m 모델의 경우 4시간 정도 (여유분을 감안해 5~6시간의 wallclock이 적당) 걸리는데 디폴트값으로 정해져 있으나 작은 사이즈의 예시로 사용하기 위해 옵션의 사용법을 제시하였다. 
-위의 출력값 제일 마지막 줄 12470701.pbs 은 제출한 Job ID를 가리킨다.
+위의 출력값 제일 마지막 줄 22201322.pbs 은 제출한 Job ID를 가리킨다.
 
 
 
@@ -250,10 +248,10 @@ ncores은 노드 전체의 경우 66 (전체 68개이나 한 두개 정도 코�
 ```
 (quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ cd VM
 (quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/VM$ ls
-make_vm.pbs  _tmp_Busan1000_24pv5gov  vm_params2vm_Busan1000_log.txt  vm_params2vm_log.txt  vm_params.yaml
+make_vm.pbs  _tmp_SouthKorea100m_24pv5gov  vm_params2vm_SouthKorea100m_log.txt  vm_params2vm_log.txt  vm_params.yaml
 ```
 
-vm_params_1000.yaml의 복사본, 그리고 제출한 PBS스크립트인 make_vm.pbs와 진행상황을 알려줄 로그파일들,속도모델이 생성되는 동안 임시 데이터 저장을 위한 `_tmp_Busan1000_...`로 시작하는 이름의 디렉토리를 볼 수 있다. (참고: 임시 디렉토리는 작업큐를 통해 작업이 시작된 후에 볼 수 있다.) 속도 모델이 생성되면 임시 디렉토리가 사라지고 최종적으로 생성된 파일들이 이 곳에 위치하게 될 것이다.
+vm_params.yaml의 복사본, 그리고 제출한 PBS스크립트인 make_vm.pbs와 진행상황을 알려줄 로그파일들,속도모델이 생성되는 동안 임시 데이터 저장을 위한 `_tmp_SouthKorea100m_...`로 시작하는 이름의 디렉토리를 볼 수 있다. (참고: 임시 디렉토리는 작업큐를 통해 작업이 시작된 후에 볼 수 있다.) 속도 모델이 생성되면 임시 디렉토리가 사라지고 최종적으로 생성된 파일들이 이 곳에 위치하게 될 것이다.
 
 
 현재 진행 상활을 체크해 보도록 한다.
@@ -273,7 +271,7 @@ pbs:
                                                                  Req'd  Req'd   Elap
 Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 -------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
-22201322.pbs         x3336a02 normal   make_vm       --    1  68    --  02:00 Q   --
+22201322.pbs         x3336a02 normal   make_vm       --    1  68    --  06:00 Q   --
 
 ```
 현재 이 job은 제출되어 대기중인 상태로 (Queued) 정상적으로 진행되면 Q->R (running) -> E (ending) 순으로 진행되는 과정을 볼수 있다. 총 2시간을 요청하였으며, 전체 코어가 68개인 노드에서 계산 될 예정이다 (다만 요청은 위에서 ncores =16으로 하였음) 
@@ -300,27 +298,14 @@ Generating velocity model
 이 파일들은 작업이 끝나면 자동으로 지워지므로 작업 진행 중에만 열람해 볼 수 있다. 
 ### 생성파일 체크
 
-위에서 서브밋한 pbs스크립트는 16코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 아래와 같은 파일들이 최종적으로 디렉토리에 상주하게 됨
+위에서 서브밋한 pbs스크립트는 16코어를 이용해 NZVM을 실행시켜 \*.p, \*.s, \*.d 파일을 생성시키고, gen_coords.py를 불러 model_params, model_bounds, model_params 등과 같은 좌표 파일들을 도메인에 맞게 생성해낸다. 최종적으로 다음파일들이 생성되어야 함.
 
 ```
-(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/VM1000$ tree
-.
- |-nzvm.cfg
- |-make_vm.e22201322
- |-make_vm.o22201322
- |-vm_params2vm_log.txt
- |-vs3dfile.s    <====================
- |-VeloModCorners.txt
- |-rho3dfile.d  <====================
- |-vm_params2vm_Busan1000_log.txt
- |-model_params_rt01-h1.0
- |-in_basin_mask.b  <====================
- |-gridfile_rt01-h1.0
- |-vp3dfile.p  <====================
- |-vm_params.yaml
- |-model_coords_rt01-h1.0
- |-gridout_rt01-h1.0
- |-make_vm.pbs
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/VM$ ls
+...
+nzvm.cfg vs3dfile.s rho3dfile.d vp3dfile.p in_basin_mask.b
+```
+ 
 
 
 ```
