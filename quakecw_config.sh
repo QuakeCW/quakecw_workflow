@@ -21,3 +21,14 @@ export BIN_DIR="$PROJECT/EMOD3D/tools"
 export VELOCITY_MODEL_DIR="$CW/VelocityModel"
 export VENV_DIR="$HOME/.local/quakecw_venv"
 
+export PROMPT='${debian_chroot:+($debian_chroot)}\u@\h: \w\$ '
+
+PS1=$PROMPT
+
+shopt -u progcomp
+shopt -s direxpand
+
+module load gcc/10.2.0 openmpi/3.1.0 craype-mic-knl libxc cmake netcdf
+
+alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
+
