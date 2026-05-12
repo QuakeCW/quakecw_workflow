@@ -168,24 +168,61 @@ Step 7: Updating .bashrc...
 ```
 Step 8: Optional SouthKorea100m velocity model (45 GB)...
   This is a very large download and may take a long time.
+  The model will be stored on scratch and symlinked from ~/project.
   Download SouthKorea100m velocity model? [y/N] y
-  Downloading SouthKorea100m-20260507.tar.gz (9.6 GB) to scratch...
---2026-05-12 07:40:23--  https://www.dropbox.com/scl/fi/7ivi2826or60jp3eu61c7/SouthKorea100m-20260507.tar?rlkey=tss5x2gvqenk8k77r1x7xb1nm&dl=1
+  Downloading SouthKoreaVM100m.tar (45 GB) to scratch...
+--2026-05-12 10:35:21--  https://www.dropbox.com/scl/fi/t27ri7nna1l4v2zjwpghy/SouthKoreaVM100m.tar?rlkey=2i70q7kp97zkhs0vj9q58kqtr&st=dmxvflgr&dl=1
 Resolving www.dropbox.com (www.dropbox.com)... 162.125.84.18, 2620:100:6034:18::a27d:5412
 Connecting to www.dropbox.com (www.dropbox.com)|162.125.84.18|:443... connected.
 HTTP request sent, awaiting response... 302 Found
-...
-Reusing existing connection to ucc7f5fa348d9b4087a3557360dc.dl-au.dropboxusercontent.com:443.
+Location: https://uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com/cd/0/inline/DARovZlY3YiOILe7MG1behWgcTssn62VwktgwrubBLaF2-whyaRs74JMvsVywswqzzO_u6ZRmoraz-6wTBOPo8viNNL2lMXc3f7BFDeo5wLq4h0scVrV9CF_ZodMqi2K7HjLRKjj2r4x9-EPV8ZLRmAm/file?dl=1# [following]
+--2026-05-12 10:35:22--  https://uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com/cd/0/inline/DARovZlY3YiOILe7MG1behWgcTssn62VwktgwrubBLaF2-whyaRs74JMvsVywswqzzO_u6ZRmoraz-6wTBOPo8viNNL2lMXc3f7BFDeo5wLq4h0scVrV9CF_ZodMqi2K7HjLRKjj2r4x9-EPV8ZLRmAm/file?dl=1
+Resolving uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com (uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com)... 162.125.84.15, 2620:100:6034:15::a27d:540f
+Connecting to uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com (uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com)|162.125.84.15|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: /cd/0/inline2/DATP95l8wCra1zMOikoA4rEMQ_qu1LQdKh6XXnMWoCBo1hdwgeCIDTx8q5XxVUhCCYBQml4ht3VpDOCSk374qruQZKm1J2w4PBqjdXJLyh6_sUlcg1Ozx48nrL8Ta1crYjAPvGEw-3rUKrAYgpUBKPCPkLV3Bvg_B3ASlsEq7Ydko-4bpWlcdObfmE2fznZ9R6aHCqnfRGQU65fSkZ4ZQaNlAIAu3iJ0hN22VZHRhI3QQGj3TryQSWIigDBn9kswczVb91A8uSdAPYjbp5Q-D2PFieDWJQsJBvDG6Lffq9TZwRVeFYEqziOP9uk1oYpv4RSaY5OGZi1dHwfmpcRR0Bgy0VOu51R4UjEz5xLuv7qVjtkC_aaajPGyKalDPRr7SDI/file?dl=1 [following]
+--2026-05-12 10:35:24--  https://uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com/cd/0/inline2/DATP95l8wCra1zMOikoA4rEMQ_qu1LQdKh6XXnMWoCBo1hdwgeCIDTx8q5XxVUhCCYBQml4ht3VpDOCSk374qruQZKm1J2w4PBqjdXJLyh6_sUlcg1Ozx48nrL8Ta1crYjAPvGEw-3rUKrAYgpUBKPCPkLV3Bvg_B3ASlsEq7Ydko-4bpWlcdObfmE2fznZ9R6aHCqnfRGQU65fSkZ4ZQaNlAIAu3iJ0hN22VZHRhI3QQGj3TryQSWIigDBn9kswczVb91A8uSdAPYjbp5Q-D2PFieDWJQsJBvDG6Lffq9TZwRVeFYEqziOP9uk1oYpv4RSaY5OGZi1dHwfmpcRR0Bgy0VOu51R4UjEz5xLuv7qVjtkC_aaajPGyKalDPRr7SDI/file?dl=1
+Reusing existing connection to uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com:443.
 HTTP request sent, awaiting response... 200 OK
-Length: 10277175296 (9.6G) [application/binary]
-Saving to: '/scratch/x3336a02/SouthKorea100m-20260507.tar.gz'
+Length: 48380753920 (45G) [application/binary]
+Saving to: '/scratch/x3336a02/SouthKoreaVM100m.tar'
 
-45% [==================================>                                           ] 4,674,214,973 12.1MB/s  eta 6m 58s
+85% [================================================================>            ] 41,404,190,592 6.69MB/s   in 60m 0s 
+
+2026-05-12 11:35:26 (11.0 MB/s) - Connection closed at byte 41404190592. Retrying.
+
+--2026-05-12 11:35:27--  (try: 2)  https://uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com/cd/0/inline2/DATP95l8wCra1zMOikoA4rEMQ_qu1LQdKh6XXnMWoCBo1hdwgeCIDTx8q5XxVUhCCYBQml4ht3VpDOCSk374qruQZKm1J2w4PBqjdXJLyh6_sUlcg1Ozx48nrL8Ta1crYjAPvGEw-3rUKrAYgpUBKPCPkLV3Bvg_B3ASlsEq7Ydko-4bpWlcdObfmE2fznZ9R6aHCqnfRGQU65fSkZ4ZQaNlAIAu3iJ0hN22VZHRhI3QQGj3TryQSWIigDBn9kswczVb91A8uSdAPYjbp5Q-D2PFieDWJQsJBvDG6Lffq9TZwRVeFYEqziOP9uk1oYpv4RSaY5OGZi1dHwfmpcRR0Bgy0VOu51R4UjEz5xLuv7qVjtkC_aaajPGyKalDPRr7SDI/file?dl=1
+Connecting to uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com (uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com)|162.125.84.15|:443... connected.
+HTTP request sent, awaiting response... 206 Partial Content
+Length: 48380753920 (45G), 6976563328 (6.5G) remaining [application/binary]
+Saving to: '/scratch/x3336a02/SouthKoreaVM100m.tar'
+
+100%[+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++===========>] 48,380,753,920 8.15MB/s   in 9m 54s 
+
+2026-05-12 11:45:23 (11.2 MB/s) - '/scratch/x3336a02/SouthKoreaVM100m.tar' saved [48380753920/48380753920]
+
+  Extracting SouthKoreaVM100m.tar to /scratch/x3336a02...
+  Symlink created: /home01/x3336a02/project/cw/VelocityModel/3D/SouthKoreaVM100m -> /scratch/x3336a02/SouthKoreaVM100m
+
 ```
 
 다운로드가 끝나면 압축을 풀어 정해진 곳에 설치를 하는 과정이 모두 자동으로 수행된다.
 
 ```
+Step 9: Cleaning up archive files...
+  Found archive files in /scratch/x3336a02:
+    89M	/scratch/x3336a02/Velocity-Model_20260507.tar.gz
+    46G	/scratch/x3336a02/SouthKoreaVM100m.tar
+    425M	/scratch/x3336a02/quakecw_data_20260507.tar.gz
+    256M	/scratch/x3336a02/project_local_20260507.tar.gz
+
+  Delete these archive files to free up space? [y/N] y
+  ✓ Archive files deleted.
+
+Step 10: Optional cleanup of extracted source directories...
+  Delete extracted source directories from scratch? (This will remove extracted files, keeping only final installed data) [y/N] m
+  Skipping cleanup of extracted directories.
+
 ==============================================
 Installation complete!
 
