@@ -171,30 +171,8 @@ Step 8: Optional SouthKorea100m velocity model (45 GB)...
   The model will be stored on scratch and symlinked from ~/project.
   Download SouthKorea100m velocity model? [y/N] y
   Downloading SouthKoreaVM100m.tar (45 GB) to scratch...
---2026-05-12 10:35:21--  https://www.dropbox.com/scl/fi/t27ri7nna1l4v2zjwpghy/SouthKoreaVM100m.tar?rlkey=2i70q7kp97zkhs0vj9q58kqtr&st=dmxvflgr&dl=1
-Resolving www.dropbox.com (www.dropbox.com)... 162.125.84.18, 2620:100:6034:18::a27d:5412
-Connecting to www.dropbox.com (www.dropbox.com)|162.125.84.18|:443... connected.
-HTTP request sent, awaiting response... 302 Found
-Location: https://uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com/cd/0/inline/DARovZlY3YiOILe7MG1behWgcTssn62VwktgwrubBLaF2-whyaRs74JMvsVywswqzzO_u6ZRmoraz-6wTBOPo8viNNL2lMXc3f7BFDeo5wLq4h0scVrV9CF_ZodMqi2K7HjLRKjj2r4x9-EPV8ZLRmAm/file?dl=1# [following]
---2026-05-12 10:35:22--  https://uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com/cd/0/inline/DARovZlY3YiOILe7MG1behWgcTssn62VwktgwrubBLaF2-whyaRs74JMvsVywswqzzO_u6ZRmoraz-6wTBOPo8viNNL2lMXc3f7BFDeo5wLq4h0scVrV9CF_ZodMqi2K7HjLRKjj2r4x9-EPV8ZLRmAm/file?dl=1
-Resolving uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com (uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com)... 162.125.84.15, 2620:100:6034:15::a27d:540f
-Connecting to uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com (uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com)|162.125.84.15|:443... connected.
-HTTP request sent, awaiting response... 302 Found
-Location: /cd/0/inline2/DATP95l8wCra1zMOikoA4rEMQ_qu1LQdKh6XXnMWoCBo1hdwgeCIDTx8q5XxVUhCCYBQml4ht3VpDOCSk374qruQZKm1J2w4PBqjdXJLyh6_sUlcg1Ozx48nrL8Ta1crYjAPvGEw-3rUKrAYgpUBKPCPkLV3Bvg_B3ASlsEq7Ydko-4bpWlcdObfmE2fznZ9R6aHCqnfRGQU65fSkZ4ZQaNlAIAu3iJ0hN22VZHRhI3QQGj3TryQSWIigDBn9kswczVb91A8uSdAPYjbp5Q-D2PFieDWJQsJBvDG6Lffq9TZwRVeFYEqziOP9uk1oYpv4RSaY5OGZi1dHwfmpcRR0Bgy0VOu51R4UjEz5xLuv7qVjtkC_aaajPGyKalDPRr7SDI/file?dl=1 [following]
---2026-05-12 10:35:24--  https://uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com/cd/0/inline2/DATP95l8wCra1zMOikoA4rEMQ_qu1LQdKh6XXnMWoCBo1hdwgeCIDTx8q5XxVUhCCYBQml4ht3VpDOCSk374qruQZKm1J2w4PBqjdXJLyh6_sUlcg1Ozx48nrL8Ta1crYjAPvGEw-3rUKrAYgpUBKPCPkLV3Bvg_B3ASlsEq7Ydko-4bpWlcdObfmE2fznZ9R6aHCqnfRGQU65fSkZ4ZQaNlAIAu3iJ0hN22VZHRhI3QQGj3TryQSWIigDBn9kswczVb91A8uSdAPYjbp5Q-D2PFieDWJQsJBvDG6Lffq9TZwRVeFYEqziOP9uk1oYpv4RSaY5OGZi1dHwfmpcRR0Bgy0VOu51R4UjEz5xLuv7qVjtkC_aaajPGyKalDPRr7SDI/file?dl=1
-Reusing existing connection to uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com:443.
-HTTP request sent, awaiting response... 200 OK
+...
 Length: 48380753920 (45G) [application/binary]
-Saving to: '/scratch/x3336a02/SouthKoreaVM100m.tar'
-
-85% [================================================================>            ] 41,404,190,592 6.69MB/s   in 60m 0s 
-
-2026-05-12 11:35:26 (11.0 MB/s) - Connection closed at byte 41404190592. Retrying.
-
---2026-05-12 11:35:27--  (try: 2)  https://uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com/cd/0/inline2/DATP95l8wCra1zMOikoA4rEMQ_qu1LQdKh6XXnMWoCBo1hdwgeCIDTx8q5XxVUhCCYBQml4ht3VpDOCSk374qruQZKm1J2w4PBqjdXJLyh6_sUlcg1Ozx48nrL8Ta1crYjAPvGEw-3rUKrAYgpUBKPCPkLV3Bvg_B3ASlsEq7Ydko-4bpWlcdObfmE2fznZ9R6aHCqnfRGQU65fSkZ4ZQaNlAIAu3iJ0hN22VZHRhI3QQGj3TryQSWIigDBn9kswczVb91A8uSdAPYjbp5Q-D2PFieDWJQsJBvDG6Lffq9TZwRVeFYEqziOP9uk1oYpv4RSaY5OGZi1dHwfmpcRR0Bgy0VOu51R4UjEz5xLuv7qVjtkC_aaajPGyKalDPRr7SDI/file?dl=1
-Connecting to uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com (uca474c8a65512375251b22a68bc.dl-au.dropboxusercontent.com)|162.125.84.15|:443... connected.
-HTTP request sent, awaiting response... 206 Partial Content
-Length: 48380753920 (45G), 6976563328 (6.5G) remaining [application/binary]
 Saving to: '/scratch/x3336a02/SouthKoreaVM100m.tar'
 
 100%[+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++===========>] 48,380,753,920 8.15MB/s   in 9m 54s 
