@@ -134,17 +134,35 @@ echo "Step 2: Installing uv and Python ${PYTHON_VERSION}..."
 if checkpoint_exists "STEP2_UV_PYTHON"; then
     if ask_rerun "STEP2_UV_PYTHON" "Install uv and Python"; then
         if ! command -v uv &> /dev/null; then
-            curl -LsSf https://astral.sh/uv/install.sh | sh
-            source "$HOME/.local/bin/env"
+            echo "  Installing uv binary directly..."
+            mkdir -p "$HOME/.local/bin"
+            UV_TARBALL="uv-x86_64-unknown-linux-gnu.tar.gz"
+            wget --no-check-certificate -O "/tmp/$UV_TARBALL" \
+                "https://github.com/astral-sh/uv/releases/latest/download/$UV_TARBALL"
+            tar -xzf "/tmp/$UV_TARBALL" -C /tmp/
+            cp "/tmp/uv-x86_64-unknown-linux-gnu/uv" "$HOME/.local/bin/"
+            cp "/tmp/uv-x86_64-unknown-linux-gnu/uvx" "$HOME/.local/bin/" 2>/dev/null || true
+            chmod +x "$HOME/.local/bin/uv" "$HOME/.local/bin/uvx"
+            rm -rf "/tmp/$UV_TARBALL" "/tmp/uv-x86_64-unknown-linux-gnu"
         fi
+        export PATH="$HOME/.local/bin:$PATH"
         uv python install "$PYTHON_VERSION"
         mark_checkpoint "STEP2_UV_PYTHON"
     fi
 else
     if ! command -v uv &> /dev/null; then
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        source "$HOME/.local/bin/env"
+        echo "  Installing uv binary directly..."
+        mkdir -p "$HOME/.local/bin"
+        UV_TARBALL="uv-x86_64-unknown-linux-gnu.tar.gz"
+        wget --no-check-certificate -O "/tmp/$UV_TARBALL" \
+            "https://github.com/astral-sh/uv/releases/latest/download/$UV_TARBALL"
+        tar -xzf "/tmp/$UV_TARBALL" -C /tmp/
+        cp "/tmp/uv-x86_64-unknown-linux-gnu/uv" "$HOME/.local/bin/"
+        cp "/tmp/uv-x86_64-unknown-linux-gnu/uvx" "$HOME/.local/bin/" 2>/dev/null || true
+        chmod +x "$HOME/.local/bin/uv" "$HOME/.local/bin/uvx"
+        rm -rf "/tmp/$UV_TARBALL" "/tmp/uv-x86_64-unknown-linux-gnu"
     fi
+    export PATH="$HOME/.local/bin:$PATH"
     uv python install "$PYTHON_VERSION"
     mark_checkpoint "STEP2_UV_PYTHON"
 fi
