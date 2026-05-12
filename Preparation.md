@@ -168,24 +168,39 @@ Step 7: Updating .bashrc...
 ```
 Step 8: Optional SouthKorea100m velocity model (45 GB)...
   This is a very large download and may take a long time.
+  The model will be stored on scratch and symlinked from ~/project.
   Download SouthKorea100m velocity model? [y/N] y
-  Downloading SouthKorea100m-20260507.tar.gz (9.6 GB) to scratch...
---2026-05-12 07:40:23--  https://www.dropbox.com/scl/fi/7ivi2826or60jp3eu61c7/SouthKorea100m-20260507.tar?rlkey=tss5x2gvqenk8k77r1x7xb1nm&dl=1
-Resolving www.dropbox.com (www.dropbox.com)... 162.125.84.18, 2620:100:6034:18::a27d:5412
-Connecting to www.dropbox.com (www.dropbox.com)|162.125.84.18|:443... connected.
-HTTP request sent, awaiting response... 302 Found
+  Downloading SouthKoreaVM100m.tar (45 GB) to scratch...
 ...
-Reusing existing connection to ucc7f5fa348d9b4087a3557360dc.dl-au.dropboxusercontent.com:443.
-HTTP request sent, awaiting response... 200 OK
-Length: 10277175296 (9.6G) [application/binary]
-Saving to: '/scratch/x3336a02/SouthKorea100m-20260507.tar.gz'
+Length: 48380753920 (45G) [application/binary]
+Saving to: '/scratch/x3336a02/SouthKoreaVM100m.tar'
 
-45% [==================================>                                           ] 4,674,214,973 12.1MB/s  eta 6m 58s
+100%[+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++===========>] 48,380,753,920 8.15MB/s   in 9m 54s 
+
+2026-05-12 11:45:23 (11.2 MB/s) - '/scratch/x3336a02/SouthKoreaVM100m.tar' saved [48380753920/48380753920]
+
+  Extracting SouthKoreaVM100m.tar to /scratch/x3336a02...
+  Symlink created: /home01/x3336a02/project/cw/VelocityModel/3D/SouthKoreaVM100m -> /scratch/x3336a02/SouthKoreaVM100m
+
 ```
 
 다운로드가 끝나면 압축을 풀어 정해진 곳에 설치를 하는 과정이 모두 자동으로 수행된다.
 
 ```
+Step 9: Cleaning up archive files...
+  Found archive files in /scratch/x3336a02:
+    89M	/scratch/x3336a02/Velocity-Model_20260507.tar.gz
+    46G	/scratch/x3336a02/SouthKoreaVM100m.tar
+    425M	/scratch/x3336a02/quakecw_data_20260507.tar.gz
+    256M	/scratch/x3336a02/project_local_20260507.tar.gz
+
+  Delete these archive files to free up space? [y/N] y
+  ✓ Archive files deleted.
+
+Step 10: Optional cleanup of extracted source directories...
+  Delete extracted source directories from scratch? (This will remove extracted files, keeping only final installed data) [y/N] m
+  Skipping cleanup of extracted directories.
+
 ==============================================
 Installation complete!
 
