@@ -24,11 +24,13 @@ fi
 
 PROJECT_DIR="$HOME/project"
 CW_DIR="$PROJECT_DIR/cw"
+SCRATCH_DIR="/scratch/$USER"
 
 echo "=== QuakeCW Installation ==="
 echo "Home: $HOME"
 echo "Project: $PROJECT_DIR"
 echo "QuakeCW: $REPO_DIR"
+echo "Scratch: $SCRATCH_DIR"
 
 # ---- Step 1: Download and extract data archives ----
 echo ""
@@ -45,20 +47,21 @@ EXTRACT_DIRS["project_local_20260507.tar.gz"]="$PROJECT_DIR"
 EXTRACT_DIRS["Velocity-Model_20260507.tar.gz"]="$CW_DIR"
 EXTRACT_DIRS["quakecw_data_20260507.tar.gz"]="$CW_DIR"
 
-mkdir -p "$PROJECT_DIR" "$CW_DIR"
+mkdir -p "$PROJECT_DIR" "$CW_DIR" "$SCRATCH_DIR"
 
 for url in "${DROPBOX_FILES[@]}"; do
     filename=$(basename "${url%%\?*}")
     extract_dir="${EXTRACT_DIRS[$filename]}"
+    scratch_file="$SCRATCH_DIR/$filename"
     
-    if [[ -f "$HOME/$filename" ]]; then
-        echo "  $filename already exists, skipping download"
+    if [[ -f "$scratch_file" ]]; then
+        echo "  $filename already exists in scratch, skipping download"
     else
-        echo "  Downloading $filename..."
-        wget --no-check-certificate -O "$HOME/$filename" "$url"
+        echo "  Downloading $filename to scratch..."
+        wget --no-check-certificate -O "$scratch_file" "$url"
     fi
     echo "  Extracting $filename to $extract_dir..."
-    tar -xzf "$HOME/$filename" -C "$extract_dir/"
+    tar -xzf "$scratch_file" -C "$extract_dir/"
 done
 
 # ---- Source paths before pip install ----
@@ -96,7 +99,6 @@ echo "Step 5: Checking GitHub SSH access..."
 if ! ssh -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
     echo "  GitHub SSH not configured. Setting up..."
     
-    # Check if SSH key exists
     if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
         echo "  Generating SSH key..."
         ssh-keygen -t ed25519 -C "nurion5" -f "$HOME/.ssh/id_ed25519" -N ""
@@ -111,7 +113,6 @@ if ! ssh -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "s
         read -p "  Press Enter after adding the key to GitHub..."
     fi
     
-    # Configure SSH for KISTI (port 443)
     mkdir -p "$HOME/.ssh"
     if ! grep -q "Host github.com" "$HOME/.ssh/config" 2>/dev/null; then
         cat >> "$HOME/.ssh/config" << 'SSHEOF'
@@ -133,7 +134,6 @@ echo "Step 6: Installing QuakeCW packages from GitHub releases..."
 uv pip install "${GIT_BASE}/qcore.git@${RELEASE}.1"
 uv pip install --no-build-isolation "${GIT_BASE}/IM_calculation.git@${RELEASE}"
 uv pip install --no-build-isolation "${GIT_BASE}/Pre-processing.git@${RELEASE}"
-#uv pip install --no-build-isolation "${GIT_BASE}/Pre-processing.git@${RELEASE}#subdirectory=VM"
 uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}"
 uv pip install --no-build-isolation "${GIT_BASE}/slurm_gm_workflow.git@${RELEASE}"
 
@@ -163,6 +163,35 @@ if [[ -z "$PBS_JOBID" ]]; then
 fi
 EOF
     echo "  Added TMOUT unset to .bashrc"
+fi
+
+# ---- Step 8: Optional large data download ----
+echo ""
+echo "Step 8: Optional SouthKorea100m velocity model (45 GB)..."
+echo "  This is a very large download and may take a long time."
+echo "  The model will be stored on scratch and symlinked from ~/project."
+
+VM_URL="https://www.dropbox.com/scl/fi/t27ri7nna1l4v2zjwpghy/SouthKoreaVM100m.tar?rlkey=2i70q7kp97zkhs0vj9q58kqtr&st=dmxvflgr&dl=1"
+VM_FILE=$(basename "${VM_URL%%\?*}")
+VM_SCRATCH="$SCRATCH_DIR/$VM_FILE"
+
+read -p "  Download SouthKorea100m velocity model? [y/N] " -r
+if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    if [[ -f "$VM_SCRATCH" ]]; then
+        echo "  $VM_FILE already exists in scratch, skipping download"
+    else
+        echo "  Downloading $VM_FILE (45 GB) to scratch..."
+        wget --no-check-certificate -O "$VM_SCRATCH" "$VM_URL"
+    fi
+    
+    echo "  Extracting $VM_FILE to $SCRATCH_DIR..."
+    tar -xf "$VM_SCRATCH" -C "$SCRATCH_DIR/"
+    
+    mkdir -p "$VELOCITY_MODEL_DIR/3D"
+    ln -sfn "$SCRATCH_DIR/SouthKoreaVM100m" "$VELOCITY_MODEL_DIR/3D/SouthKoreaVM100m"
+    echo "  Symlink created: $VELOCITY_MODEL_DIR/3D/SouthKoreaVM100m -> $SCRATCH_DIR/SouthKoreaVM100m"
+else
+    echo "  Skipping SouthKorea100m velocity model."
 fi
 
 # ---- Done ----
