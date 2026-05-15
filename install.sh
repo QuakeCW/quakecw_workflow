@@ -314,6 +314,32 @@ else
     mark_checkpoint "STEP6_QUAKECW_PACKAGES"
 fi
 
+# ---- Resolve package paths for environment variables ----
+echo ""
+echo "Resolving QuakeCW package paths..."
+
+declare -A PACKAGE_PATHS=(
+    ["qcore"]="QCORE"
+    ["workflow"]="WORKFLOW"
+    ["IM_calculation"]="IM_CALC"
+#    ["Pre-processing"]="PRE_PROCESSING"
+#    ["visualisation"]="VISUALISATION"
+)
+
+for pkg in "${!PACKAGE_PATHS[@]}"; do
+    var_name="${PACKAGE_PATHS[$pkg]}"
+    pkg_path=$(python -c "import ${pkg}; print(${pkg}.__path__[0])" 2>/dev/null) || true
+    
+    if [[ -n "$pkg_path" ]]; then
+        if ! grep -q "export ${var_name}=" "$REPO_DIR/quakecw_config.sh" 2>/dev/null; then
+            echo "export ${var_name}=\"$pkg_path\"" >> "$REPO_DIR/quakecw_config.sh"
+            echo "  $var_name=$pkg_path"
+        fi
+    else
+        echo "  WARNING: Could not resolve $pkg package path."
+    fi
+done
+
 # ---- Step 7: Add sourcing to .bashrc ----
 echo ""
 echo "Step 7: Updating .bashrc..."

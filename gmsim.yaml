@@ -1,11 +1,10 @@
-workflow: /scratch/x2568a02/gmsim_home/Environments/v211213/workflow
-sim_root_dir: $MYSCRATCH/RunFolder/Pohang
+sim_root_dir: "$SCRATCH/RunFolder/Pohang"
 fault_name: Pohang
-source_data: $MYSCRATCH/RunFolder/Pohang/Source
+source_data: "$SCRATCH/RunFolder/Pohang/Source"
 copy_source_data: False
-vm_data: $MYSCRATCH/RunFolder/Pohang/VM
+vm_data: "$VELOCITY_MODEL_DIR/3D/SouthKoreaVM100m"
 copy_vm_data: False
-gmsim_template: /scratch/x2568a02/gmsim_home/Environments/v211213/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
-stat_file: $MYSCRATCH/RunFolder/Pohang/Stations/Busan_2km.ll
+gmsim_template: "$QUAKECW/gmsim_templates/Pohang_22.03.13.3"
+stat_file: "$QUAKECW/Stations/SouthKorea25k.ll"
 n_max_retries: 2
 # fault_list file is auto-generated
