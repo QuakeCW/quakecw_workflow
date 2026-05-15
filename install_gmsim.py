@@ -1,16 +1,21 @@
 import argparse
 from datetime import datetime
 from  jinja2 import Environment, FileSystemLoader
-
+import os
 from pathlib import Path
 import pprint
 import shutil
+import sys
 
 import yaml
 
 from qcore import qclogging
 from qcore.shared import exe
 from qcore.utils import load_py_cfg
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from load_envs import expand_env_vars
+
 
 from qcore.constants import (
     TIMESTAMP_FORMAT,
@@ -36,7 +41,9 @@ def load_args():
     assert(Path(args.yaml_file).exists())
     with open(Path(args.yaml_file),'r') as file:
         args.params=yaml.safe_load(file)
-
+    
+    # Expand environment variables in all values
+    args.params = expand_env_vars(args.params)
 
     return args
 
@@ -95,7 +102,14 @@ def main():
     shutil.copyfile(Path(__file__).parent.resolve()/TASK_CONFIG,sim_root_dir/TASK_CONFIG)
     logger.debug(f"{TASK_CONFIG} is added to {sim_root_dir}")
 
-    cmd=f"python {params['workflow']}/workflow/automation/install_scripts/install_cybershake.py {sim_root_dir} {sim_root_dir/FAULT_LIST} {Path(params['gmsim_template'])} --stat_file_path {params['stat_file']} --keep_dup_station"
+    try:
+        workflow_path = os.environ.get("WORKFLOW")
+    except KeyError:
+        print("Error: WORKFLOW env variable is not set. Check your quakecw_config.sh")
+        sys.exit(0)
+
+
+    cmd=f"python {workflow_path}/workflow/automation/install_scripts/install_cybershake.py {sim_root_dir} {sim_root_dir/FAULT_LIST} {Path(params['gmsim_template'])} --stat_file_path {params['stat_file']} --keep_dup_station"
     print(cmd)
 
     if args.pbs:
