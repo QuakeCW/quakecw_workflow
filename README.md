@@ -353,7 +353,6 @@ Busan_2km.ll  Busan_2km.vs30
 
 단층 모델과 속도 모델이 준비되어 있다고 가정하고 시뮬레이션 실행법에 대해 기술하겠음. 단층 모델이나 속도 모델이 준비 되지 않았다면, 위에서 서술한 단계를 따라 이들을 우선 생성하도록 할것.
 
-KISTI 누리온 5호기에서 x3336a02계정으로 실행할 것임. 
 
 $QUAKECW의 gmsim.yaml을 복사해서 수정해 사용하자.
 
@@ -361,54 +360,31 @@ $QUAKECW의 gmsim.yaml을 복사해서 수정해 사용하자.
 (python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> cp $QUAKECW/gmsim.yaml gmsim_Pohang.yaml
 ```
 
-gmsim_Pohang.yaml에 $HOME, $QUAKECW 변수들을 echo 명령어로 실제 경로를 파악하여 수정, 저장한다.
+gmsim_Pohang.yaml에는 아래와 같은 내용들이 미리 세팅되어 있다. 인스톨 과정을 충실하게 따라왔다면, 아무 수정없이 그대로 사용가능하다.
 
 ```
-workflow: /scratch/x3336a02/project/cw/slurm_gm_workflow
-sim_root_dir: $MYSCRATCH/RunFolder/Pohang
+sim_root_dir: "$SCRATCH/RunFolder/Pohang"
 fault_name: Pohang
-source_data: $MYSCRATCH/RunFolder/Pohang/Source
+source_data: "$SCRATCH/RunFolder/Pohang/Source"
 copy_source_data: False
-vm_data: $MYSCRATCH/RunFolder/Pohang/VM
+vm_data: "$VELOCITY_MODEL_DIR/3D/SouthKoreaVM100m"
 copy_vm_data: False
-gmsim_template: /scratch/x3336a02/project/cw/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
-stat_file: $MYSCRATCH/RunFolder/Pohang/Stations/Busan_2km.ll
+gmsim_template: "$QUAKECW/gmsim_templates/Pohang_22.03.13.3"
+stat_file: "$QUAKECW/Stations/SouthKorea25k.ll"
 n_max_retries: 2
 ```
-$MYSCRATCH라고 되어 있는 부분을 수정해준다.
-```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> echo $MYSCRATCH
-/scratch/x2568a02/users/x2568a02
-```
-로그인 어카운트가 x2568a03인 사용자의 경우 아래와 같이 저장한다. 
 
-```
-workflow: /scratch/x3336a02/project/cw/slurm_gm_workflow
-sim_root_dir: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang
-fault_name: Pohang
-source_data: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Source
-copy_source_data: False
-vm_data: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/VM
-copy_vm_data: False
-gmsim_template: /scratch/x3336a02/project/cw/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3
-stat_file: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Stations/Busan_2km.ll
-n_max_retries: 2
-
-```
-특별히 `vm_data`에 유의할 것. 
-우리가 위에서 생성한 속도모델은  hh=1.0로 지나치게 해상도가 낮아 좋은 시뮬레이션 결과를 얻기 어려우므로 별도로 제작한 hh=0.1 속도모델을 사용하기로 한다.
 
 각각의 변수들을 설명하자면
-1. workflow: slurm_gm_workflow가 인스톨되어 있는 위치
-2. sim_root_dir: 시뮬레이션을 실행시키고자 하는 디렉토리 위치
-3. fault_name: 시뮬레이션을 실행시킬 이벤트(단층)의 이름
-4. source_data: 단층 모델 데이터가 위치한 곳. 
-5. copy_source_data: 단층 모델 데이터를 sim_root_dir 속으로 복사해 올 것인지 (True), 심볼릭 링크의 형태로 연결만 할 것인지 (False)
-6. vm_data: 속도 모델 데이터가 위치한 곳
-7. copy_vm_data: 속도 모델 데이터를 sim_root_dir 속으로 복사해 올 것인지 (True), 심볼릭 링크의 형태로 연결만 할 것인지 (False)
-8. gmsim_template: 시뮬레이션의 상세 사항 (HF 버전, sdrop, path_dur, kappa, IM pSA주기, 1차원 속도모델 등) 을 지정해둔 템플릿이 저장된 디렉토리
-9. stat_file: 관측소 리스트
-10. n_max_retries: 계산 실패시 재시도 회수 최대값
+1. sim_root_dir: 시뮬레이션을 실행시키고자 하는 디렉토리 위치
+2. fault_name: 시뮬레이션을 실행시킬 이벤트(단층)의 이름
+3. source_data: 단층 모델 데이터가 위치한 곳. 
+4. copy_source_data: 단층 모델 데이터를 sim_root_dir 속으로 복사해 올 것인지 (True), 심볼릭 링크의 형태로 연결만 할 것인지 (False)
+5. vm_data: 속도 모델 데이터가 위치한 곳. 인스톨 마지막 단계에서 45기가 분량의 데이터를 다운로드 받지 않았다면 지정된 위치에 데이터가 없으니 **유의**할 것.
+6. copy_vm_data: 속도 모델 데이터를 sim_root_dir 속으로 복사해 올 것인지 (True), 심볼릭 링크의 형태로 연결만 할 것인지 (False)
+7. gmsim_template: 시뮬레이션의 상세 사항 (HF 버전, sdrop, path_dur, kappa, IM pSA주기, 1차원 속도모델 등) 을 지정해둔 템플릿이 저장된 디렉토리
+8. stat_file: 관측소 리스트
+9. n_max_retries: 계산 실패시 재시도 회수 최대값
 
 
 
@@ -423,22 +399,24 @@ n_max_retries: 2
 ```
 Pohang 1r
 
-python /scratch/x3336a02/project/cw/slurm_gm_workflow/workflow/automation/install_scripts/install_cybershake.py /scratch/x3336a02/users/x3336a02/RunFolder/Pohang /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/fault_list.txt /scratch/x3336a02/project/cw/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3 --stat_file_path /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Stations/Busan_2km.ll --keep_dup_station
-2026-04-24 09:29:16,660 - Installing /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Data/Sources/Pohang/Srf/Pohang.srf
+python /home01/x3336a02/.local/quakecw_venv/lib/python3.12/site-packages/workflow/automation/install_scripts/install_cybershake.py /scratch/x3336a02/RunFolder/Pohang /scratch/x3336a02/RunFolder/Pohang/fault_list.txt /home01/x3336a02/project/cw/quakecw_workflow/gmsim_templates/Pohang_22.03.13.3 --stat_file_path /home01/x3336a02/project/cw/quakecw_workflow/Stations/SouthKorea25k.ll --keep_dup_station
+2026-05-15 13:51:50,484 - Installing /scratch/x3336a02/RunFolder/Pohang/Data/Sources/Pohang/Srf/Pohang.srf
 ****************************************************************************************************
-2026-04-24 09:29:16,675 - installing bb
+2026-05-15 13:51:50,568 - installing bb
 ****************************************************************************************************
-2026-04-24 09:29:16,675 -                                      EMOD3D HF/BB Preparation Ver.slurm
+2026-05-15 13:51:50,568 -                                      EMOD3D HF/BB Preparation Ver.slurm
 ****************************************************************************************************
-2026-04-24 09:29:16,675 - installing bb finished
-2026-04-24 09:29:16,713 - /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Stations/Busan_2km.ll
-2026-04-24 09:29:16,713 - From: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Stations/Busan_2km.ll. To: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.ll
+2026-05-15 13:51:50,569 - installing bb finished
+2026-05-15 13:51:50,823 - /home01/x3336a02/project/cw/quakecw_workflow/Stations/SouthKorea25k.ll
+2026-05-15 13:51:50,824 - From: /home01/x3336a02/project/cw/quakecw_workflow/Stations/SouthKorea25k.ll. To: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.statcords, /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.ll
 
+/home01/x3336a02/.local/quakecw_venv/lib/python3.12/site-packages/workflow/automation/lib/shared.py:489: SyntaxWarning: invalid escape sequence '\['
+  contents = re.search("\[.*\]", contents).group(0)
 
 ================================
              Source
 ================================
-/scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py
+/scratch/x3336a02/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py
 LAT: 36.109
 LON: 129.366
 DEPTH: 7
@@ -447,14 +425,10 @@ STK: 230
 DIP: 69
 RAK: 152
 DT: 0.01
-
-================================
-/scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py
-/scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Data/Sources/Pohang/setSrfParams.py is not present
 ================================
              VM
 ================================
-/scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Data/VMs/Pohang/vm_params.yaml
+/scratch/x3336a02/RunFolder/Pohang/Data/VMs/Pohang/vm_params.yaml
 {'GRIDFILE': '/scratch/x3336a02/users/x3336a02/RunFolder/Pohang/VM/gridfile_rt01-h0.100',
  'GRIDOUT': '/scratch/x3336a02/users/x3336a02/RunFolder/Pohang/VM/gridout_rt01-h0.100',
  'MODEL_BOUNDS': '/scratch/x3336a02/users/x3336a02/RunFolder/Pohang/VM/model_bounds_rt01-h0.100',
@@ -485,7 +459,7 @@ DT: 0.01
 ================================
        GMSIM template
 ================================
-/scratch/x3336a02/project/cw/workflow/workflow/calculation/gmsim_templates/Pohang_22.03.13.3/root_defaults.yaml
+/home01/x3336a02/project/cw/quakecw_workflow/gmsim_templates/Pohang_22.03.13.3/root_defaults.yaml
 {'bb': {'fmidbot': 0.5, 'fmin': 0.2, 'no-lf-amp': True},
  'dt': 0.005,
  'emod3d': {'emod3d_version': '3.0.4'},
@@ -530,8 +504,9 @@ DT: 0.01
                          7.5,
                          10.0]},
  'v_1d_mod': 'kr_gb_kim2011_modified.1d'}
-Simulation installed at /scratch/x3336a02/users/x3336a02/RunFolder/Pohang
-Run with : $QUAKECW/run_gmsim.sh /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/gmsim_Pohang.yaml
+Simulation installed at /scratch/x3336a02/RunFolder/Pohang
+Run with : $QUAKECW/run_gmsim.sh /scratch/x3336a02/RunFolder/Pohang/gmsim_pohang.yaml
+
 
 ```
 
