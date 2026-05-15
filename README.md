@@ -34,7 +34,7 @@ Filesystem       KBytes        Quota      Files      Quota
 
 (quakecw_venv) x3336a02@login04: ~$ 
 
-```/scratch/x3336a02/project/cw/VelocityModel/3D
+```
 정해진 세팅을 정확하게 완수했다면 `(quakecw_venv) x3336a02@login04: ~$ `와 같은 프롬프트가 뜰 것이다.
 
 
@@ -49,7 +49,6 @@ cd $SCRATCH
 mkdir -p RunFolder/Pohang
 cd RunFolder/Pohang
 ```
-
 
 ## 단층 모델 만들기
 $QUAKECW/Source 디렉토리의 `source.yaml`을 수정하거나 복사본을 만들어서 사용하도록 한다. 추후 알아보기 편하도록 적절한 이름을 선택해 저장해두도록 하자.
@@ -307,15 +306,11 @@ nzvm.cfg vs3dfile.s rho3dfile.d vp3dfile.p in_basin_mask.b
 ```
  
 
-
-```
-
 ## 관측소 리스트 만들기
 
-관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 
+관측소 리스트는 속도모델의 범위 안에서 가로 세로 2km마다의 간격으로 가상 관측소를 만들고, 실제로 존재하는 관측소 위치를 추가하여 만든다. 기존에 제공되는 SouthKorea25k 혹은 SouthKorea75k 데이터를 사용해도 무방하나, 관측소가 추가/삭제/변경이 필요한 경우 다음과 같이 새롭게 생성할 수 있다.
 
-* 아래내용은 관측소 데이터를 기본 제공하고,별도로 생성해야하는 경우 실행하도록 문서 업데이트 필요 *
-
+### 사용 예시
 ```
 (python_env) [x3336a02@login04 Pohang]$ python $QUAKECW/Stations/make_stations.py VM/vm_params.yaml --real_stats $QUAKECW/Stations/realstations_20220420.ll --outdir Stations --name Busan_2km
 ```
