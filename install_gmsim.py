@@ -109,7 +109,7 @@ def main():
         sys.exit(0)
 
 
-    cmd=f"python {workflow_path}/workflow/automation/install_scripts/install_cybershake.py {sim_root_dir} {sim_root_dir/FAULT_LIST} {Path(params['gmsim_template'])} --stat_file_path {params['stat_file']} --keep_dup_station"
+    cmd=f"python {workflow_path}/automation/install_scripts/install_cybershake.py {sim_root_dir} {sim_root_dir/FAULT_LIST} {Path(params['gmsim_template'])} --stat_file_path {params['stat_file']} --keep_dup_station"
     print(cmd)
 
     if args.pbs:

@@ -54,6 +54,47 @@ ask_rerun() {
     fi
 }
 
+configure_ssh() {
+    # Generate key if it doesn't exist
+    if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
+        echo "  Generating SSH key..."
+        ssh-keygen -t ed25519 -C "nurion5" -f "$HOME/.ssh/id_ed25519" -N ""
+    fi
+
+    # Always show the key and wait for user to add it
+    echo ""
+    echo "  =========================================="
+    echo "  Add this public key to GitHub:"
+    echo "  https://github.com/settings/keys"
+    echo ""
+    cat "$HOME/.ssh/id_ed25519.pub"
+    echo ""
+    echo "  =========================================="
+    read -p "  Press Enter after adding the key to GitHub..."
+
+    # Configure KISTI SSH
+    mkdir -p "$HOME/.ssh"
+    if ! grep -q "Host github.com" "$HOME/.ssh/config" 2>/dev/null; then
+        cat >> "$HOME/.ssh/config" << 'SSHEOF'
+Host github.com
+    HostName ssh.github.com
+    Port 443
+    User git
+SSHEOF
+        echo "  SSH config updated for KISTI."
+    fi
+
+    # Verify the key works
+    if ssh -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+        echo "  GitHub SSH access verified."
+    else
+        echo "  ERROR: GitHub SSH authentication still failing."
+        echo "  Please check that the key was added correctly and try again."
+        exit 1
+    fi
+}
+
+
 # ---- Initialize checkpoint file ----
 mkdir -p "$(dirname "$CHECKPOINT_FILE")"
 touch "$CHECKPOINT_FILE"
@@ -228,67 +269,11 @@ echo "Step 5: Checking GitHub SSH access..."
 
 if checkpoint_exists "STEP5_SSH"; then
     if ask_rerun "STEP5_SSH" "Configure GitHub SSH access"; then
-        if ! ssh -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
-            echo "  GitHub SSH not configured. Setting up..."
-            
-            if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
-                echo "  Generating SSH key..."
-                ssh-keygen -t ed25519 -C "nurion5" -f "$HOME/.ssh/id_ed25519" -N ""
-                echo ""
-                echo "  =========================================="
-                echo "  Add this public key to GitHub:"
-                echo "  https://github.com/settings/keys"
-                echo ""
-                cat "$HOME/.ssh/id_ed25519.pub"
-                echo ""
-                echo "  =========================================="
-                read -p "  Press Enter after adding the key to GitHub..."
-            fi
-            
-            mkdir -p "$HOME/.ssh"
-            if ! grep -q "Host github.com" "$HOME/.ssh/config" 2>/dev/null; then
-                cat >> "$HOME/.ssh/config" << 'SSHEOF'
-Host github.com
-    HostName ssh.github.com
-    Port 443
-    User git
-SSHEOF
-                echo "  SSH config updated for KISTI."
-            fi
-        fi
-        echo "  GitHub SSH access verified."
+        configure_ssh
         mark_checkpoint "STEP5_SSH"
     fi
 else
-    if ! ssh -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
-        echo "  GitHub SSH not configured. Setting up..."
-        
-        if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
-            echo "  Generating SSH key..."
-            ssh-keygen -t ed25519 -C "nurion5" -f "$HOME/.ssh/id_ed25519" -N ""
-            echo ""
-            echo "  =========================================="
-            echo "  Add this public key to GitHub:"
-            echo "  https://github.com/settings/keys"
-            echo ""
-            cat "$HOME/.ssh/id_ed25519.pub"
-            echo ""
-            echo "  =========================================="
-            read -p "  Press Enter after adding the key to GitHub..."
-        fi
-        
-        mkdir -p "$HOME/.ssh"
-        if ! grep -q "Host github.com" "$HOME/.ssh/config" 2>/dev/null; then
-            cat >> "$HOME/.ssh/config" << 'SSHEOF'
-Host github.com
-    HostName ssh.github.com
-    Port 443
-    User git
-SSHEOF
-            echo "  SSH config updated for KISTI."
-        fi
-    fi
-    echo "  GitHub SSH access verified."
+    configure_ssh
     mark_checkpoint "STEP5_SSH"
 fi
 
@@ -314,35 +299,31 @@ else
     mark_checkpoint "STEP6_QUAKECW_PACKAGES"
 fi
 
-# ---- Resolve package paths for environment variables ----
-echo ""
-echo "Resolving QuakeCW package paths..."
-
-declare -A PACKAGE_PATHS=(
-    ["qcore"]="QCORE"
-    ["workflow"]="WORKFLOW"
-    ["IM_calculation"]="IM_CALC"
-#    ["Pre-processing"]="PRE_PROCESSING"
-#    ["visualisation"]="VISUALISATION"
-)
-
-for pkg in "${!PACKAGE_PATHS[@]}"; do
-    var_name="${PACKAGE_PATHS[$pkg]}"
-    pkg_path=$(python -c "import ${pkg}; print(${pkg}.__path__[0])" 2>/dev/null) || true
-    
-    if [[ -n "$pkg_path" ]]; then
-        if ! grep -q "export ${var_name}=" "$REPO_DIR/quakecw_config.sh" 2>/dev/null; then
-            echo "export ${var_name}=\"$pkg_path\"" >> "$REPO_DIR/quakecw_config.sh"
-            echo "  $var_name=$pkg_path"
-        fi
-    else
-        echo "  WARNING: Could not resolve $pkg package path."
-    fi
-done
-
 # ---- Step 7: Add sourcing to .bashrc ----
 echo ""
 echo "Step 7: Updating .bashrc..."
+
+# Function to add a package path if not already in .bashrc
+add_package_path() {
+    local pkg="$1"
+    local var_name="$2"
+    
+    if ! grep -q "export ${var_name}=" "$HOME/.bashrc" 2>/dev/null; then
+        local pkg_path
+        pkg_path=$(python -c "import ${pkg}; print(${pkg}.__path__[0])" 2>/dev/null) || true
+        if [[ -n "$pkg_path" ]]; then
+            echo "export ${var_name}=\"$pkg_path\"" >> "$HOME/.bashrc"
+            echo "  $var_name=$pkg_path"
+            return 0
+        else
+            echo "  WARNING: Could not resolve $pkg package path."
+            return 1
+        fi
+    else
+        echo "  $var_name already in .bashrc"
+        return 0
+    fi
+}
 
 if checkpoint_exists "STEP7_BASHRC"; then
     if ask_rerun "STEP7_BASHRC" "Update .bashrc configuration"; then
@@ -350,13 +331,24 @@ if checkpoint_exists "STEP7_BASHRC"; then
         sed -i '/# QuakeCW environment/d' "$HOME/.bashrc" 2>/dev/null
         sed -i '/quakecw_config.sh/d' "$HOME/.bashrc" 2>/dev/null
         sed -i '/VENV_DIR/d' "$HOME/.bashrc" 2>/dev/null
-        
+        sed -i '/# QuakeCW package paths/d' "$HOME/.bashrc" 2>/dev/null
+        sed -i '/export QCORE=/d' "$HOME/.bashrc" 2>/dev/null
+        sed -i '/export WORKFLOW=/d' "$HOME/.bashrc" 2>/dev/null
+        sed -i '/export IM_CALC=/d' "$HOME/.bashrc" 2>/dev/null
+
         # Add fresh configuration
         echo "" >> "$HOME/.bashrc"
         echo "# QuakeCW environment" >> "$HOME/.bashrc"
         echo "source $REPO_DIR/quakecw_config.sh" >> "$HOME/.bashrc"
         echo "source \"\$VENV_DIR/bin/activate\"" >> "$HOME/.bashrc"
-        
+
+        # Add package paths
+        echo "" >> "$HOME/.bashrc"
+        echo "# QuakeCW package paths (resolved at install time)" >> "$HOME/.bashrc"
+        add_package_path "qcore" "QCORE"
+        add_package_path "workflow" "WORKFLOW"
+        add_package_path "IM_calculation" "IM_CALC"
+
         # Add TMOUT unset if not present
         if ! grep -q "TMOUT" "$HOME/.bashrc" 2>/dev/null; then
             cat >> "$HOME/.bashrc" << 'EOF'
@@ -376,11 +368,23 @@ else
         echo "# QuakeCW environment" >> "$HOME/.bashrc"
         echo "source $REPO_DIR/quakecw_config.sh" >> "$HOME/.bashrc"
         echo "source \"\$VENV_DIR/bin/activate\"" >> "$HOME/.bashrc"
+        
+        # Add package paths
+        echo "" >> "$HOME/.bashrc"
+        echo "# QuakeCW package paths (resolved at install time)" >> "$HOME/.bashrc"
+        add_package_path "qcore" "QCORE"
+        add_package_path "workflow" "WORKFLOW"
+        add_package_path "IM_calculation" "IM_CALC"
+        
         echo "  Added sourcing to .bashrc"
     else
         echo "  .bashrc already sources quakecw_config.sh"
+        # Still add package paths if missing
+        add_package_path "qcore" "QCORE"
+        add_package_path "workflow" "WORKFLOW"
+        add_package_path "IM_calculation" "IM_CALC"
     fi
-    
+
     if ! grep -q "TMOUT" "$HOME/.bashrc" 2>/dev/null; then
         cat >> "$HOME/.bashrc" << 'EOF'
 
@@ -393,6 +397,8 @@ EOF
     fi
     mark_checkpoint "STEP7_BASHRC"
 fi
+
+
 
 # ---- Step 8: Optional large data download ----
 echo ""
