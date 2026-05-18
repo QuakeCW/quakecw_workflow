@@ -598,12 +598,15 @@ Job id                 Name             User              Time Use S Queue
 
 
 
+* 아래 내용은 시뮬레이션 실행시켜가며 업데이트 해갈 예정 (2026 05 18 현재) *
+  
+
 #### LF (EMOD3D)
 
 LF/Rlog디렉토리에 \*.rlog파일이 업데이트 되는 과정을 관찰하면 됨
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Runs/Pohang/Pohang/LF/Rlog> tail -f Pohang-00000.rlog 
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/LF/Rlog> tail -f Pohang-00000.rlog 
 
 ...
     17300     28.43  2578.12   1.00      88.78   0.98         13692.   0.99
@@ -627,7 +630,7 @@ PROGRAM emod3d-mpi IS FINISHED
 HF/Acc에 HF.bin, HF.log 파일 사이즈가 증가하는 것이 관찰되면 정상적으로 작동하고 있다고 짐작할 수 있음
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
 total 3275708
 -rw-rw-r-- 1 x2568a02 rd0862          8 Jan 13 11:24 SEED
 -rw-rw-r-- 1 x2568a02 rd0862   13199491 Jan 13 11:31 HF.log
@@ -636,6 +639,7 @@ total 3275708
 ```
 
 계산이 모두 끝나면 LF와 HF 모두 결과값이 원하는 포맷과 일치하는지 간단한 검증 과정을 거친다. 통과하면 Complete로 마크되고 그 다음 단계에 계산할 job이 있다면 (이 경우 BB) submit하게 된다.
+
 
 
 #### BB
