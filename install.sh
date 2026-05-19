@@ -114,12 +114,14 @@ DROPBOX_FILES=(
     "https://www.dropbox.com/scl/fi/nbpi4b2g5fmojlqb1ic63/Velocity-Model_20260507.tar.gz?rlkey=pl9zr5uh4dwvw0c26cpxsr56g&dl=1"
     "https://www.dropbox.com/scl/fi/k8izl7wq9bh889exni5vr/project_local_20260507.tar.gz?rlkey=js1wgvd8e63a9yg167yx2ba1h&dl=1"
     "https://www.dropbox.com/scl/fi/j8bobtoy1inxvh6d1r92o/quakecw_data_20260507.tar.gz?rlkey=95eknfpb7tlxmdbnav83zwoav&dl=1"
+    "https://www.dropbox.com/scl/fi/lqshx225m6j62g8bp514s/emod3d_tools_20260507.tar.gz?rlkey=m7mqe5l5dnatn5m960k44pik1&st=vrsoquj3&dl=1"
 )
 
 declare -A EXTRACT_DIRS
 EXTRACT_DIRS["project_local_20260507.tar.gz"]="$PROJECT_DIR"
 EXTRACT_DIRS["Velocity-Model_20260507.tar.gz"]="$CW_DIR"
 EXTRACT_DIRS["quakecw_data_20260507.tar.gz"]="$CW_DIR"
+EXTRACT_DIRS["emod3d_tools_20260507.tar.gz"]="$HOME" #already includes project as the root
 
 if checkpoint_exists "STEP1_DATA_DOWNLOAD"; then
     if ask_rerun "STEP1_DATA_DOWNLOAD" "Download and extract data archives"; then
