@@ -682,11 +682,48 @@ LF와 HF가 에러없이 완결되었다면 BB를 서브밋한다.
 22344393.pbs
 
 ```
+상태가 Q에서 R로 진행되고 나면 로그파일이 생성된다
+```
+(quakecw_venv) x3336a02@login04: ~/project/cw/quakecw_workflow$ qstat -u $USER
+
+pbs:
+                                                                 Req'd  Req'd   Elap
+Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
+-------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+22344684.pbs         x3336a02 normal   BB           4927   1  64    --  00:21 R 00:00
+
+```
+
+로그 파일을 체크해보자. 
+```
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ tail -f BB.Pohang22344684.log
+Start: 2026-05-19_17:41:22
+REL_DIR: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang
+Run name: Pohang
+Computing BB
+mpirun python /home01/x3336a02/project/cw/quakecw_workflow/scripts/bb_sim.py /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/LF/OutBin /scratch/x3336a02/RunFolder/Pohang/Data/VMs/Pohang /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc/HF.bin /home01/x3336a02/project/cw/quakecw_workflow/Stations/SouthKorea25k.vs30 /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin --flo 1.0 --fmin 0.2 --fmidbot 0.5 --no-lf-amp
+Process 057 of 064 finished (59.81s).
+Process 060 of 064 finished (59.83s).
+Process 019 of 064 finished (59.83s).
+Process 055 of 064 finished (59.76s).
+
+...
+Process 043 of 064 finished (60.54s).
+Process 034 of 064 finished (60.55s).
+Process 033 of 064 finished (60.55s).
+Process 040 of 064 finished (60.47s).
+Process 044 of 064 finished (60.56s).
+Process 032 of 064 finished (60.65s).
+End: 2026-05-19_17:43:34
+SUCCESS: BB completed
+```
+
 
 #### IM
 BB가 완결되었다면 IM을 서브밋한다.
 ```
 (quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qsub -V  $QUAKECW/scripts/run_im.pbs
+22344815.pbs
 ```
 
 
