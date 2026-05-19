@@ -574,137 +574,39 @@ Run with : $QUAKECW/run_gmsim.sh /scratch/x3336a02/RunFolder/Pohang/gmsim_pohang
 
 ## 시뮬레이션 실행
 
-Cybershake 워크플로우를 인스톨하면 자동화 스케쥴러를 사용할 수 있다. 이 스케쥴러는 로그인 노드에서 상주하며 실행 중인 job을 모니터하고, 의존 관계에 있는 job들이 성공적으로 완료되면 그 다음 단계의 job을 자동으로 submit하는 기능이 있다.
+전체 계산 단계가 1. 저주파 LF  (EMOD3D), 2. 고주파 HF, 3. 광대역 BB  4. Intensity Measurements (IM) 계산으로 나뉘어 지는데, LF과 HF는 서로 독립적이나 BB는 LF과 HF의 결과를 합치는 단계이며, IM은 BB의 결과값을 인풋으로 사용하는 상호간 작업 의존관계가 있다. 
 
-우선 누리온의 로그인 노드가 접속 중 활동이 없으면 네트워크 연결을 끊어버리는 경우가 많아 타임아웃 무제한으로 만들고 screen 세션안에서 실행하는 것을 권장한다.
-다음 명령어를 실행하셔 screen 안으로 들어간다.
-
+아래 명령으로 LF와 HF계산을 서브밋하자.
 ```
-(python_env) [x3336a02@login04 Pohang]$ screen
-
-```
-
-아래 명령을 실행시키자. 혹은 install_gmsim.py의 출력값 제일 아래줄의 명령어를 복사/붙여넣기해도 된다.
-
-```
-(python_env) [x3336a02@login04 Pohang]$  $QUAKECW/run_gmsim.sh /scratch/$ADMIN/users/$USER/RunFolder/Pohang/gmsim_Pohang.yaml
-
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ qsub -V  $QUAKECW/scripts/run_emod3d.pbs 
+22333124.pbs
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ qsub -V  $QUAKECW/scripts//run_hf.pbs
+22333125.pbs
 ```
 
-스크립트가 실행되면서 아래와 같은 아웃풋이 출력된다.
+`qstat` 명령어로 현재 상황을 체크할 수 있다. 
 ```
-sim_root_dir: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang
-workflow: /scratch/x3336a02/project/cw/slurm_gm_workflow
-n_max_retries: 2
-python /scratch/x3336a02/project/cw/slurm_gm_workflow/workflow/automation/execution_scripts/run_cybershake.py /scratch/x3336a02/users/x3336a02/RunFolder/Pohang x3336a02 /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/task_config.yaml --n_max_retries 2 --sleep_time 30
-2026-04-24 09:35:16,369 - MainThread - Logger file added
-2026-04-24 09:35:16,527 - MainThread - Master script will run [<ProcessType.EMOD3D: 1>, <ProcessType.HF: 4>, <ProcessType.BB: 5>, <ProcessType.IM_calculation: 6>, <ProcessType.merge_ts: 2>, <ProcessType.plot_ts: 3>, <ProcessType.IM_plot: 7>]
-2026-04-24 09:35:16,825 - MainThread - Created queue_monitor thread
-2026-04-24 09:35:16,825 - MainThread - Created main auto_submit thread
-2026-04-24 09:35:16,826 - MainThread - Started main auto_submit thread
-2026-04-24 09:35:16,826 - queue monitor - Running queue-monitor, exit with Ctrl-C.
-2026-04-24 09:35:16,826 - MainThread - Started queue_monitor thread
-2026-04-24 09:35:16,836 - main auto submit - Loaded root params file: /scratch/x3336a02/users/x3336a02/RunFolder/Pohang/Runs/root_params.yaml
-2026-04-24 09:35:17,010 - queue monitor - qstat did not return expected output. Ignoring for this iteration. Actual output: 
-2026-04-24 09:35:17,010 - queue monitor - An error was encountered when attempting to check qstat for HPC HPC.nurion. Tasks will not be submitted to this HPC until the issue is resolved
-2026-04-24 09:35:17,017 - queue monitor - No entries in the mgmt db queue.
-2026-04-24 09:35:17,067 - main auto submit - Number of runnable tasks: 2
-2026-04-24 09:35:17,068 - main auto submit - Tasks to run this iteration: Pohang-EMOD3D, Pohang-HF
-submit_time not in proc_Data.keys(),value 2026-04-24_09:35:17
-
-submit_time not in proc_Data.keys(),value 2026-04-24_09:35:21
-
-
-...
-
-2026-04-24 09:35:47,199 - queue monitor - qstat tasks: 22208726 Q
-2026-04-24 09:35:47,209 - queue monitor - Updating 2 mgmt db tasks.
-2026-04-24 09:35:47,209 - queue monitor - Acquiring db connection.
-2026-04-24 09:36:17,420 - queue monitor - qstat tasks: 22208726 Q
-2026-04-24 09:36:17,424 - queue monitor - In progress tasks in mgmt db:Pohang-EMOD3D-22208725-queued, Pohang-HF-22208726-queued
-
-...
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ qstat 
+Job id                 Name             User              Time Use S Queue
+---------------------  ---------------- ----------------  -------- - -----
+22333124.pbs           LF               x3336a02                 0 Q normal          
+22333125.pbs           HF               x3336a02                 0 Q normal   
 
 ```
 
-
-마지막 부분들은 Pohang의 EMOD3D와 HF job이 Queue에 추가되어 실행을 기다리다 (queued) 실행중 (running) 상태로 넘어간 모습을 보여줌
-
-Ctrl+a d로 스크린을 detach한뒤 (혹은 새로 ssh 연결한 다음) qstat으로 현재 상태를 알아볼 수 있다.
-```
-(python_env) [x3336a02@login04 Pohang]$ qstat 
-
-                                                                 Req'd  Req'd   Elap
-Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
--------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
-22208726.pbs         x3336a02 normal   hf.Pohang     --    1  64    --  00:30 Q   -- 
-22208731.pbs         x3336a02 normal   emod3d.Po*    --   32 20*    --  11:34 Q   -- 
-
-```
+현재 두개의 job들, 22333124.pbs, 22333125.pbs가 PBS스케쥴러에 있음을 보여주는데, S 항목의 Q는 이 작업이 추가(Queued)되어 실행 대기중임을, R는 현재 이 실행중인 (Running) 상태임을 의미한다. 정상적인 상황이라면 Q->R->E  (Queued -> Running -> Ending) 순으로 진행된다.
 
 
-현재 두개의 job들, 22208726.pbs, 22208731.pbs가 PBS스케쥴러에 있음을 보여주는데, S 항목의 Q는 이 작업이 추가(Queued)되어 실행 대기중임을, R는 현재 이 실행중인 (Running) 상태임을 의미한다. 정상적인 상황이라면 Q->R->E  (Queued -> Running -> Ending) 순으로 진행된다.
 
-
-`run_gmsim.sh`은 사실 `run_cybershake.py`을 실행하기 쉽도록 가공한 스크립트이다. Cybershake 실행할 때 제공한 task_config.yaml에서 요청한 바에 따라 워크플로우는 인스톨된 단층모델들, Pohang 각 1개씩의 realisation의 저주파(LF, 주로 EMOD3D로 불리움), 고주파(HF), BB (broadband = LF+HF) 등의 job을 누리온에 자동으로 submit하고 각 job의 진행상황을 모니터함과 동시에,의존도가 충족되면 다음 단계의 job을 다시 submit하고 모니터링한다.
-
-job을 서브밋할 때, 필요한 리소스와 wallclock 같은 변수도 자동으로 예상하여 그 값을 사용하는데, 만약 작업시간이 예상을 초과하여 계산이 중단되면, 예상시간을 늘여서 다시 서브밋하도록 제작되어 있음. (2차 시도는 시간 2배, 3차 시도는 시간 3배..)
-
-위와 같은 이유로 시뮬레이션이 아직 안정화되지 못한 경우, 다양한 이유로 job이 실패할 수 있으나 그럴 때마다 예상시간을 늘이며 다시 서브밋된다면 누리온 계정의 allocation을 낭비하게 될 수도 있음. 따라서 이 워크플로우는 시뮬레이션이 이미 안정화 단계에 있을 때 사용하는 것을 권장함.
-
-한편, `run_gmsim.sh`는 최고 2번의 시도를 하도록 되어 있으며, 2차 시도 끝에도 계산이 제대로 끝나지 못했다면 다음 방법을 사용할 수 있다.
-
-
-### 재시도
-
-만약 정해진 횟수 내에 어떤 이유로 계산이 성공적으로 완료되지 않았다면, 그 원인을 수정한 다음, `gmsim.yaml`의 `n_max_retries`값을 수정하고 다시 `run_gmsim.sh`을 실행할 수 있다. 
+* 아래 내용은 시뮬레이션 실행시켜가며 업데이트 해갈 예정 (2026 05 18 현재) *
   
-예시) BB를 2회 시도하였으나, .vs30 파일이 지정된 위치에 있지 않은 이유로 BB가 종료되지 않은 상태에서 계산이 중단되었다면, 원인을 해결하고(예: .vs30 파일을 지정된 위치로 복사), `gmsim.yaml`의 `n_max_retries`값을 3 이상의 값으로 수정한 다음, 다시 `run_gmsim.sh`을 실행하면 된다.
-
-
-### job 진행 상태를 파악하기
-
-
-#### 전체 상황
-```
-(python_env) [x3336a02@login04 Pohang]$ python /scratch/x3336a02/project/cw/quakecw_workflow/check_status.py gmsim_Pohang.yaml 
-                 run_name |         process |     status |   job-id |        last_modified
-_________________________________________________________________________________________________
-                   Pohang |        merge_ts |    created |     None |  2026-04-23 23:51:26
-                   Pohang |         plot_ts |    created |     None |  2026-04-23 23:51:26
-                   Pohang |              BB |    created |     None |  2026-04-23 23:51:26
-                   Pohang |  IM_calculation |    created |     None |  2026-04-23 23:51:26
-                   Pohang |         IM_plot |    created |     None |  2026-04-23 23:51:26
-                   Pohang |          EMOD3D |     queued | 22208731 |  2026-04-24 00:36:48
-                   Pohang |              HF |     queued | 22208735 |  2026-04-24 00:38:56
-
-
-```
-모두 완전하게 끝났다면 아래와 같은 출력물을 볼 수 있다
-
-```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang> python $QUAKECW/check_status.py gmsim_Pohang.yaml
-                 run_name |         process |     status |   job-id |        last_modified
-_________________________________________________________________________________________________
-                   Pohang |          EMOD3D |  completed | 10067167 |  2022-04-18 17:38:53
-                   Pohang |              HF |  completed | 10067168 |  2022-04-18 08:25:26
-                   Pohang |        merge_ts |  completed | 10068634 |  2022-04-18 18:06:36
-                   Pohang |              BB |  completed | 10068635 |  2022-04-18 18:08:15
-                   Pohang |         plot_ts |  completed | 10068663 |  2022-04-18 18:22:04
-                   Pohang |  IM_calculation |  completed | 10068665 |  2022-04-18 20:20:34
-                   Pohang |         IM_plot |  completed | 10069305 |  2022-04-18 20:39:50
-```
-
-
-각각의 job의 현재 상태를 파악하고 싶다면 screen을 잠시 빠져나오거나 (detach, Ctrl+a d), 다른 터미널에서 아래와 같은 방법을 사용할 수 있다.
-
 
 #### LF (EMOD3D)
 
 LF/Rlog디렉토리에 \*.rlog파일이 업데이트 되는 과정을 관찰하면 됨
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Runs/Pohang/Pohang/LF/Rlog> tail -f Pohang-00000.rlog 
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/LF/Rlog> tail -f Pohang-00000.rlog 
 
 ...
     17300     28.43  2578.12   1.00      88.78   0.98         13692.   0.99
@@ -728,7 +630,7 @@ PROGRAM emod3d-mpi IS FINISHED
 HF/Acc에 HF.bin, HF.log 파일 사이즈가 증가하는 것이 관찰되면 정상적으로 작동하고 있다고 짐작할 수 있음
 
 ```
-(python3_nurion) x2568a02@login01:/scratch/x2568a02/users/x2568a02/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
 total 3275708
 -rw-rw-r-- 1 x2568a02 rd0862          8 Jan 13 11:24 SEED
 -rw-rw-r-- 1 x2568a02 rd0862   13199491 Jan 13 11:31 HF.log
@@ -739,6 +641,19 @@ total 3275708
 계산이 모두 끝나면 LF와 HF 모두 결과값이 원하는 포맷과 일치하는지 간단한 검증 과정을 거친다. 통과하면 Complete로 마크되고 그 다음 단계에 계산할 job이 있다면 (이 경우 BB) submit하게 된다.
 
 
+
+#### BB
+
+LF와 HF가 에러없이 완결되었다면 BB를 서브밋한다.
+```
+qsub -V /home01/x3336a02/project/cw/quakecw_workflow/scripts/run_bb.pbs
+```
+
+#### IM
+BB가 완결되었다면 IM을 서브밋한다.
+```
+qsub -V /home01/x3336a02/project/cw/quakecw_workflow/scripts/run_im.pbs
+```
 
 
 # 시각화
