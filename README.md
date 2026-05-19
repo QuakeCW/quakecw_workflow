@@ -624,6 +624,27 @@ LF/Rlog디렉토리에 \*.rlog파일이 업데이트 되는 과정을 관찰하�
 PROGRAM emod3d-mpi IS FINISHED
 ```
 
+Job ID에 맞추어 LF.o(JobID) 혹은 LF.e(JobID)의 형태로 계산이 끝나면 로그 파일이 생성되어 나타나는데, 계산 도중에 실시간으로  LF.{이벤트 이름}.{Job I}.log라는 파일에 로그가 기록되도록 설계되어있다. 간단한 검증 과정 2단계를 거쳐 둘다 PASSED가 나오면 계산이 잘 끝난 것으로 판정될 것이다.
+
+```
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ cat  LF.Pohang.22333124.log
+REL_DIR: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang
+EMOD3D_BIN: /home01/x3336a02/project/EMOD3D/tools/emod3d-mpi_v3.0.4
+CREATE_E3D_SCRIPT: /home01/x3336a02/project/cw/quakecw_workflow/scripts/create_e3d.py
+Nodes: 16  Total MPI ranks: 1024
+Using MAXMEM: 2500 MB
+e3d.par generating...
+Starting MPI Run at Tue May 19 12:19:32 KST 2026
+Verification 1 PASSED: Rlog contains 'IS FINISHED'
+Verification 2 PASSED: Every seis file loaded without an issue
+==========================================
+Run Statistics:
+  Elapsed Time: 8409 seconds (2.34 hours)
+  Core Hours:   2391.89
+==========================================
+SUCCESS: EMOD3D completed and verified
+
+```
 
 #### HF
 
@@ -637,9 +658,20 @@ total 3275708
 -rw-rw-r-- 1 x2568a02 rd0862 3431258672 Jan 13 11:31 HF.bin
 
 ```
-
-계산이 모두 끝나면 LF와 HF 모두 결과값이 원하는 포맷과 일치하는지 간단한 검증 과정을 거친다. 통과하면 Complete로 마크되고 그 다음 단계에 계산할 job이 있다면 (이 경우 BB) submit하게 된다.
-
+LF와 마찬가지로 로그파일이 생성되는데, 계산이 끝나면 간단한 검증 과정을 거쳐 SUCCESS 여부를 판정해준다.
+```
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ cat HF.Pohang.22333125.log
+REL_DIR: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang
+Start: 2026-05-19_12:50:28
+REL_DIR: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang
+Run name: Pohang
+HF version: 5.4.5.3
+HF sim bin: /home01/x3336a02/project/EMOD3D/tools/hb_high_binmod_v5.4.5.3
+mpirun python /home01/x3336a02/project/cw/quakecw_workflow/scripts/hf_sim.py /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/fd_rt01-h0.100.ll /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc/HF.bin --duration 60 --dt 0.005 --sim_bin /home01/x3336a02/project/EMOD3D/tools/hb_high_binmod_v5.4.5.3 --version 5.4.5.3 --rvfac 0.5 --sdrop 50 --path_dur 2 --kappa 0.016 --seed 0 --hf_vel_mod_1d /home01/x3336a02/project/cw/VelocityModel/1D/kr_gb_kim2011_modified.1d --slip /scratch/x3336a02/RunFolder/Pohang/Data/Sources/Pohang/Stoch/Pohang.stoch
+✅ HF completed successfully
+End: 2026-05-19_12:58:26
+SUCCESS: HF completed
+```
 
 
 #### BB
