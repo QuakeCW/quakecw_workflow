@@ -64,6 +64,14 @@ HF_SLIP=$(get_param "hf.slip")
 SIM_DURATION=$(get_param sim_duration)
 HF_DURATION="${SIM_DURATION:-60}"
 
+# After get_param, fix the hardcoded path
+if [[ "$HF_VEL_MOD_1D" == /scratch/x2568a02/gmsim_home/VelocityModel/* ]]; then
+    # Map old path to new: .../VelocityModel/Mod-1D/... -> $VELOCITY_MODEL_DIR/1D/...
+    REL_PATH="${HF_VEL_MOD_1D#*/VelocityModel/Mod-1D/}"
+    HF_VEL_MOD_1D="$VELOCITY_MODEL_DIR/1D/$REL_PATH"
+    echo "  Corrected HF velocity model path to: $HF_VEL_MOD_1D"
+fi
+
 # Job naming
 JOBNAME="HF.${RUN_NAME}"
 
