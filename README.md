@@ -679,6 +679,8 @@ SUCCESS: HF completed
 LF와 HF가 에러없이 완결되었다면 BB를 서브밋한다.
 ```
 (quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qsub -V  $QUAKECW/scripts/run_bb.pbs
+22344393.pbs
+
 ```
 
 #### IM
