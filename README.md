@@ -576,17 +576,17 @@ Run with : $QUAKECW/run_gmsim.sh /scratch/x3336a02/RunFolder/Pohang/gmsim_pohang
 
 전체 계산 단계가 1. 저주파 LF  (EMOD3D), 2. 고주파 HF, 3. 광대역 BB  4. Intensity Measurements (IM) 계산으로 나뉘어 지는데, LF과 HF는 서로 독립적이나 BB는 LF과 HF의 결과를 합치는 단계이며, IM은 BB의 결과값을 인풋으로 사용하는 상호간 작업 의존관계가 있다. 
 
-아래 명령으로 LF와 HF계산을 서브밋하자.
+아래 명령으로 LF와 HF계산을 서브밋하자. sim_params.yaml 가 있는 디렉토리로 옮겨가서 아래 명령어를 입력하여야 함. (지나치게 복잡한 디렉토리 구조를 개선할 계획임 `...RunFolder/Pohang/Runs/Pohang/Pohang`에서 `...RunFolder/Pohang/Runs/`로 )
 ```
-(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ qsub -V  $QUAKECW/scripts/run_emod3d.pbs 
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qsub -V  $QUAKECW/scripts/run_emod3d.pbs 
 22333124.pbs
-(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ qsub -V  $QUAKECW/scripts//run_hf.pbs
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qsub -V  $QUAKECW/scripts/run_hf.pbs
 22333125.pbs
 ```
 
 `qstat` 명령어로 현재 상황을 체크할 수 있다. 
 ```
-(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ qstat 
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qstat 
 Job id                 Name             User              Time Use S Queue
 ---------------------  ---------------- ----------------  -------- - -----
 22333124.pbs           LF               x3336a02                 0 Q normal          
@@ -646,13 +646,13 @@ total 3275708
 
 LF와 HF가 에러없이 완결되었다면 BB를 서브밋한다.
 ```
-qsub -V /home01/x3336a02/project/cw/quakecw_workflow/scripts/run_bb.pbs
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qsub -V  $QUAKECW/scripts/run_bb.pbs
 ```
 
 #### IM
 BB가 완결되었다면 IM을 서브밋한다.
 ```
-qsub -V /home01/x3336a02/project/cw/quakecw_workflow/scripts/run_im.pbs
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qsub -V  $QUAKECW/scripts/run_im.pbs
 ```
 
 
