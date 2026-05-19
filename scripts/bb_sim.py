@@ -61,7 +61,7 @@ def args_parser(cmd=None):
         "--site_response_dir",
         help="The directory with site response yaml files for OpenSees amplification. Without an argument uses the default.",
         default=False,
-        const=platform_config.platform_config[
+        const=platform_config[
             PLATFORM_CONFIG.DEFAULT_SITE_RESPONSE_DIR.name
         ],
         nargs="?",
