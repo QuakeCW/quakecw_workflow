@@ -653,9 +653,9 @@ HF/Acc에 HF.bin, HF.log 파일 사이즈가 증가하는 것이 관찰되면 �
 ```
 (quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc> ls -ltr
 total 3275708
--rw-rw-r-- 1 x2568a02 rd0862          8 Jan 13 11:24 SEED
--rw-rw-r-- 1 x2568a02 rd0862   13199491 Jan 13 11:31 HF.log
--rw-rw-r-- 1 x2568a02 rd0862 3431258672 Jan 13 11:31 HF.bin
+-rw-rw-r-- 1 x3336a02 rd1609          8 Jan 13 11:24 SEED
+-rw-rw-r-- 1 x3336a02 rd1609   13199491 Jan 13 11:31 HF.log
+-rw-rw-r-- 1 x3336a02 rd1609 3431258672 Jan 13 11:31 HF.bin
 
 ```
 LF와 마찬가지로 로그파일이 생성되는데, 계산이 끝나면 간단한 검증 과정을 거쳐 SUCCESS 여부를 판정해준다.
