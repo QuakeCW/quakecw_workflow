@@ -51,7 +51,7 @@ JOBNAME="BB.${RUN_NAME}"
 
 JOB_ID_RAW=${PBS_JOBID%%.*}
 CLEAN_ID=$(echo "$JOB_ID_RAW" | sed 's/\[/_/g; s/\]//g')
-LOG_FILE="${REL_DIR}/${JOBNAME}${CLEAN_ID}.log"
+LOG_FILE="${REL_DIR}/${JOBNAME}.${CLEAN_ID}.log"
 
 
 echo "Redirecting output to live log: $LOG_FILE"

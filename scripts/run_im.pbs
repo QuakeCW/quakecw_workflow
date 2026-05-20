@@ -75,7 +75,7 @@ JOBNAME="IM.${RUN_NAME}"
 
 JOB_ID_RAW=${PBS_JOBID%%.*}
 CLEAN_ID=$(echo "$JOB_ID_RAW" | sed 's/\[/_/g; s/\]//g')
-LOG_FILE="${REL_DIR}/${JOBNAME}${CLEAN_ID}.log"
+LOG_FILE="${REL_DIR}/${JOBNAME}.${CLEAN_ID}.log"
 
 
 echo "Redirecting output to live log: $LOG_FILE"
@@ -84,8 +84,8 @@ exec > >(tee -a "$LOG_FILE") 2>&1
 echo "REL_DIR: $REL_DIR"
 
 # Paths
-IMPATH="${CW}/IM_calculation/IM_calculation/scripts"
-PYTHONPATH="${CW}/qcore:${PYTHONPATH}:${IMPATH}"
+IMPATH="$IM_CALC/scripts"
+PYTHONPATH="$QCORE:${PYTHONPATH}:${IMPATH}/../"
 export PYTHONPATH
 
 export SLURM_JOB_ID="${PBS_JOBID/.pbs/}"
