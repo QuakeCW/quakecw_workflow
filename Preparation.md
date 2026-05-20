@@ -198,7 +198,7 @@ Step 9: Cleaning up archive files...
   ✓ Archive files deleted.
 
 Step 10: Optional cleanup of extracted source directories...
-  Delete extracted source directories from scratch? (This will remove extracted files, keeping only final installed data) [y/N] m
+  Delete extracted source directories from scratch? (This will remove extracted files, keeping only final installed data) [y/N] n
   Skipping cleanup of extracted directories.
 
 ==============================================
@@ -217,7 +217,7 @@ source ~/.bashrc
 
 `$HOME/.bashrc` 가 아래와 비슷한 형태로 세팅되어 있도록 하자.
 ```
-(quakecw_venv) x3336a02@login04: ~/project/cw/quakecw_workflow$ cat ~/.bashrc
+quakecw_venv) x3336a02@login04: ~/project/cw/quakecw_workflow$ cat ~/.bashrc
 # .bashrc
 
 # Source global definitions
@@ -241,17 +241,24 @@ module load gcc/10.2.0 openmpi/3.1.0 craype-mic-knl libxc cmake netcdf
 
 alias tree='find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"'
 
-# QuakeCW environment
-source /home01/x3336a02/project/cw/quakecw_workflow/quakecw_config.sh
-source "$VENV_DIR/bin/activate"
 
 # Only on interactive shells, not PBS jobs
 if [[ -z "$PBS_JOBID" ]]; then
     unset TMOUT
 fi
 
+
+
+# QuakeCW environment
+source /home01/x3336a02/project/cw/quakecw_workflow/quakecw_config.sh
+source "$VENV_DIR/bin/activate"
+
+# QuakeCW package paths (resolved at install time)
+export QCORE="/home01/x3336a02/.local/quakecw_venv/lib/python3.12/site-packages/qcore"
+export WORKFLOW="/home01/x3336a02/.local/quakecw_venv/lib/python3.12/site-packages/workflow"
+export IM_CALC="/home01/x3336a02/.local/quakecw_venv/lib/python3.12/site-packages/IM_calculation"
 ```
-위에서 `TMOUT`관련한 마지막 부분은 누리온에서 터미널을 일정시간 이상 사용하지 않았을 때에 자동으로 Timeout되어 SSH 연결이 끊어지는 현상을 방지하기 위함이다.
+
 가장 중요한 부분은 `source /home01/x3336a02/project/cw/quakecw_workflow/quakecw_config.sh` 라인으로, 시뮬레이션에 필요한 모든 환경 변수들이 설정되어 있는 곳이다.
 
 #### 실무책임자 계정
