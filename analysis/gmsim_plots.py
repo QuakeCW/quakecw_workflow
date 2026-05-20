@@ -1,9 +1,14 @@
 import argparse
 import datetime
+import os
 from pathlib import Path
 import shutil
+import sys
 import yaml
 from qcore.shared import exe
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from load_envs import expand_env_vars
 
 STATION_LIST="station.list"
 
@@ -62,7 +67,8 @@ def load_args():
     gmsim_configs = []
     for gmsim_yaml in args.gmsim_yaml:
         with(open(gmsim_yaml,'r')) as file:
-            gmsim_configs.append(yaml.safe_load(file))
+            params=yaml.safe_load(file)
+            gmsim_configs.append(expand_env_vars(params))
 
     fault_names = []
     bb_list = []
@@ -83,8 +89,16 @@ def load_args():
         implots_path = runs_fault_dir.glob("*/verification/IM_plot/geom/non_uniform_im")
         for imp in implots_path:
             implots_list.append((Path(sim_root_dir).name,str(imp)))
-       
-        args.gmsim_env = Path(gmsim_conf['workflow']).parent
+      
+         
+
+    try:
+        venv_dir = os.environ.get("VENV_DIR")
+    except KeyError:
+        print("Error: VENV_DIR env variable is not set. Check your .bashrc")
+        sys.exit(0)
+    else:
+        args.bin = Path(venv_dir) / "bin"
 
     args.bb_list=bb_list
     for i, bb in enumerate(bb_list):
@@ -139,7 +153,7 @@ if __name__ == '__main__':
 
         for sim_root_name, bb in args.bb_list:
             if args.obs is not None:
-                cmd = f"python {args.gmsim_env}/visualization/waveform/waveforms.py --waveforms {args.obs/'Obs_Acc'} Obs --waveforms {bb} Sim -t {args.time} --acc --no-amp-normalize --stations {args.station_list_str} --out {args.outdir}/waveforms_acc_{sim_root_name}" 
+                cmd = f"python {args.bin}/waveforms.py --waveforms {args.obs/'Obs_Acc'} Obs --waveforms {bb} Sim -t {args.time} --acc --no-amp-normalize --stations {args.station_list_str} --out {args.outdir}/waveforms_acc_{sim_root_name}" 
                 out,err=exe(cmd)
                 print(out)
                 print(err)
@@ -147,18 +161,18 @@ if __name__ == '__main__':
                 
 
 
-                cmd = f"python {args.gmsim_env}/visualization/waveform/waveforms.py --waveforms {args.obs/'Obs_Vel'} Obs --waveforms {bb} Sim -t {args.time} --no-amp-normalize --stations {args.station_list_str} --out {args.outdir}/waveforms_vel_{sim_root_name}" 
+                cmd = f"python {args.bin}/waveforms.py --waveforms {args.obs/'Obs_Vel'} Obs --waveforms {bb} Sim -t {args.time} --no-amp-normalize --stations {args.station_list_str} --out {args.outdir}/waveforms_vel_{sim_root_name}" 
                 out,err=exe(cmd)
                 print(out)
                 print(err)
             else: # no observation to compare with
-                cmd = f"python {args.gmsim_env}/visualization/waveform/waveforms.py --waveforms {bb} Sim -t {args.time} --acc --no-amp-normalize --stations {args.station_list_str} --out {args.outdir}/waveforms_acc_{sim_root_name}"
+                cmd = f"python {args.bin}/waveforms.py --waveforms {bb} Sim -t {args.time} --acc --no-amp-normalize --stations {args.station_list_str} --out {args.outdir}/waveforms_acc_{sim_root_name}"
                 out,err=exe(cmd)
                 print(out)
                 print(err)
 
 
-                cmd = f"python {args.gmsim_env}/visualization/waveform/waveforms.py --waveforms {bb} Sim -t {args.time} --no-amp-normalize --stations {args.station_list_str} --out {args.outdir}/waveforms_vel_{sim_root_name}"
+                cmd = f"python {args.bin}/waveforms.py --waveforms {bb} Sim -t {args.time} --no-amp-normalize --stations {args.station_list_str} --out {args.outdir}/waveforms_vel_{sim_root_name}"
                 out,err=exe(cmd)
                 print(out)
                 print(err)
@@ -171,14 +185,14 @@ if __name__ == '__main__':
                 obs_ims = [str(x) for x in obs_ims]
                 print(obs_ims)
                 obs_im = obs_ims[0]
-                cmd = f"python {args.gmsim_env}/visualization/im/psa_comparisons.py --run-name {sim_root_name} --stations {args.station_list_str} --imcsv {im} Sim --imcsv {obs_im} Obs -d {args.outdir}/psa_comparisons_{sim_root_name}"
+                cmd = f"python {args.bin}/psa_comparisons.py --run-name {sim_root_name} --stations {args.station_list_str} --imcsv {im} Sim --imcsv {obs_im} Obs -d {args.outdir}/psa_comparisons_{sim_root_name}"
                 out,err=exe(cmd)
                 print(out)
                 print(err)
 
 
             else: # no observation to compare with
-                cmd = f"python {args.gmsim_env}/visualization/im/psa_comparisons.py --run-name {sim_root_name} --stations {args.station_list_str} --imcsv {im} Sim -d {args.outdir}/psa_comparisons_{sim_root_name}"
+                cmd = f"python {args.bin}/psa_comparisons.py --run-name {sim_root_name} --stations {args.station_list_str} --imcsv {im} Sim -d {args.outdir}/psa_comparisons_{sim_root_name}"
                 out,err=exe(cmd)
                 print(out)
                 print(err)
@@ -193,14 +207,14 @@ if __name__ == '__main__':
                 obs_ims = [str(x) for x in obs_ims]
                 print(obs_ims)
                 obs_im = obs_ims[0]
-                cmd = f"python {args.gmsim_env}/visualization/im/psa_bias.py --run_name {sim_root_name} --imcsv {im} Sim --imcsv {obs_im} Obs -o {args.outdir}/psa_bias_{sim_root_name}"
+                cmd = f"python {args.bin}/psa_bias.py --run_name {sim_root_name} --imcsv {im} Sim --imcsv {obs_im} Obs -o {args.outdir}/psa_bias_{sim_root_name}"
                 out,err=exe(cmd)
                 print(out)
                 print(err)
 
 
             else: # no observation to compare with
-                cmd = f"python {args.gmsim_env}/visualization/im/psa_bias.py --run_name {sim_root_name} --imcsv {im} Sim -o {args.outdir}/psa_bias_{sim_root_name}"
+                cmd = f"python {args.bin}/psa_bias.py --run_name {sim_root_name} --imcsv {im} Sim -o {args.outdir}/psa_bias_{sim_root_name}"
                 out,err=exe(cmd)
                 print(out)
                 print(err)   
