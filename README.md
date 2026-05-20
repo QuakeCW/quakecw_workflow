@@ -645,6 +645,7 @@ Run Statistics:
 SUCCESS: EMOD3D completed and verified
 
 ```
+총 2.34시간이 소요되었다. 
 
 #### HF
 
@@ -672,6 +673,7 @@ mpirun python /home01/x3336a02/project/cw/quakecw_workflow/scripts/hf_sim.py /sc
 End: 2026-05-19_12:58:26
 SUCCESS: HF completed
 ```
+총 8분 정도가 소요되었다.
 
 
 #### BB
@@ -682,12 +684,90 @@ LF와 HF가 에러없이 완결되었다면 BB를 서브밋한다.
 22344393.pbs
 
 ```
+상태가 Q에서 R로 진행되고 나면 로그파일이 생성된다
+```
+(quakecw_venv) x3336a02@login04: ~/project/cw/quakecw_workflow$ qstat -u $USER
+
+pbs:
+                                                                 Req'd  Req'd   Elap
+Job ID               Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
+-------------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+22344684.pbs         x3336a02 normal   BB           4927   1  64    --  00:21 R 00:00
+
+```
+
+로그 파일을 체크해보자. 
+```
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ tail -f BB.Pohang.22344684.log
+Start: 2026-05-19_17:41:22
+REL_DIR: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang
+Run name: Pohang
+Computing BB
+mpirun python /home01/x3336a02/project/cw/quakecw_workflow/scripts/bb_sim.py /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/LF/OutBin /scratch/x3336a02/RunFolder/Pohang/Data/VMs/Pohang /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/HF/Acc/HF.bin /home01/x3336a02/project/cw/quakecw_workflow/Stations/SouthKorea25k.vs30 /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin --flo 1.0 --fmin 0.2 --fmidbot 0.5 --no-lf-amp
+Process 057 of 064 finished (59.81s).
+Process 060 of 064 finished (59.83s).
+Process 019 of 064 finished (59.83s).
+Process 055 of 064 finished (59.76s).
+
+...
+Process 043 of 064 finished (60.54s).
+Process 034 of 064 finished (60.55s).
+Process 033 of 064 finished (60.55s).
+Process 040 of 064 finished (60.47s).
+Process 044 of 064 finished (60.56s).
+Process 032 of 064 finished (60.65s).
+End: 2026-05-19_17:43:34
+SUCCESS: BB completed
+```
+총 2분여가 소요되었다.
 
 #### IM
 BB가 완결되었다면 IM을 서브밋한다.
 ```
 (quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qsub -V  $QUAKECW/scripts/run_im.pbs
+22351548.pbs
 ```
+계산이 시작되면 생성되는 로그파일을 열어보면 아래와 같은 내용들이 보일 것이다.
+
+```
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ cat IM.Pohang.22351548.log 
+REL_DIR: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang
+Start: 2026-05-20_10:36:23
+REL_DIR: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang
+Run name: Pohang
+Running IM calculation:
+  python /home01/x3336a02/.local/quakecw_venv/lib/python3.12/site-packages/IM_calculation/scripts/calculate_ims.py \
+    /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin b \
+    -o /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/ \
+    -np 64 \
+    -i Pohang \
+    -r Pohang \
+    -t s \
+    -c geom \
+    -s \
+    -p 0.01 0.02 0.03 0.04 0.05 0.075 0.1 0.12 0.15 0.17 0.2 0.25 0.3 0.4 0.5 0.6 0.7 0.75 0.8 0.9 1.0 1.25 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.5 10.0
+2026-05-20 10:37:06,277 - IM_Calc started
+2026-05-20 10:46:01,798 - Processing 000000 - 1 / 25090
+2026-05-20 10:46:02,013 - Processing 0002F1 - 100 / 25090
+2026-05-20 10:46:02,242 - Processing 0005E2 - 199 / 25090
+2026-05-20 10:46:02,469 - Processing 00028F - 298 / 25090
+...
+2026-05-20 10:50:19,535 - Processing 0060E9 - 24254 / 25090
+2026-05-20 10:50:19,751 - Processing 005E00 - 24354 / 25090
+2026-05-20 10:50:19,969 - Processing 0060D8 - 24056 / 25090
+2026-05-20 10:50:20,209 - Processing 0060EA - 24255 / 25090
+2026-05-20 10:50:20,658 - Processing 0060D9 - 24057 / 25090
+Reading waveforms in: g
+100.0% complete. Time taken for this block:  13.23m. Time elapsed:  13.23m. Time remaining:  0.00s. Total time:  13.23m.
+Calculations are output to /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/
+
+real	22m3.983s
+user	249m25.193s
+sys	17m40.781s
+End: 2026-05-20_10:58:27
+SUCCESS: IM completed fd_count=25090 pSA_count=31
+```
+총 22분 정도가 소요되었다.
 
 
 # 시각화
