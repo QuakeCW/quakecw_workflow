@@ -777,62 +777,53 @@ SUCCESS: IM completed fd_count=25090 pSA_count=31
 ## 관측 데이터의 시각화
 
 시뮬레이션이 다 완료되었다고 가정하자. 시뮬레이션을 실행할때 썼던 gmsim.yaml의 위치를 파악한다.
+인스톨 시에 Pohang과 Gyeongju 관측 데이터가 $HOME/Obs_20220511에 설치되어 있으므로 이 데이터와 시뮬레이션을 비교하는 방법을 서술하겠다. 
+(관측데이터를 마련하는 방법은 이 문서 아래쪽을 참조)
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder> find . -name "gmsim*.yaml"
-./Pohang/gmsim_Pohang.yaml
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder> realpath ./Pohang/gmsim_Pohang.yaml
-/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml
-```
-
-이 이벤트의 경우에는 관측값이 존재한다 (관측데이터를 마련하는 방법은 이 문서 아래쪽을 참조)
-```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> ls /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ ls $HOME/Obs_20220511/Pohang
 Obs_Acc  Obs_IM  Obs_Vel
+
 ```
 관측한 가속도(Acc), IM(intensity measures), 속도(Vel)들이 이 곳에 저장되어 있다.
 
 RunFolder/Pohang으로 돌아가 시각화를 해보자.
 
 ```
-(python3_nurion) x2568a02@login02:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang> python $QUAKECW/analysis/gmsim_plots.py --gmsim_yaml /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/gmsim_Pohang.yaml --obs /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang
-WARNING: /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots already exists
-Relocated to /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots_20220512_162547
-##### Observation data: /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang
-##### Sim BB (Acc) 1: ('Pohang', '/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin')
-##### IM CSV 1: ('Pohang', '/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv')
-##### IM Plots 1: ('Pohang', '/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/verification/IM_plot/geom/non_uniform_im')
+(quakecw_venv) x3336a02@login04: /scratch/x3336a02/RunFolder/Pohang$ python /home01/x3336a02/project/cw/quakecw_workflow/analysis/gmsim_plots.py --gmsim_yaml gmsim.yaml --obs /home01/x3336a02/Obs_20220511/Pohang
+WARNING: /scratch/x3336a02/RunFolder/Pohang/plots already exists
+Relocated to /scratch/x3336a02/RunFolder/Pohang/plots_20260520_123255
+##### Observation data: /home01/x3336a02/Obs_20220511/Pohang
+##### Sim BB (Acc) 1: ('Pohang', '/scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin')
+##### IM CSV 1: ('Pohang', '/scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv')
 ##### Stations extracted from Observation data
 ##### Station list: ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB
 
 
 
 ##### Start Plotting
-python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Acc Obs --waveforms /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/waveforms_acc_Pohang
+python /home01/x3336a02/.local/quakecw_venv/bin/waveforms.py --waveforms /home01/x3336a02/Obs_20220511/Pohang/Obs_Acc Obs --waveforms /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --acc --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x3336a02/RunFolder/Pohang/plots/waveforms_acc_Pohang
 
 
-python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/waveform/waveforms.py --waveforms /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_Vel Obs --waveforms /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/waveforms_vel_Pohang
+python /home01/x3336a02/.local/quakecw_venv/bin/waveforms.py --waveforms /home01/x3336a02/Obs_20220511/Pohang/Obs_Vel Obs --waveforms /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/BB/Acc/BB.bin Sim -t 90 --no-amp-normalize --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --out /scratch/x3336a02/RunFolder/Pohang/plots/waveforms_vel_Pohang
 
 
-['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
-python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/im/psa_comparisons.py --run-name Pohang --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -d /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/psa_comparisons_Pohang
-b"['/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']\n['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']\n"
-['/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv', 'Sim']
-['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv', 'Obs']
+['/home01/x3336a02/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
+python /home01/x3336a02/.local/quakecw_venv/bin/psa_comparisons.py --run-name Pohang --stations ADO2 AJD BBK BGD BRN BRS CGD CHS CIGB DAG2 DKJ EURB EUSB GRE GSU GUWB HACA HAK HCNA HDB HKU HSB HWSB JINA JJB JRB JSB KCH2 KJM KMC KRN KSA KUJA MAK MGB MIYA MKL MRD MUN NPR PCH PHA2 RWD SACA SND SNU TJN TOY2 UCN WID WSN YGN YIN YKB YOCB YPD YSB --imcsv /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /home01/x3336a02/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -d /scratch/x3336a02/RunFolder/Pohang/plots/psa_comparisons_Pohang
 
 
-['/scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
-python /scratch/x2568a02/gmsim_home/Environments/v211213/visualization/im/psa_bias.py --run_name Pohang --imcsv /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /scratch/x2568a02/CWNU/Busan_Data/Data/Obs/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -o /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/psa_bias_Pohang
+['/home01/x3336a02/Obs_20220511/Pohang/Obs_IM/Pohang.csv']
+python /home01/x3336a02/.local/quakecw_venv/bin/psa_bias.py --run_name Pohang --imcsv /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/IM_calc/Pohang.csv Sim --imcsv /home01/x3336a02/Obs_20220511/Pohang/Obs_IM/Pohang.csv Obs -o /scratch/x3336a02/RunFolder/Pohang/plots/psa_bias_Pohang
 
 
-/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots/im_plots_Pohang
 
 
-##### All complete: Check /scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots
+##### All complete: Check /scratch/x3336a02/RunFolder/Pohang/plots
+
 ```
 
 로컬 컴퓨터에서 다운받기 위해서는 아래와 같은 명령어를 사용하면 된다. 우선 적당한 디렉토리르 들어가서
 ```
-(!596) $ scp -r nurion2:/scratch/x2568a02/CWNU/quakecw_workflow/RunFolder/Pohang/plots .
+(!596) $ scp -r 누리온SSH주소:/scratch/x3336a02/RunFolder/Pohang/plots .
 
 pSAWithPeriod_comp_geom_Pohang.png                                                   100%   59KB 129.3KB/s   00:00
 pSA_comp_geom_vs_Period_Pohang_JINA.png                                              100%   45KB 273.0KB/s   00:00
