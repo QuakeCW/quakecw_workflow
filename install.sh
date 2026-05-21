@@ -302,6 +302,19 @@ else
     mark_checkpoint "STEP6_QUAKECW_PACKAGES"
 fi
 
+# ---- Fix hardcoded paths in qcore config ----
+echo ""
+echo "Patching qcore machine config for current user..."
+
+MACHINE_CONFIG="$VENV_DIR/lib/python3.12/site-packages/qcore/configs/machine_nurion.json"
+if [[ -f "$MACHINE_CONFIG" ]]; then
+    # Replace the hardcoded tools_dir with the user's BIN_DIR
+    sed -i "s|\"tools_dir\" : \".*\"|\"tools_dir\" : \"$BIN_DIR\"|" "$MACHINE_CONFIG"
+    echo "  Updated tools_dir in machine_nurion.json to: $BIN_DIR"
+else
+    echo "  WARNING: machine_nurion.json not found at $MACHINE_CONFIG"
+fi
+
 # ---- Step 7: Add sourcing to .bashrc ----
 echo ""
 echo "Step 7: Updating .bashrc..."
