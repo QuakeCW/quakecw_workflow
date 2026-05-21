@@ -94,6 +94,23 @@ SSHEOF
     fi
 }
 
+install_uv_python() {
+    if ! command -v uv &> /dev/null; then
+        echo "  Installing uv binary directly..."
+        mkdir -p "$HOME/.local/bin"
+        UV_TARBALL="uv-x86_64-unknown-linux-gnu.tar.gz"
+        wget --no-check-certificate -O "/tmp/$UV_TARBALL" \
+            "https://github.com/astral-sh/uv/releases/latest/download/$UV_TARBALL"
+        tar -xzf "/tmp/$UV_TARBALL" -C /tmp/
+        cp "/tmp/uv-x86_64-unknown-linux-gnu/uv" "$HOME/.local/bin/"
+        cp "/tmp/uv-x86_64-unknown-linux-gnu/uvx" "$HOME/.local/bin/" 2>/dev/null || true
+        chmod +x "$HOME/.local/bin/uv" "$HOME/.local/bin/uvx"
+        rm -rf "/tmp/$UV_TARBALL" "/tmp/uv-x86_64-unknown-linux-gnu"
+    fi
+    export PATH="$HOME/.local/bin:$PATH"
+    uv python install "$PYTHON_VERSION"
+}
+
 
 # ---- Initialize checkpoint file ----
 mkdir -p "$(dirname "$CHECKPOINT_FILE")"
@@ -172,45 +189,27 @@ fi
 # ---- Source paths before pip install ----
 source "$REPO_DIR/quakecw_config.sh"
 
+
 # ---- Step 2: Install uv and Python ----
 echo ""
 echo "Step 2: Installing uv and Python ${PYTHON_VERSION}..."
 
 if checkpoint_exists "STEP2_UV_PYTHON"; then
     if ask_rerun "STEP2_UV_PYTHON" "Install uv and Python"; then
-        if ! command -v uv &> /dev/null; then
-            echo "  Installing uv binary directly..."
-            mkdir -p "$HOME/.local/bin"
-            UV_TARBALL="uv-x86_64-unknown-linux-gnu.tar.gz"
-            wget --no-check-certificate -O "/tmp/$UV_TARBALL" \
-                "https://github.com/astral-sh/uv/releases/latest/download/$UV_TARBALL"
-            tar -xzf "/tmp/$UV_TARBALL" -C /tmp/
-            cp "/tmp/uv-x86_64-unknown-linux-gnu/uv" "$HOME/.local/bin/"
-            cp "/tmp/uv-x86_64-unknown-linux-gnu/uvx" "$HOME/.local/bin/" 2>/dev/null || true
-            chmod +x "$HOME/.local/bin/uv" "$HOME/.local/bin/uvx"
-            rm -rf "/tmp/$UV_TARBALL" "/tmp/uv-x86_64-unknown-linux-gnu"
-        fi
-        export PATH="$HOME/.local/bin:$PATH"
-        uv python install "$PYTHON_VERSION"
+        install_uv_python
         mark_checkpoint "STEP2_UV_PYTHON"
     fi
 else
-    if ! command -v uv &> /dev/null; then
-        echo "  Installing uv binary directly..."
-        mkdir -p "$HOME/.local/bin"
-        UV_TARBALL="uv-x86_64-unknown-linux-gnu.tar.gz"
-        wget --no-check-certificate -O "/tmp/$UV_TARBALL" \
-            "https://github.com/astral-sh/uv/releases/latest/download/$UV_TARBALL"
-        tar -xzf "/tmp/$UV_TARBALL" -C /tmp/
-        cp "/tmp/uv-x86_64-unknown-linux-gnu/uv" "$HOME/.local/bin/"
-        cp "/tmp/uv-x86_64-unknown-linux-gnu/uvx" "$HOME/.local/bin/" 2>/dev/null || true
-        chmod +x "$HOME/.local/bin/uv" "$HOME/.local/bin/uvx"
-        rm -rf "/tmp/$UV_TARBALL" "/tmp/uv-x86_64-unknown-linux-gnu"
-    fi
-    export PATH="$HOME/.local/bin:$PATH"
-    uv python install "$PYTHON_VERSION"
+    install_uv_python
     mark_checkpoint "STEP2_UV_PYTHON"
 fi
+
+# Verify uv and Python are available regardless of checkpoint choice
+if ! command -v uv &> /dev/null; then
+    echo "  WARNING: uv not found, installing anyway..."
+    install_uv_python
+fi
+
 
 # ---- Step 3: Create virtual environment ----
 echo ""
@@ -290,7 +289,7 @@ if checkpoint_exists "STEP6_QUAKECW_PACKAGES"; then
         uv pip install "${GIT_BASE}/qcore.git@${RELEASE}.1"
         uv pip install --no-build-isolation "${GIT_BASE}/IM_calculation.git@${RELEASE}"
         uv pip install --no-build-isolation "${GIT_BASE}/Pre-processing.git@${RELEASE}"
-        uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}.1"
+        uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}.2"
         uv pip install --no-build-isolation "${GIT_BASE}/slurm_gm_workflow.git@${RELEASE}"
         mark_checkpoint "STEP6_QUAKECW_PACKAGES"
     fi
@@ -298,7 +297,7 @@ else
     uv pip install "${GIT_BASE}/qcore.git@${RELEASE}.1"
     uv pip install --no-build-isolation "${GIT_BASE}/IM_calculation.git@${RELEASE}"
     uv pip install --no-build-isolation "${GIT_BASE}/Pre-processing.git@${RELEASE}"
-    uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}.1"
+    uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}.2"
     uv pip install --no-build-isolation "${GIT_BASE}/slurm_gm_workflow.git@${RELEASE}"
     mark_checkpoint "STEP6_QUAKECW_PACKAGES"
 fi
