@@ -451,6 +451,8 @@ else
         mkdir -p "$VELOCITY_MODEL_DIR/3D"
         ln -sfn "$SCRATCH_DIR/SouthKoreaVM100m" "$VELOCITY_MODEL_DIR/3D/SouthKoreaVM100m"
         echo "  Symlink created: $VELOCITY_MODEL_DIR/3D/SouthKoreaVM100m -> $SCRATCH_DIR/SouthKoreaVM100m"
+        echo "  Patch vm_params.yaml"
+        cp $QUAKECW/VM/vm_params.yaml $VELOCITY_MODEL_DIR/3D/SouthKoreaVM100m/vm_params.yaml
     else
         echo "  Skipping SouthKorea100m velocity model."
     fi
@@ -494,7 +496,6 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]; then
         "$SCRATCH_DIR/Velocity-Model_20260507"
         "$SCRATCH_DIR/project_local_20260507"
         "$SCRATCH_DIR/quakecw_data_20260507"
-        "$SCRATCH_DIR/SouthKoreaVM100m"
     )
     
     for dir in "${EXTRACTED_DIRS[@]}"; do
