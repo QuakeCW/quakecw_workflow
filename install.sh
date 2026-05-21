@@ -290,7 +290,7 @@ if checkpoint_exists "STEP6_QUAKECW_PACKAGES"; then
         uv pip install "${GIT_BASE}/qcore.git@${RELEASE}.1"
         uv pip install --no-build-isolation "${GIT_BASE}/IM_calculation.git@${RELEASE}"
         uv pip install --no-build-isolation "${GIT_BASE}/Pre-processing.git@${RELEASE}"
-        uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}"
+        uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}.1"
         uv pip install --no-build-isolation "${GIT_BASE}/slurm_gm_workflow.git@${RELEASE}"
         mark_checkpoint "STEP6_QUAKECW_PACKAGES"
     fi
@@ -298,7 +298,7 @@ else
     uv pip install "${GIT_BASE}/qcore.git@${RELEASE}.1"
     uv pip install --no-build-isolation "${GIT_BASE}/IM_calculation.git@${RELEASE}"
     uv pip install --no-build-isolation "${GIT_BASE}/Pre-processing.git@${RELEASE}"
-    uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}"
+    uv pip install --no-build-isolation "${GIT_BASE}/visualisation.git@${RELEASE}.1"
     uv pip install --no-build-isolation "${GIT_BASE}/slurm_gm_workflow.git@${RELEASE}"
     mark_checkpoint "STEP6_QUAKECW_PACKAGES"
 fi
