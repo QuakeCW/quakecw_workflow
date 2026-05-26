@@ -1,0 +1,102 @@
+#!/bin/bash
+# Merge XYTS and plot time series - submit from run directory
+#PBS -N ts_processing
+#PBS -V
+#PBS -q normal
+#PBS -A inhouse
+#PBS -l select=1:ncpus=64:mpiprocs=4:ompthreads=1
+#PBS -l walltime=01:00:00
+#PBS -W sandbox=PRIVATE
+
+set +u
+
+CONFIG_FILE="$HOME/project/cw/quakecw_workflow/quakecw_config.sh"
+[[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE" || { echo "ERROR: quakecw_config.sh not found"; exit 1; }
+source "$VENV_DIR/bin/activate"
+
+SUBMIT_DIR="${PBS_O_WORKDIR:-$PWD}"
+REL_DIR="$SUBMIT_DIR"
+
+get_param() {
+    python -c "
+from qcore.utils import load_sim_params
+p = load_sim_params('${REL_DIR}/sim_params.yaml')
+keys = '$1'.split('.')
+for k in keys:
+    p = p[k]
+print(p)
+"
+}
+
+RUN_NAME=$(get_param run_name)
+SRF_FILE=$(get_param srf_file)
+JOBNAME="ts.${RUN_NAME}"
+JOB_ID_RAW=${PBS_JOBID%%.*}
+CLEAN_ID=$(echo "$JOB_ID_RAW" | sed 's/\[/_/g; s/\]//g')
+LOG_FILE="${REL_DIR}/${JOBNAME}.${CLEAN_ID}.log"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "REL_DIR: $REL_DIR"
+
+# ========================================
+# 1. Merge XYTS files (MPI, 4 ranks)
+# ========================================
+echo "=== Merging XYTS files ==="
+XYTS_DIR="${REL_DIR}/LF/OutBin"
+FLIST="${REL_DIR}/LF/flist_${RUN_NAME}"
+OUTFILE="${XYTS_DIR}/${RUN_NAME}_xyts.e3d"
+
+ls -1 "$XYTS_DIR"/*xyts-*.e3d 2>/dev/null | sort > "$FLIST"
+NFILES=$(wc -l < "$FLIST" | tr -d ' ')
+
+if [[ $NFILES -eq 0 ]]; then
+    echo "ERROR: No XYTS files found in $XYTS_DIR"
+    exit 1
+fi
+
+MERGE_BIN="${BIN_DIR}/merge_tsP3_par"
+if [[ ! -x "$MERGE_BIN" ]]; then
+    echo "ERROR: merge_tsP3_par not found at $MERGE_BIN"
+    exit 1
+fi
+
+echo "Merging $NFILES files into $OUTFILE using 4 MPI ranks..."
+mpirun -np 4 "$MERGE_BIN" filelist="$FLIST" outfile="$OUTFILE"
+if [[ $? -ne 0 ]] || [[ ! -f "$OUTFILE" ]]; then
+    echo "FAIL: merge_ts failed"
+    rm -f "$FLIST"
+    exit 1
+fi
+rm -f "$FLIST"
+echo "Merge complete."
+
+# ========================================
+# 2. Plot time series (36 threads)
+# ========================================
+echo "=== Plotting time series ==="
+OUTPUT_TS="${REL_DIR}/plots/ts_${RUN_NAME}"
+mkdir -p "$OUTPUT_TS"
+
+if [[ ! -f "$SRF_FILE" ]]; then
+    echo "ERROR: SRF file not found: $SRF_FILE"
+    exit 1
+fi
+
+PLOT_SCRIPT="$VENV_DIR/bin/plot_ts.py"
+if [[ ! -f "$PLOT_SCRIPT" ]]; then
+    echo "ERROR: plot_ts.py not found at $PLOT_SCRIPT"
+    exit 1
+fi
+
+NPROCS=64
+export OMP_NUM_THREADS=$NPROCS
+echo "Running plot_ts.py with $NPROCS threads..."
+python "$PLOT_SCRIPT" --srf "$SRF_FILE" --output "$OUTPUT_TS" -n "$NPROCS" "$OUTFILE"
+
+if [[ $? -eq 0 ]]; then
+    echo "SUCCESS: TS plots written to $OUTPUT_TS"
+else
+    echo "FAIL: plot_ts.py failed"
+    exit 1
+fi
+

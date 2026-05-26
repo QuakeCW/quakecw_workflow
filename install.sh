@@ -382,8 +382,8 @@ else
     if ! grep -q "quakecw_config.sh" "$HOME/.bashrc" 2>/dev/null; then
         echo "" >> "$HOME/.bashrc"
         echo "# QuakeCW environment" >> "$HOME/.bashrc"
-        echo "source $REPO_DIR/quakecw_config.sh" >> "$HOME/.bashrc"
         echo "source \"\$VENV_DIR/bin/activate\"" >> "$HOME/.bashrc"
+        echo "source $REPO_DIR/quakecw_config.sh" >> "$HOME/.bashrc"
         
         # Add package paths
         echo "" >> "$HOME/.bashrc"
@@ -472,9 +472,41 @@ else
     mark_checkpoint "STEP8_VELOCITY_MODEL"
 fi
 
-# ---- Step 9: Clean up tar files (NEW) ----
+# ---- Step 9: Install ffmpeg (static build) ----
 echo ""
-echo "Step 9: Cleaning up archive files..."
+echo "Step 9: Installing ffmpeg (static build for plots)..."
+
+FFMPEG_TAR="ffmpeg-git-amd64-static.tar.xz"
+FFMPEG_DIR="$PROJECT_DIR/local/ffmpeg-git-20240629-amd64-static"
+
+if [[ -d "$FFMPEG_DIR" ]]; then
+    echo "  ffmpeg already installed at $FFMPEG_DIR"
+else
+    if [[ -f "$HOME/$FFMPEG_TAR" ]]; then
+        echo "  $FFMPEG_TAR already exists, skipping download"
+    else
+        echo "  Downloading $FFMPEG_TAR..."
+        wget --no-check-certificate -O "$HOME/$FFMPEG_TAR" \
+            "https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz"
+    fi
+    
+    echo "  Extracting ffmpeg to $PROJECT_DIR/local/..."
+    mkdir -p "$PROJECT_DIR/local"
+    tar -xf "$HOME/$FFMPEG_TAR" -C "$PROJECT_DIR/local/"
+    
+    # The tarball extracts to a dated directory; rename it
+    EXTRACTED_DIR=$(find "$PROJECT_DIR/local" -maxdepth 1 -name "ffmpeg-git-*" -type d | head -1)
+    if [[ -n "$EXTRACTED_DIR" && "$EXTRACTED_DIR" != "$FFMPEG_DIR" ]]; then
+        mv "$EXTRACTED_DIR" "$FFMPEG_DIR"
+    fi
+    
+    echo "  ffmpeg installed at $FFMPEG_DIR"
+fi
+
+
+# ---- Step 10: Clean up tar files (NEW) ----
+echo ""
+echo "Step 10: Cleaning up archive files..."
 
 # Find all tar and tar.gz files in scratch directory
 TAR_FILES=$(find "$SCRATCH_DIR" -maxdepth 1 -type f \( -name "*.tar" -o -name "*.tar.gz" \) 2>/dev/null)
@@ -498,9 +530,9 @@ else
     echo "  No archive files found in $SCRATCH_DIR"
 fi
 
-# ---- Step 10: Optional cleanup of extracted source directories (NEW) ----
+# ---- Step 11: Optional cleanup of extracted source directories (NEW) ----
 echo ""
-echo "Step 10: Optional cleanup of extracted source directories..."
+echo "Step 11: Optional cleanup of extracted source directories..."
 
 read -p "  Delete extracted source directories from scratch? (This will remove extracted files, keeping only final installed data) [y/N] " -r
 if [[ "$REPLY" =~ ^[Yy]$ ]]; then
