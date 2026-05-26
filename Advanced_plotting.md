@@ -1,3 +1,12 @@
+
+### Plot_ts
+
+`sim_params.yaml`이 위치한 디렉토리에서 아래 명령어를 입력할 것.
+
+```
+(quakecw_venv) x3336a02@login01: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qsub -V $QUAKECW/scripts/run_plot_ts.pbs
+```
+
 *아래의 내용은 코드를 테스트해가며 메뉴얼이 업데이트되어야 함.*
 
 ### [고난이도] 복수의 시뮬레이션 결과와 관측값 비교
@@ -139,13 +148,3 @@ python $gmsim/visualization/sources/plot_items.py -c ../../../../Data/Sources/${
 ```
   
 
-### [참고] Plot_ts
-
-자동으로 plot_ts실행되도록 되어 있으나, 수동으로 실행해야 할 경우, 인스톨 시킨 디렉토리로 돌아가서 (Runs와 Data디렉토리를 포함한 곳) 아래를 실행
-
-```
-FAULT=Pohang
-REL=Pohang
-
-qsub -W umask=002 -v XYTS_PATH=`pwd`/Runs/${FAULT}/${REL}/LF/OutBin/${REL}_xyts.e3d,SRF_PATH=`pwd`/Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=`pwd`/Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=`pwd`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
-```
