@@ -1,3 +1,61 @@
+
+### Plot_ts
+
+`sim_params.yaml`이 위치한 디렉토리에서 아래 명령어를 입력할 것.
+
+```
+(quakecw_venv) x3336a02@login01: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ qsub -V $QUAKECW/scripts/run_plot_ts.pbs
+```
+실행이 되고 나면 `LF/OutBin`의 `*xtys.e3d` 파일들을 하나로 합치고, 매순간(timeslice) 마다 지진파의 분포지도를 그리게된다.
+
+```
+(quakecw_venv) x3336a02@login01: /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang$ tail -f ts.Pohang.22406622.log
+it=604/610
+it=605/610
+it=606/610
+it=607/610
+it=608/610
+it=609/610
+Writing files took 70.367501 seconds (prep 13.439146 read 44.692623 gather 1.258677 write 10.934525 secs) 
+Merge complete.
+=== Plotting time series ===
+Running plot_ts.py with 64 threads...
+[[1.27545319e+02 3.73632965e+01 6.13145605e-02]
+ [1.27550964e+02 3.73633614e+01 6.18836582e-02]
+ [1.27556610e+02 3.73634300e+01 6.39565811e-02]
+ ...
+ [1.30291504e+02 3.37757339e+01 1.57828059e-03]
+ [1.30296906e+02 3.37756729e+01 1.35130645e-03]
+ [1.30302307e+02 3.37756157e+01 1.14335562e-03]]
+0.0011433556
+4.555232
+========
+psxy [WARNING]: Your plot (WxH = 16.00 x 9.00 inch) placed at (0.00, 0.00 inch) may exceed your PS_MEDIA (WxH = 16.00 x 9.00 inch)
+mapproject [WARNING]: Your scale of 1 in -J was interpreted to mean 1:1 since no plotting is involved.
+mapproject [WARNING]: If a scale of 1 was intended, please append a unit from c|i|p.
+mapproject [ERROR]: Cannot specify map width with 1:xxxx format in -J option
+....
+timeslice 0238 completed in 35.85s
+timeslice 0239 completed in 37.03s
+timeslice 0432 completed in 37.20s
+timeslice 0433 completed in 37.97s
+timeslice 0434 completed in 37.12s
+timeslice 0147 completed in 39.93s
+timeslice 0148 completed in 39.77s
+timeslice 0149 completed in 37.87s
+timeslice 0264 completed in 34.44s
+timeslice 0265 completed in 35.87s
+timeslice 0266 completed in 37.44s
+timeslice 0462 completed in 37.11s
+timeslice 0463 completed in 38.79s
+timeslice 0464 completed in 37.23s
+
+SUCCESS: TS plots written to /scratch/x3336a02/RunFolder/Pohang/Runs/Pohang/Pohang/plots/ts_Pohang
+
+
+```
+`GMT`의 특성상 경고나 에러 메시지가 많이 뜰수 있으나 심각한 오류가 아니므로 인스톨 과정이나 시뮬레이션 과정에서 문제가 없었다면 비디오 파일을 생성할 것이다.
+
 *아래의 내용은 코드를 테스트해가며 메뉴얼이 업데이트되어야 함.*
 
 ### [고난이도] 복수의 시뮬레이션 결과와 관측값 비교
@@ -139,13 +197,3 @@ python $gmsim/visualization/sources/plot_items.py -c ../../../../Data/Sources/${
 ```
   
 
-### [참고] Plot_ts
-
-자동으로 plot_ts실행되도록 되어 있으나, 수동으로 실행해야 할 경우, 인스톨 시킨 디렉토리로 돌아가서 (Runs와 Data디렉토리를 포함한 곳) 아래를 실행
-
-```
-FAULT=Pohang
-REL=Pohang
-
-qsub -W umask=002 -v XYTS_PATH=`pwd`/Runs/${FAULT}/${REL}/LF/OutBin/${REL}_xyts.e3d,SRF_PATH=`pwd`/Data/Sources/${FAULT}/Srf/${REL}.srf,OUTPUT_TS_PATH=`pwd`/Runs/${FAULT}/${REL}/verification/${REL},MGMT_DB_LOC=`pwd`,SRF_NAME="${REL}" -V $gmsim/workflow/workflow/automation/org/kisti/plot_ts.pbs
-```
